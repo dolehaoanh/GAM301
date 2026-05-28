@@ -265,7 +265,8 @@ public class RTSUnitSelection : MonoBehaviour
                     firstSelected.portrait, 
                     firstSelected.unitName, 
                     firstSelected.currentHP, 
-                    firstSelected.maxHP
+                    firstSelected.maxHP,
+                    firstSelected.unitType // <-- Gửi thêm loại quân để đồng bộ khuôn mặt 3D Portrait
                 );
             }
             else

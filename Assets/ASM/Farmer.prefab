@@ -318,13 +318,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 8cf01f03f9bf84b919daf3c748b05e82, type: 2}
     - target: {fileID: 5866666021909216657, guid: dfb6b75f24af3477a9acf66cd6d8952e, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:RightFoot'\n\tTransform
-        'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftHand'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
-        'mixamorig:Spine1'\n\tTransform 'mixamorig:Spine2'\n\tTransform 'mixamorig:RightUpLeg'\n\tTransform
-        'mixamorig:LeftHandIndex3'\n\tTransform 'mixamorig:RightForeArm'\n\tand more
-        ...\n\tFrom animation clip 'FarmerLowPolyIdle'"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: dfb6b75f24af3477a9acf66cd6d8952e, type: 3}
       propertyPath: m_ApplyRootMotion

@@ -15,8 +15,8 @@ public class RTSHUDController : MonoBehaviour
     [Header("Selected Unit Panel References")]
     [Tooltip("Bảng Panel thông tin lính được chọn (Bottom-Center)")]
     public GameObject selectionPanel;
-    [Tooltip("Ảnh chân dung của lính")]
-    public Image selectedUnitPortrait;
+    [Tooltip("Ảnh chân dung của lính (Dùng RawImage để hỗ trợ Render Texture 3D)")]
+    public UnityEngine.UI.RawImage selectedUnitPortrait;
     [Tooltip("Tên của lính")]
     public TextMeshProUGUI selectedUnitName;
     [Tooltip("Thanh máu của lính")]
@@ -28,8 +28,22 @@ public class RTSHUDController : MonoBehaviour
     [Tooltip("Danh sách các nút bấm lệnh (Move, Stop, Attack...)")]
     public Button[] commandButtons;
 
+    [Header("3D Portrait Settings")]
+    [Tooltip("Instance của Nông Dân tĩnh trong phòng Chân dung 3D")]
+    public GameObject portraitFarmerInstance;
+    [Tooltip("Instance của Binh Sĩ tĩnh trong phòng Chân dung 3D")]
+    public GameObject portraitSoldierInstance;
+
+    // Lưu trữ Render Texture 3D mặc định được gán từ Inspector
+    private Texture originalPortraitTexture;
+
     private void Start()
     {
+        if (selectedUnitPortrait != null)
+        {
+            originalPortraitTexture = selectedUnitPortrait.texture;
+        }
+
         // Khởi tạo các giá trị hiển thị giả lập ban đầu (chưa cần liên kết logic chiến đấu thực tế)
         UpdateResourcesDisplay(500, 300, 8, 20);
         HideSelectionPanel();
@@ -44,7 +58,7 @@ public class RTSHUDController : MonoBehaviour
     }
 
     // Hàm hiển thị thông tin chi tiết khi quét trúng một quân lính bất kỳ
-    public void ShowUnitSelection(Sprite portrait, string unitName, float currentHP, float maxHP)
+    public void ShowUnitSelection(Sprite portrait, string unitName, float currentHP, float maxHP, RTSUnitType unitType)
     {
         if (selectionPanel != null) selectionPanel.SetActive(true);
         
@@ -52,16 +66,29 @@ public class RTSHUDController : MonoBehaviour
         {
             if (portrait != null)
             {
-                selectedUnitPortrait.sprite = portrait;
+                selectedUnitPortrait.texture = portrait.texture;
                 selectedUnitPortrait.color = Color.white; // Màu gốc đầy đủ
             }
             else
             {
-                selectedUnitPortrait.sprite = null;
-                // Nếu chưa có ảnh chân dung, hiển thị một khung màu xám tối bo góc sang trọng (phong cách Glassmorphism)
-                selectedUnitPortrait.color = new Color(0.12f, 0.12f, 0.18f, 0.65f);
+                // Khôi phục lại Render Texture 3D ban đầu nếu không có Sprite 2D
+                selectedUnitPortrait.texture = originalPortraitTexture;
+                if (originalPortraitTexture != null)
+                {
+                    selectedUnitPortrait.color = Color.white; // Hiện rõ nét 3D Portrait
+                }
+                else
+                {
+                    selectedUnitPortrait.texture = null;
+                    // Nếu hoàn toàn không có gì, hiện khung kính mờ tối sang trọng
+                    selectedUnitPortrait.color = new Color(0.12f, 0.12f, 0.18f, 0.65f);
+                }
             }
         }
+
+        // Tự động bật khuôn mặt 3D của loại quân được chọn trong Portrait Room
+        if (portraitFarmerInstance != null) portraitFarmerInstance.SetActive(unitType == RTSUnitType.Farmer);
+        if (portraitSoldierInstance != null) portraitSoldierInstance.SetActive(unitType == RTSUnitType.Soldier);
 
         if (selectedUnitName != null) selectedUnitName.text = unitName;
         
@@ -76,5 +103,9 @@ public class RTSHUDController : MonoBehaviour
     public void HideSelectionPanel()
     {
         if (selectionPanel != null) selectionPanel.SetActive(false);
+        
+        // Tắt cả hai khuôn mặt chân dung 3D đi khi không chọn ai
+        if (portraitFarmerInstance != null) portraitFarmerInstance.SetActive(false);
+        if (portraitSoldierInstance != null) portraitSoldierInstance.SetActive(false);
     }
 }
