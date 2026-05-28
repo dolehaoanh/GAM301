@@ -39,6 +39,12 @@ public class RTSUnitSelection : MonoBehaviour
             isDrawing = false;
             SelectUnitsInBox();
         }
+
+        // 3. Khi nhấn Chuột Phải: Di chuyển các quân đang chọn
+        if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
+        {
+            MoveSelectedUnits();
+        }
     }
 
     // Hàm vẽ giao diện khung quét 2D trong OnGUI
@@ -144,6 +150,25 @@ public class RTSUnitSelection : MonoBehaviour
                 unit.Select();
                 selectedUnits.Add(unit);
                 Debug.Log($"[RTS Selection] Đã chọn 1 quân: {unit.gameObject.name}");
+            }
+        }
+    }
+
+    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích
+    private void MoveSelectedUnits()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            foreach (RTSUnit unit in selectedUnits)
+            {
+                UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                if (agent != null)
+                {
+                    agent.SetDestination(hit.point);
+                }
             }
         }
     }
