@@ -47,8 +47,24 @@ public class RTSHUDController : MonoBehaviour
     public void ShowUnitSelection(Sprite portrait, string unitName, float currentHP, float maxHP)
     {
         if (selectionPanel != null) selectionPanel.SetActive(true);
-        if (selectedUnitPortrait != null) selectedUnitPortrait.sprite = portrait;
+        
+        if (selectedUnitPortrait != null)
+        {
+            if (portrait != null)
+            {
+                selectedUnitPortrait.sprite = portrait;
+                selectedUnitPortrait.color = Color.white; // Màu gốc đầy đủ
+            }
+            else
+            {
+                selectedUnitPortrait.sprite = null;
+                // Nếu chưa có ảnh chân dung, hiển thị một khung màu xám tối bo góc sang trọng (phong cách Glassmorphism)
+                selectedUnitPortrait.color = new Color(0.12f, 0.12f, 0.18f, 0.65f);
+            }
+        }
+
         if (selectedUnitName != null) selectedUnitName.text = unitName;
+        
         if (selectedUnitHPBar != null)
         {
             selectedUnitHPBar.maxValue = maxHP;

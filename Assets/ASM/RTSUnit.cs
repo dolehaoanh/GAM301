@@ -12,52 +12,55 @@ public class RTSUnit : MonoBehaviour
     [Tooltip("Phân loại quân lính (Dân hay Lính)")]
     public RTSUnitType unitType = RTSUnitType.Soldier;
 
+    [Header("Unit Stats Settings")]
+    [Tooltip("Tên hiển thị của quân")]
+    public string unitName = "Binh Sĩ";
+    [Tooltip("Ảnh chân dung đại diện hiển thị trên UI")]
+    public Sprite portrait;
+    [Tooltip("Lượng máu tối đa")]
+    public float maxHP = 100f;
+    [Tooltip("Lượng máu hiện tại")]
+    public float currentHP = 100f;
+
     [Header("Selection Visual Settings")]
-    [Tooltip("Bán kính của vòng tròn chọn dưới chân")]
     public float selectionRingRadius = 0.8f;
-    [Tooltip("Độ dày của đường vẽ vòng tròn")]
     public float selectionRingWidth = 0.08f;
-    [Tooltip("Màu sắc phát sáng của vòng chọn")]
-    public Color selectionColor = new Color(0f, 1f, 0.5f, 0.9f); // Màu xanh ngọc phát sáng
+    public Color selectionColor = new Color(0f, 1f, 0.5f, 0.9f); 
 
     private LineRenderer selectionLine;
     private bool isSelected = false;
 
     private void Start()
     {
-        // Tự động phân biệt màu sắc vòng tròn dựa trên phân loại quân lính
+        // Tự động phân biệt màu sắc và tên mặc định dựa trên loại quân
         if (unitType == RTSUnitType.Farmer)
         {
-            selectionColor = new Color(0f, 1f, 0.2f, 0.9f); // Màu xanh cỏ phát sáng cho Dân
+            selectionColor = new Color(0f, 1f, 0.2f, 0.9f); // Màu xanh cỏ cho Dân
+            if (unitName == "Binh Sĩ") unitName = "Nông Dân";
         }
         else if (unitType == RTSUnitType.Soldier)
         {
-            selectionColor = new Color(1f, 0.2f, 0f, 0.9f);  // Màu đỏ cam phát sáng cho Lính chiến
+            selectionColor = new Color(1f, 0.2f, 0f, 0.9f);  // Màu đỏ cam cho Lính chiến
+            if (unitName == "Binh Sĩ") unitName = "Chiến Binh";
         }
 
         CreateSelectionRing();
         Deselect();
     }
 
-    // Thuật toán tự động sinh vòng tròn phát sáng bằng LineRenderer sát mặt đất
     private void CreateSelectionRing()
     {
-        // 1. Tạo một GameObject con tự động
         GameObject ringObject = new GameObject("SelectionCircle_Auto");
         ringObject.transform.SetParent(transform);
-        
-        // Tọa độ Y = -0.95f nằm ngay sát đáy của Capsule cao 2m (tránh bị chìm dưới đất - Z-fighting)
         ringObject.transform.localPosition = new Vector3(0f, -0.95f, 0f);
         ringObject.transform.localRotation = Quaternion.identity;
 
-        // 2. Thêm và cấu hình Component LineRenderer
         selectionLine = ringObject.AddComponent<LineRenderer>();
-        selectionLine.useWorldSpace = false; // Sử dụng tọa độ Local để quay theo lính
+        selectionLine.useWorldSpace = false; 
         selectionLine.loop = true;
         selectionLine.startWidth = selectionRingWidth;
         selectionLine.endWidth = selectionRingWidth;
 
-        // 3. Sử dụng Shader Sprites mặc định để tự động phát sáng bất kể điều kiện ánh sáng
         Shader defaultShader = Shader.Find("Sprites/Default");
         if (defaultShader != null)
         {
@@ -66,7 +69,6 @@ public class RTSUnit : MonoBehaviour
         selectionLine.startColor = selectionColor;
         selectionLine.endColor = selectionColor;
 
-        // 4. Vẽ vòng tròn 360 độ bằng công thức toán lượng giác (36 phân đoạn)
         int segments = 36;
         selectionLine.positionCount = segments;
         float angle = 0f;
@@ -78,12 +80,10 @@ public class RTSUnit : MonoBehaviour
             angle += (2f * Mathf.PI) / segments;
         }
 
-        // Tắt tính năng đổ bóng đổ để đường vẽ sáng rõ nét
         selectionLine.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         selectionLine.receiveShadows = false;
     }
 
-    // Hàm kích hoạt khi quân lính được quét trúng
     public void Select()
     {
         isSelected = true;
@@ -93,7 +93,6 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    // Hàm kích hoạt khi bỏ chọn quân lính
     public void Deselect()
     {
         isSelected = false;

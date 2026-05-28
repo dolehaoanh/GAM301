@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(Animator))]
 public class RTSUnitAnimation : MonoBehaviour
 {
     private NavMeshAgent agent;
@@ -10,23 +9,43 @@ public class RTSUnitAnimation : MonoBehaviour
 
     [Header("Animation Smooth Settings")]
     [Tooltip("Độ mượt khi chuyển đổi thông số tốc độ trong Animator")]
-    public float speedDampTime = 0.1f;
+    public float speedDampTime = 0.15f;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+        
+        // Tìm kiếm thông minh Animator thực tế (chọn cái có gắn Controller trong các con)
+        Animator[] animators = GetComponentsInChildren<Animator>();
+        foreach (var anim in animators)
+        {
+            if (anim.runtimeAnimatorController != null)
+            {
+                animator = anim;
+                break;
+            }
+        }
+
+        // Fallback nếu không tìm thấy cái nào có controller thì lấy cái đầu tiên trong con
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
+        if (animator == null)
+        {
+            Debug.LogWarning($"[RTS Unit Animation] Không tìm thấy Animator nào trên {gameObject.name} hoặc các con của nó!");
+        }
     }
 
     private void Update()
     {
+        if (animator == null) return;
+
         // 1. Lấy tốc độ di chuyển thực tế hiện tại của NavMeshAgent
-        // (agent.velocity.magnitude trả về tốc độ thực tế tính theo m/s)
         float currentSpeed = agent.velocity.magnitude;
 
         // 2. Truyền tốc độ này vào biến float "Speed" trong Animator Controller.
-        // Sử dụng Animator.SetFloat kèm theo speedDampTime để làm mịn chuyển động chuyển giao
-        // giữa Idle (Đứng yên) và Walk (Đi bộ) hoặc Run (Chạy) mà không bị giật cục.
         animator.SetFloat("Speed", currentSpeed, speedDampTime, Time.deltaTime);
     }
 }
