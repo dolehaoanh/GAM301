@@ -12,6 +12,8 @@ public class RTSUnitSelection : MonoBehaviour
     [Header("Formation Settings")]
     [Tooltip("Khoảng cách giãn cách giữa các quân lính khi xếp hàng tại điểm đích")]
     public float formationSpacing = 1.8f;
+    [Tooltip("Khoảng cách khoảng trống phân cấp giữa nhóm Lính (phía trước) và nhóm Dân (phía sau)")]
+    public float classGapDistance = 4.5f;
 
     private Texture2D whiteTexture;
     private Vector3 startMousePosition;
@@ -158,7 +160,7 @@ public class RTSUnitSelection : MonoBehaviour
         }
     }
 
-    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích - NÂNG CẤP ĐỘI HÌNH ĐỐI XỨNG XOAY THEO HƯỚNG DI CHUYỂN
+    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích - NÂNG CẤP ĐỘI HÌNH TÁC CHIẾN LÍNH ĐI TRƯỚC, DÂN ĐI SAU
     private void MoveSelectedUnits()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -169,26 +171,34 @@ public class RTSUnitSelection : MonoBehaviour
             int unitCount = selectedUnits.Count;
             if (unitCount == 0) return;
 
-            // 1. Tính toán tâm vị trí hiện tại của cả nhóm quân đang chọn
+            // 1. Phân loại quân lính được chọn thành 2 nhóm riêng biệt: Lính (Soldiers) và Dân (Farmers)
+            List<RTSUnit> soldiers = new List<RTSUnit>();
+            List<RTSUnit> farmers = new List<RTSUnit>();
             Vector3 groupCenter = Vector3.zero;
             int activeUnits = 0;
+
             foreach (RTSUnit unit in selectedUnits)
             {
-                if (unit != null)
+                if (unit == null) continue;
+                
+                groupCenter += unit.transform.position;
+                activeUnits++;
+
+                if (unit.unitType == RTSUnitType.Soldier)
                 {
-                    groupCenter += unit.transform.position;
-                    activeUnits++;
+                    soldiers.Add(unit);
+                }
+                else
+                {
+                    farmers.Add(unit);
                 }
             }
             if (activeUnits > 0) groupCenter /= activeUnits;
 
-            // 2. Tính toán vectơ hướng di chuyển thực tế (Từ tâm nhóm quân đến điểm click chuột)
+            // 2. Tính toán hướng di chuyển và hướng xoay đội hình tương ứng
             Vector3 travelDirection = hit.point - groupCenter;
-            travelDirection.y = 0f; // Khống chế trên mặt đất phẳng
+            travelDirection.y = 0f;
 
-            // 3. Quy định góc xoay của đội hình:
-            // - Nếu di chuyển một khoảng cách đáng kể: Đội hình sẽ xoay mặt thẳng về hướng đi mới (LookRotation).
-            // - Nếu click tại chỗ hoặc khoảng cách quá ngắn: Đội hình sẽ giữ nguyên hướng nhìn của Camera để tránh xoay vòng hỗn loạn.
             Quaternion formationRotation;
             if (travelDirection.sqrMagnitude > 0.2f)
             {
@@ -199,34 +209,57 @@ public class RTSUnitSelection : MonoBehaviour
                 formationRotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
             }
 
-            // Thiết lập đội hình tối đa 2 hàng ngang (RTS Standard Double-Line Formation)
-            int rows = (unitCount <= 2) ? 1 : 2;
-            int cols = Mathf.CeilToInt((float)unitCount / rows);
-
-            for (int i = 0; i < unitCount; i++)
+            // 3. Thực hiện phân vùng dàn quân chiến thuật:
+            // Nếu cả lính và dân đều đang được chọn: Lính sẽ đứng ở tâm điểm click chuột (Tiền tuyến), 
+            // Dân sẽ lùi lại phía sau một khoảng trống an toàn (Hậu phương)
+            if (soldiers.Count > 0 && farmers.Count > 0)
             {
-                if (selectedUnits[i] == null) continue;
+                // Điểm trung tâm đội lính (ở trước)
+                Vector3 soldierCenter = hit.point;
+                // Điểm trung tâm đội dân (ở sau) = Điểm click trừ đi vector hướng nhìn hướng ra phía sau
+                Vector3 farmerCenter = hit.point - (formationRotation * Vector3.forward * classGapDistance);
 
-                // Tính tọa độ hàng và cột của từng con lính trong lưới
-                int row = i / cols;
-                int col = i % cols;
+                MoveGroupInGrid(soldiers, soldierCenter, formationRotation);
+                MoveGroupInGrid(farmers, farmerCenter, formationRotation);
+            }
+            else
+            {
+                // Nếu chỉ chọn riêng 1 loại quân: di chuyển bình thường theo đội hình chuẩn tại điểm click chuột
+                MoveGroupInGrid(selectedUnits, hit.point, formationRotation);
+            }
+        }
+    }
 
-                // Tính toán vị trí lệch (Offset) từ tâm điểm click chuột
-                // (Giúp tâm đội hình trùng khớp hoàn hảo với điểm click chuột)
-                float xOffset = (col - (cols - 1) / 2.0f) * formationSpacing;
-                float zOffset = (row - (rows - 1) / 2.0f) * formationSpacing;
+    // Hàm phụ trợ: Sắp xếp một nhóm quân cụ thể thành lưới 2 hàng tại vị trí trung tâm chỉ định
+    private void MoveGroupInGrid(List<RTSUnit> group, Vector3 centerPoint, Quaternion rotation)
+    {
+        int count = group.Count;
+        if (count == 0) return;
 
-                Vector3 localOffset = new Vector3(xOffset, 0f, zOffset);
-                Vector3 rotatedOffset = formationRotation * localOffset;
+        // Thiết lập đội hình tối đa 2 hàng ngang
+        int rows = (count <= 2) ? 1 : 2;
+        int cols = Mathf.CeilToInt((float)count / rows);
 
-                // Tọa độ đích đến cuối cùng đã được sắp xếp và xoay hướng đi
-                Vector3 finalDestination = hit.point + rotatedOffset;
+        for (int i = 0; i < count; i++)
+        {
+            if (group[i] == null) continue;
 
-                UnityEngine.AI.NavMeshAgent agent = selectedUnits[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
-                if (agent != null)
-                {
-                    agent.SetDestination(finalDestination);
-                }
+            int row = i / cols;
+            int col = i % cols;
+
+            // Tính vị trí lệch
+            float xOffset = (col - (cols - 1) / 2.0f) * formationSpacing;
+            float zOffset = (row - (rows - 1) / 2.0f) * formationSpacing;
+
+            Vector3 localOffset = new Vector3(xOffset, 0f, zOffset);
+            Vector3 rotatedOffset = rotation * localOffset;
+
+            Vector3 finalDestination = centerPoint + rotatedOffset;
+
+            UnityEngine.AI.NavMeshAgent agent = group[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null)
+            {
+                agent.SetDestination(finalDestination);
             }
         }
     }
