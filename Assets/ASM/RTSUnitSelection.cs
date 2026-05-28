@@ -158,7 +158,7 @@ public class RTSUnitSelection : MonoBehaviour
         }
     }
 
-    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích - NÂNG CẤP ĐỘI HÌNH ĐỐI XỨNG
+    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích - NÂNG CẤP ĐỘI HÌNH ĐỐI XỨNG XOAY THEO HƯỚNG DI CHUYỂN
     private void MoveSelectedUnits()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -167,29 +167,59 @@ public class RTSUnitSelection : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             int unitCount = selectedUnits.Count;
-            
+            if (unitCount == 0) return;
+
+            // 1. Tính toán tâm vị trí hiện tại của cả nhóm quân đang chọn
+            Vector3 groupCenter = Vector3.zero;
+            int activeUnits = 0;
+            foreach (RTSUnit unit in selectedUnits)
+            {
+                if (unit != null)
+                {
+                    groupCenter += unit.transform.position;
+                    activeUnits++;
+                }
+            }
+            if (activeUnits > 0) groupCenter /= activeUnits;
+
+            // 2. Tính toán vectơ hướng di chuyển thực tế (Từ tâm nhóm quân đến điểm click chuột)
+            Vector3 travelDirection = hit.point - groupCenter;
+            travelDirection.y = 0f; // Khống chế trên mặt đất phẳng
+
+            // 3. Quy định góc xoay của đội hình:
+            // - Nếu di chuyển một khoảng cách đáng kể: Đội hình sẽ xoay mặt thẳng về hướng đi mới (LookRotation).
+            // - Nếu click tại chỗ hoặc khoảng cách quá ngắn: Đội hình sẽ giữ nguyên hướng nhìn của Camera để tránh xoay vòng hỗn loạn.
+            Quaternion formationRotation;
+            if (travelDirection.sqrMagnitude > 0.2f)
+            {
+                formationRotation = Quaternion.LookRotation(travelDirection.normalized);
+            }
+            else
+            {
+                formationRotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
+            }
+
             // Thiết lập đội hình tối đa 2 hàng ngang (RTS Standard Double-Line Formation)
             int rows = (unitCount <= 2) ? 1 : 2;
             int cols = Mathf.CeilToInt((float)unitCount / rows);
 
-            // Lấy góc quay của camera chiếu lên mặt đất để xoay đội hình luôn quay mặt về phía người chơi nhìn
-            Quaternion rotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
-
             for (int i = 0; i < unitCount; i++)
             {
+                if (selectedUnits[i] == null) continue;
+
                 // Tính tọa độ hàng và cột của từng con lính trong lưới
                 int row = i / cols;
                 int col = i % cols;
 
-                // Tính toán vị trí lệch (Offset) từ tâm điểm click chuột trái/phải
-                // (Thực hiện trừ đi một nửa để tâm đội hình trùng khớp hoàn hảo với điểm click chuột)
+                // Tính toán vị trí lệch (Offset) từ tâm điểm click chuột
+                // (Giúp tâm đội hình trùng khớp hoàn hảo với điểm click chuột)
                 float xOffset = (col - (cols - 1) / 2.0f) * formationSpacing;
                 float zOffset = (row - (rows - 1) / 2.0f) * formationSpacing;
 
                 Vector3 localOffset = new Vector3(xOffset, 0f, zOffset);
-                Vector3 rotatedOffset = rotation * localOffset;
+                Vector3 rotatedOffset = formationRotation * localOffset;
 
-                // Tọa độ đích đến cuối cùng đã được sắp xếp
+                // Tọa độ đích đến cuối cùng đã được sắp xếp và xoay hướng đi
                 Vector3 finalDestination = hit.point + rotatedOffset;
 
                 UnityEngine.AI.NavMeshAgent agent = selectedUnits[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
