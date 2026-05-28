@@ -1,7 +1,17 @@
 using UnityEngine;
 
+public enum RTSUnitType
+{
+    Farmer,
+    Soldier
+}
+
 public class RTSUnit : MonoBehaviour
 {
+    [Header("Unit Settings")]
+    [Tooltip("Phân loại quân lính (Dân hay Lính)")]
+    public RTSUnitType unitType = RTSUnitType.Soldier;
+
     [Header("Selection Visual Settings")]
     [Tooltip("Bán kính của vòng tròn chọn dưới chân")]
     public float selectionRingRadius = 0.8f;
@@ -15,6 +25,16 @@ public class RTSUnit : MonoBehaviour
 
     private void Start()
     {
+        // Tự động phân biệt màu sắc vòng tròn dựa trên phân loại quân lính
+        if (unitType == RTSUnitType.Farmer)
+        {
+            selectionColor = new Color(0f, 1f, 0.2f, 0.9f); // Màu xanh cỏ phát sáng cho Dân
+        }
+        else if (unitType == RTSUnitType.Soldier)
+        {
+            selectionColor = new Color(1f, 0.2f, 0f, 0.9f);  // Màu đỏ cam phát sáng cho Lính chiến
+        }
+
         CreateSelectionRing();
         Deselect();
     }
