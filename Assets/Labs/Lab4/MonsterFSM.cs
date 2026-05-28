@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 public class MonsterFSM : MonoBehaviour
 {
-    // 1. Define the FSM States
+    // 1. Định nghĩa các Trạng thái của FSM
     public enum FSMState
     {
         NormalWalk,
@@ -13,10 +13,10 @@ public class MonsterFSM : MonoBehaviour
         Jump
     }
 
-    [Header("State Machine")]
+    [Header("Máy Trạng thái (FSM)")]
     public FSMState currentState = FSMState.NormalWalk;
 
-    [Header("Journey Tracking")]
+    [Header("Theo dõi Hành trình")]
     public Transform destination;
     private Vector3 startPosition;
     private float totalDistance;
@@ -24,7 +24,7 @@ public class MonsterFSM : MonoBehaviour
 
     private NavMeshAgent agent;
     private float normalSpeed;
-    private float normalAcceleration; // ⚡️ Store the normal acceleration
+    private float normalAcceleration; // ⚡️ Lưu trữ gia tốc bình thường
 
     void Start()
     {
@@ -32,9 +32,9 @@ public class MonsterFSM : MonoBehaviour
         normalSpeed = agent.speed;
         normalAcceleration = agent.acceleration;
 
-        agent.autoTraverseOffMeshLink = false; // Turn off automatic ghost-gliding
+        agent.autoTraverseOffMeshLink = false; // Tắt tự động di chuyển kiểu lướt qua OffMeshLink
 
-        // Remember where we spawned
+        // Ghi nhớ vị trí sinh ra
         startPosition = transform.position;
 
         if (destination != null)
@@ -44,13 +44,13 @@ public class MonsterFSM : MonoBehaviour
         }
     }
 
-    // Called by the Spawner to set the destination dynamically
+    // Được gọi bởi Spawner để đặt điểm đến động
     public void InitializeDestination(Transform target)
     {
         destination = target;
         agent = GetComponent<NavMeshAgent>();
 
-        agent.autoTraverseOffMeshLink = false; // Turn off automatic ghost-gliding
+        agent.autoTraverseOffMeshLink = false; // Tắt tự động di chuyển kiểu lướt qua OffMeshLink
 
         normalSpeed = agent.speed;
         normalAcceleration = agent.acceleration;
@@ -68,13 +68,13 @@ public class MonsterFSM : MonoBehaviour
     {
         if (destination == null) return;
 
-        // 💡 NEW: If the agent touches a NavMesh Link, instantly jump over it!
+        // 💡 MỚI: Nếu tác nhân chạm vào một NavMesh Link, lập tức nhảy qua nó!
         if (agent != null && agent.isOnOffMeshLink && currentState != FSMState.Jump)
         {
             StartCoroutine(LinkJumpRoutine());
         }
 
-        // Continuous state monitoring
+        // Theo dõi trạng thái liên tục
         switch (currentState)
         {
             case FSMState.NormalWalk:
@@ -82,20 +82,20 @@ public class MonsterFSM : MonoBehaviour
                 break;
 
             case FSMState.ActionTriggered:
-                // Deciding what action to take (handled in Coroutine)
+                // Quyết định hành động cần thực hiện (được xử lý trong Coroutine)
                 break;
 
             case FSMState.SpeedBoost:
-                // Double speed active (handled in Coroutine)
+                // Tốc độ nhân đôi đang kích hoạt (được xử lý trong Coroutine)
                 break;
 
             case FSMState.Jump:
-                // Performing jump physics (handled in Coroutine)
+                // Thực hiện vật lý nhảy (được xử lý trong Coroutine)
                 break;
         }
     }
 
-    // 📏 Monitors the distance and triggers the FSM transition at the 1/3 mark
+    // 📏 Theo dõi khoảng cách và kích hoạt chuyển trạng thái FSM tại mốc 1/3
     void MonitorDistance()
     {
         if (destination == null || hasTriggeredAction) return;
@@ -103,7 +103,7 @@ public class MonsterFSM : MonoBehaviour
         float remainingDistance = Vector3.Distance(transform.position, destination.position);
         float percentageCompleted = 1f - (remainingDistance / totalDistance);
 
-        // If we have completed 1/3 (33%) of the path
+        // Nếu chúng ta đã đi được 1/3 (33%) quãng đường
         if (percentageCompleted >= 0.33f)
         {
             hasTriggeredAction = true;
@@ -114,7 +114,7 @@ public class MonsterFSM : MonoBehaviour
 
     void TriggerRandomAction()
     {
-        // Randomly choose 0 (Speed Boost) or 1 (Jump)
+        // Chọn ngẫu nhiên 0 (Tăng tốc) hoặc 1 (Nhảy)
         int choice = Random.Range(0, 2);
 
         if (choice == 0)
@@ -127,53 +127,53 @@ public class MonsterFSM : MonoBehaviour
         }
     }
 
-    // ⚡️ SPEED BOOST STATE: Double speed for 2 seconds
+    // ⚡️ TRẠNG THÁI TĂNG TỐC: Nhân đôi tốc độ trong 2 giây
     IEnumerator SpeedBoostRoutine()
     {
         currentState = FSMState.SpeedBoost;
-        Debug.Log("⚡️ FSM: Transitioned to SPEED BOOST state! Instant zip active.");
+        Debug.Log("⚡️ FSM: Đã chuyển sang trạng thái TĂNG TỐC! Kích hoạt tăng tốc tức thời.");
 
-        // 1. Boost both speed and acceleration to max instantly!
-        agent.acceleration = 9999f;          // Instant acceleration (no build-up!)
-        agent.speed = normalSpeed * 4.44f;      // 4x speed is plenty with instant acceleration!
+        // 1. Tăng cả tốc độ và gia tốc lên mức tối đa ngay lập tức!
+        agent.acceleration = 9999f;          // Gia tốc tức thời (không cần tích lũy!)
+        agent.speed = normalSpeed * 4.44f;      // Tốc độ gấp 4.44 lần là đủ nhiều với gia tốc tức thời!
 
         yield return new WaitForSeconds(2f);
 
-        // 2. Restore both speed and acceleration back to normal
+        // 2. Khôi phục cả tốc độ và gia tốc trở lại bình thường
         agent.speed = normalSpeed;
         agent.acceleration = normalAcceleration;
 
-        Debug.Log("🚶‍♂️ FSM: Returning to NORMAL state.");
+        Debug.Log("🚶‍♂️ FSM: Quay lại trạng thái BÌNH THƯỜNG.");
         currentState = FSMState.NormalWalk;
     }
 
-    // 🦘 JUMP STATE: Performs a beautiful parabolic leap forward
+    // 🦘 TRẠNG THÁI NHẢY: Thực hiện một cú nhảy parabol tuyệt đẹp về phía trước
     IEnumerator JumpRoutine()
     {
         currentState = FSMState.Jump;
-        Debug.Log("🦘 FSM: Transitioned to JUMP state!");
+        Debug.Log("🦘 FSM: Đã chuyển sang trạng thái NHẢY!");
 
-        // 1. Temporarily disable NavMeshAgent so we can control the height (Y-axis)
+        // 1. Tạm thời vô hiệu hóa NavMeshAgent để chúng ta có thể kiểm soát chiều cao (trục Y)
         agent.enabled = false;
 
         Vector3 jumpStart = transform.position;
-        // Leap 3 meters forward along the direction the monster is facing
+        // Nhảy 3 mét về phía trước theo hướng quái vật đang đối mặt
         Vector3 jumpEnd = jumpStart + transform.forward * 3f;
 
         float elapsedTime = 0f;
-        float jumpDuration = 1f;  // Jump takes exactly 1 second
-        float jumpHeight = 2.5f;   // The peak height of the jump
+        float jumpDuration = 1f;  // Cú nhảy mất đúng 1 giây
+        float jumpHeight = 2.5f;   // Chiều cao đỉnh của cú nhảy
 
         while (elapsedTime < jumpDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / jumpDuration;
 
-            // Linearly interpolate the horizontal position (X and Z)
+            // Nội suy tuyến tính vị trí nằm ngang (X và Z)
             Vector3 currentPos = Vector3.Lerp(jumpStart, jumpEnd, t);
 
-            // Add a parabolic height curve to the Y axis
-            // Formula: y = 4 * Height * t * (1 - t)
+            // Thêm một đường cong chiều cao parabol vào trục Y
+            // Công thức: y = 4 * Chiều cao * t * (1 - t)
             currentPos.y = Mathf.Lerp(jumpStart.y, jumpEnd.y, t) + (4f * jumpHeight * t * (1f - t));
 
             transform.position = currentPos;
@@ -182,41 +182,41 @@ public class MonsterFSM : MonoBehaviour
 
         transform.position = jumpEnd;
 
-        // 2. Re-enable the NavMeshAgent and recalculate the path
+        // 2. Kích hoạt lại NavMeshAgent và tính toán lại đường đi
         agent.enabled = true;
         if (destination != null)
         {
             agent.SetDestination(destination.position);
         }
 
-        Debug.Log("🚶‍♂️ FSM: Returning to NORMAL state.");
+        Debug.Log("🚶‍♂️ FSM: Quay lại trạng thái BÌNH THƯỜNG.");
         currentState = FSMState.NormalWalk;
     }
 
-    // 🦘 OFF-MESH LINK JUMP: Triggers automatically when touching a NavMesh Link
+    // 🦘 NHẢY OFF-MESH LINK: Tự động kích hoạt khi chạm vào một NavMesh Link
     IEnumerator LinkJumpRoutine()
     {
         currentState = FSMState.Jump;
-        Debug.Log("🦘 FSM: Off-Mesh Link detected! Leap initiated.");
+        Debug.Log("🦘 FSM: Phát hiện Off-Mesh Link! Bắt đầu nhảy.");
 
-        // 1. Get the start and end positions of the NavMesh Link
+        // 1. Lấy vị trí bắt đầu và kết thúc của NavMesh Link
         OffMeshLinkData data = agent.currentOffMeshLinkData;
         Vector3 jumpStart = transform.position;
         Vector3 jumpEnd = data.endPos;
 
         float elapsedTime = 0f;
-        float jumpDuration = 0.8f; // Jump takes 0.8 seconds
-        float jumpHeight = 2.0f;   // Height of the leap
+        float jumpDuration = 0.8f; // Cú nhảy mất 0.8 giây
+        float jumpHeight = 2.0f;   // Chiều cao của cú nhảy
 
         while (elapsedTime < jumpDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / jumpDuration;
 
-            // Horizontal movement (X and Z)
+            // Di chuyển ngang (X và Z)
             Vector3 currentPos = Vector3.Lerp(jumpStart, jumpEnd, t);
 
-            // Vertical movement (Y-axis parabolic arc)
+            // Di chuyển đứng (vòng cung parabol trục Y)
             currentPos.y = Mathf.Lerp(jumpStart.y, jumpEnd.y, t) + (4f * jumpHeight * t * (1f - t));
 
             transform.position = currentPos;
@@ -225,10 +225,10 @@ public class MonsterFSM : MonoBehaviour
 
         transform.position = jumpEnd;
 
-        // 2. Tell the NavMeshAgent that we have successfully crossed the link!
+        // 2. Thông báo cho NavMeshAgent rằng chúng ta đã băng qua link thành công!
         agent.CompleteOffMeshLink();
 
         currentState = FSMState.NormalWalk;
-        Debug.Log("🚶‍♂️ FSM: Returned to NORMAL state after crossing link.");
+        Debug.Log("🚶‍♂️ FSM: Quay lại trạng thái BÌNH THƯỜNG sau khi qua link.");
     }
 }

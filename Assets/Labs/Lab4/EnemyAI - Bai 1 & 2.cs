@@ -9,14 +9,14 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        // If it was already manually placed in the scene with a destination, move now
+        // Nếu nó đã được đặt thủ công trong scene với điểm đích, di chuyển ngay bây giờ
         if (destination != null)
         {
             agent.SetDestination(destination.position);
         }
     }
 
-    // 💡 New Method: Called by the Spawner to initialize the target dynamically
+    // 💡 Phương thức mới: Được gọi bởi Spawner để khởi tạo mục tiêu một cách động
     public void InitializeDestination(Transform target)
     {
         destination = target;

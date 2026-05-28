@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [Header("Spawner Setup")]
-    public GameObject monsterPrefab; // Drag your MonsterPrefab here
-    public Transform endPortalTarget; // Drag your EndPortal here
+    [Header("Cài đặt Bộ tạo Quái")]
+    public GameObject monsterPrefab; // Kéo MonsterPrefab của bạn vào đây
+    public Transform endPortalTarget; // Kéo Cổng kết thúc (EndPortal) vào đây
 
-    [Header("Spawn Settings")]
+    [Header("Cài đặt Sinh sản")]
     public float minSpawnInterval = 2f;
     public float maxSpawnInterval = 5f;
 
@@ -15,11 +15,11 @@ public class EnemySpawner : MonoBehaviour
     {
         if (monsterPrefab == null || endPortalTarget == null)
         {
-            Debug.LogError("Spawner is missing setup fields!");
+            Debug.LogError("Bộ tạo quái thiếu các trường thiết lập!");
             return;
         }
 
-        // Start the infinite spawning loop
+        // Bắt đầu vòng lặp sinh quái vô hạn
         StartCoroutine(SpawnRoutine());
     }
 
@@ -27,17 +27,17 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
-            // 1. Spawn a new monster at the spawner's position
+            // 1. Tạo một quái vật mới tại vị trí của bộ tạo quái
             GameObject newMonster = Instantiate(monsterPrefab, transform.position, Quaternion.identity);
 
-            // 2. ⚠️ UPDATED: Look for MonsterFSM instead of EnemyAI!
+            // 2. ⚠️ CẬP NHẬT: Tìm kiếm thành phần MonsterFSM thay vì EnemyAI!
             MonsterFSM aiScript = newMonster.GetComponent<MonsterFSM>();
             if (aiScript != null)
             {
                 aiScript.InitializeDestination(endPortalTarget);
             }
 
-            // 3. Wait for a random time before spawning the next monster
+            // 3. Chờ một khoảng thời gian ngẫu nhiên trước khi sinh quái vật tiếp theo
             float randomWait = Random.Range(minSpawnInterval, maxSpawnInterval);
             yield return new WaitForSeconds(randomWait);
         }

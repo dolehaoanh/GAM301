@@ -3,19 +3,19 @@ using UnityEngine.UI; // Required for Slider!
 
 public class GameManager : MonoBehaviour
 {
-    // Singleton instance so any script can access the GameManager easily
+    // Instance Singleton để bất kỳ mã nguồn nào cũng có thể truy cập GameManager dễ dàng
     public static GameManager Instance;
 
-    [Header("Player Stats")]
+    [Header("Chỉ số Người chơi")]
     public int playerHP = 6;
 
-    [Header("UI References")]
-    public Slider hpSlider;          // Drag your HP Slider here
-    public GameObject gameOverUI;    // Drag your Game Over Text here
+    [Header("Tham chiếu Giao diện (UI)")]
+    public Slider hpSlider;          // Kéo Slider HP của bạn vào đây
+    public GameObject gameOverUI;    // Kéo Text Game Over của bạn vào đây
 
     void Awake()
     {
-        // Set up the Singleton pattern
+        // Thiết lập mẫu thiết kế Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -25,13 +25,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Ensure game time is running normally at the start of the game
+        // Đảm bảo thời gian trong game chạy bình thường khi bắt đầu trò chơi
         Time.timeScale = 1f;
     }
 
     void Start()
     {
-        // Initialize the Health Bar
+        // Khởi tạo thanh máu (Health Bar)
         if (hpSlider != null)
         {
             hpSlider.minValue = 0;
@@ -39,28 +39,28 @@ public class GameManager : MonoBehaviour
             hpSlider.value = playerHP;
         }
 
-        // Ensure the Game Over UI is hidden at start
+        // Đảm bảo ẩn giao diện Game Over khi bắt đầu
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(false);
         }
     }
 
-    // Called whenever a monster enters the portal
+    // Được gọi bất cứ khi nào quái vật đi vào cổng
     public void TakeDamage()
     {
         if (playerHP <= 0) return; // Already game over
 
         playerHP -= 1;
-        Debug.Log($"💥 Gate breached! Lives remaining: {playerHP}");
+        Debug.Log($"💥 Cổng đã bị phá vỡ! Số mạng còn lại: {playerHP}");
 
-        // Update the visual health bar
+        // Cập nhật thanh máu trực quan
         if (hpSlider != null)
         {
             hpSlider.value = playerHP;
         }
 
-        // Check for Game Over
+        // Kiểm tra Game Over
         if (playerHP <= 0)
         {
             TriggerGameOver();
@@ -69,15 +69,15 @@ public class GameManager : MonoBehaviour
 
     void TriggerGameOver()
     {
-        Debug.Log("💀 GAME OVER! Time frozen.");
+        Debug.Log("💀 GAME OVER! Đã đóng băng thời gian.");
 
-        // 1. Show the Game Over UI
+        // 1. Hiển thị giao diện Game Over
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true);
         }
 
-        // 2. Freeze the entire game physics and animations
+        // 2. Đóng băng toàn bộ vật lý và hoạt ảnh trong game
         Time.timeScale = 0f;
     }
 }

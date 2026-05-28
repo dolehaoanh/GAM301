@@ -6,13 +6,13 @@ public class GameOverTrigger : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            // 1. Deduct 1 HP from the player via the GameManager
+            // 1. Trừ 1 HP của người chơi thông qua GameManager
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.TakeDamage();
             }
 
-            // 2. Destroy the monster immediately so it doesn't trigger again
+            // 2. Hủy quái vật ngay lập tức để không kích hoạt lại
             Destroy(other.gameObject);
         }
     }

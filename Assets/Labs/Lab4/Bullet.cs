@@ -5,8 +5,8 @@ public class Bullet : MonoBehaviour
     public float speed = 20f;
     public float lifeTime = 3f;
 
-    [Header("Visual Effects")]
-    public GameObject hitEffectPrefab; // Drag your Spark Burst Prefab here!
+    [Header("Hiệu ứng Hình ảnh")]
+    public GameObject hitEffectPrefab; // Kéo Prefab Tia lửa nổ vào đây!
 
     void Start()
     {
@@ -22,23 +22,23 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            // 1. Calculate the exact point on the monster's surface where the bullet hit
+            // 1. Tính toán điểm chính xác trên bề mặt quái vật mà đạn bắn trúng
             Vector3 hitPoint = other.ClosestPoint(transform.position);
 
-            // 2. Spawn the visual effect at the hit point
+            // 2. Tạo hiệu ứng hình ảnh tại điểm va chạm
             if (hitEffectPrefab != null)
             {
                 Instantiate(hitEffectPrefab, hitPoint, Quaternion.identity);
             }
 
-            // 3. Deal 1 damage
+            // 3. Gây 1 sát thương
             MonsterHP monsterHealth = other.GetComponent<MonsterHP>();
             if (monsterHealth != null)
             {
                 monsterHealth.TakeDamage(1);
             }
 
-            Destroy(gameObject); // Destroy the bullet
+            Destroy(gameObject); // Hủy viên đạn
         }
     }
 }

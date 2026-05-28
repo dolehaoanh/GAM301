@@ -4,8 +4,8 @@ public class GateController : MonoBehaviour
 {
     private Animator animator;
 
-    [Header("Double Door Settings")]
-    [Tooltip("Drag the second door (Gate (1))'s Animator component here!")]
+    [Header("Cài đặt Cửa đôi")]
+    [Tooltip("Kéo thành phần Animator của cánh cửa thứ hai (Gate (1)) vào đây!")]
     public Animator secondDoorAnimator;
 
     void Start()
@@ -15,15 +15,15 @@ public class GateController : MonoBehaviour
 
     public void OpenGate()
     {
-        Debug.Log("🔔 Signal received: Opening both doors!");
+        Debug.Log("🔔 Đã nhận được tín hiệu: Đang mở cả hai cánh cửa!");
 
-        // 1. Open the original door (this one)
+        // 1. Mở cánh cửa gốc (cánh cửa này)
         if (animator != null)
         {
             animator.SetTrigger("Open");
         }
 
-        // 2. Open the second door (if assigned)
+        // 2. Mở cánh cửa thứ hai (nếu được gán)
         if (secondDoorAnimator != null)
         {
             secondDoorAnimator.SetTrigger("Open");
