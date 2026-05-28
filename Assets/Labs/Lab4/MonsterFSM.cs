@@ -68,7 +68,7 @@ public class MonsterFSM : MonoBehaviour
     {
         if (destination == null) return;
 
-        // 💡 MỚI: Nếu tác nhân chạm vào một NavMesh Link, lập tức nhảy qua nó!
+        // MỚI: Nếu tác nhân chạm vào một NavMesh Link, lập tức nhảy qua nó!
         if (agent != null && agent.isOnOffMeshLink && currentState != FSMState.Jump)
         {
             StartCoroutine(LinkJumpRoutine());
@@ -127,7 +127,7 @@ public class MonsterFSM : MonoBehaviour
         }
     }
 
-    // ⚡️ TRẠNG THÁI TĂNG TỐC: Nhân đôi tốc độ trong 2 giây
+    // TRẠNG THÁI TĂNG TỐC: Nhân đôi tốc độ trong 2 giây
     IEnumerator SpeedBoostRoutine()
     {
         currentState = FSMState.SpeedBoost;
@@ -193,7 +193,7 @@ public class MonsterFSM : MonoBehaviour
         currentState = FSMState.NormalWalk;
     }
 
-    // 🦘 NHẢY OFF-MESH LINK: Tự động kích hoạt khi chạm vào một NavMesh Link
+    // NHẢY OFF-MESH LINK: Tự động kích hoạt khi chạm vào một NavMesh Link
     IEnumerator LinkJumpRoutine()
     {
         currentState = FSMState.Jump;

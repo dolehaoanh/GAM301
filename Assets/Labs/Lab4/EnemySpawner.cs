@@ -30,7 +30,7 @@ public class EnemySpawner : MonoBehaviour
             // 1. Tạo một quái vật mới tại vị trí của bộ tạo quái
             GameObject newMonster = Instantiate(monsterPrefab, transform.position, Quaternion.identity);
 
-            // 2. ⚠️ CẬP NHẬT: Tìm kiếm thành phần MonsterFSM thay vì EnemyAI!
+            // 2. CẬP NHẬT QUAN TRỌNG: Tìm kiếm thành phần MonsterFSM thay vì EnemyAI!
             MonsterFSM aiScript = newMonster.GetComponent<MonsterFSM>();
             if (aiScript != null)
             {

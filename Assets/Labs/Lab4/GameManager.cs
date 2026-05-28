@@ -37,6 +37,19 @@ public class GameManager : MonoBehaviour
             hpSlider.minValue = 0;
             hpSlider.maxValue = 6;
             hpSlider.value = playerHP;
+
+            // Tự động căn chỉnh RectTransform của phần Fill Area và Fill để lấp đầy 100% khi không có Handle
+            if (hpSlider.fillRect != null)
+            {
+                RectTransform fillArea = hpSlider.fillRect.parent as RectTransform;
+                if (fillArea != null)
+                {
+                    fillArea.offsetMin = new Vector2(0f, fillArea.offsetMin.y);
+                    fillArea.offsetMax = new Vector2(0f, fillArea.offsetMax.y);
+                }
+                hpSlider.fillRect.offsetMin = new Vector2(0f, hpSlider.fillRect.offsetMin.y);
+                hpSlider.fillRect.offsetMax = new Vector2(0f, hpSlider.fillRect.offsetMax.y);
+            }
         }
 
         // Đảm bảo ẩn giao diện Game Over khi bắt đầu
