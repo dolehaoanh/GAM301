@@ -36,11 +36,9 @@ public class MonsterHP : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         currentHP -= damageAmount;
-        Debug.Log($"{gameObject.name} đã nhận {damageAmount} sát thương. Máu hiện tại: {currentHP}");
 
         if (currentHP <= 0)
         {
-            Debug.Log("💀 Quái vật đã bị tiêu diệt!");
             Destroy(gameObject);
         }
     }

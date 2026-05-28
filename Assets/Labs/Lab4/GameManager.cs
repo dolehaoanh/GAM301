@@ -65,7 +65,6 @@ public class GameManager : MonoBehaviour
         if (playerHP <= 0) return; // Already game over
 
         playerHP -= 1;
-        Debug.Log($"💥 Cổng đã bị phá vỡ! Số mạng còn lại: {playerHP}");
 
         // Cập nhật thanh máu trực quan
         if (hpSlider != null)
@@ -82,8 +81,6 @@ public class GameManager : MonoBehaviour
 
     void TriggerGameOver()
     {
-        Debug.Log("💀 GAME OVER! Đã đóng băng thời gian.");
-
         // 1. Hiển thị giao diện Game Over
         if (gameOverUI != null)
         {

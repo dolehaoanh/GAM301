@@ -24,7 +24,7 @@ public class MonsterFSM : MonoBehaviour
 
     private NavMeshAgent agent;
     private float normalSpeed;
-    private float normalAcceleration; // ⚡️ Lưu trữ gia tốc bình thường
+    private float normalAcceleration; // Lưu trữ gia tốc bình thường
 
     void Start()
     {
@@ -131,7 +131,6 @@ public class MonsterFSM : MonoBehaviour
     IEnumerator SpeedBoostRoutine()
     {
         currentState = FSMState.SpeedBoost;
-        Debug.Log("⚡️ FSM: Đã chuyển sang trạng thái TĂNG TỐC! Kích hoạt tăng tốc tức thời.");
 
         // 1. Tăng cả tốc độ và gia tốc lên mức tối đa ngay lập tức!
         agent.acceleration = 9999f;          // Gia tốc tức thời (không cần tích lũy!)
@@ -143,15 +142,13 @@ public class MonsterFSM : MonoBehaviour
         agent.speed = normalSpeed;
         agent.acceleration = normalAcceleration;
 
-        Debug.Log("🚶‍♂️ FSM: Quay lại trạng thái BÌNH THƯỜNG.");
         currentState = FSMState.NormalWalk;
     }
 
-    // 🦘 TRẠNG THÁI NHẢY: Thực hiện một cú nhảy parabol tuyệt đẹp về phía trước
+    // TRẠNG THÁI NHẢY: Thực hiện một cú nhảy parabol tuyệt đẹp về phía trước
     IEnumerator JumpRoutine()
     {
         currentState = FSMState.Jump;
-        Debug.Log("🦘 FSM: Đã chuyển sang trạng thái NHẢY!");
 
         // 1. Tạm thời vô hiệu hóa NavMeshAgent để chúng ta có thể kiểm soát chiều cao (trục Y)
         agent.enabled = false;
@@ -189,7 +186,6 @@ public class MonsterFSM : MonoBehaviour
             agent.SetDestination(destination.position);
         }
 
-        Debug.Log("🚶‍♂️ FSM: Quay lại trạng thái BÌNH THƯỜNG.");
         currentState = FSMState.NormalWalk;
     }
 
@@ -197,7 +193,6 @@ public class MonsterFSM : MonoBehaviour
     IEnumerator LinkJumpRoutine()
     {
         currentState = FSMState.Jump;
-        Debug.Log("🦘 FSM: Phát hiện Off-Mesh Link! Bắt đầu nhảy.");
 
         // 1. Lấy vị trí bắt đầu và kết thúc của NavMesh Link
         OffMeshLinkData data = agent.currentOffMeshLinkData;
@@ -229,6 +224,5 @@ public class MonsterFSM : MonoBehaviour
         agent.CompleteOffMeshLink();
 
         currentState = FSMState.NormalWalk;
-        Debug.Log("🚶‍♂️ FSM: Quay lại trạng thái BÌNH THƯỜNG sau khi qua link.");
     }
 }

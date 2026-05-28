@@ -26,7 +26,6 @@ public class ObjectFader : MonoBehaviour
         //chi khi: 1. user an Space VA 2. doi tuong chua o trang thai fading thi moi kich hoat!
         if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame && !isFading)
         {
-            Debug.Log("Da an Space! Bat dau coroutine 5s!");
             StartCoroutine(CoroutineLamMo());
         }
     }
@@ -58,7 +57,5 @@ public class ObjectFader : MonoBehaviour
         // Set tro lai ve 1 de user biet la qua trinh da hoan thanh va co the thu lai
         objectRenderer.material.color = new Color(mauGoc.r, mauGoc.g, mauGoc.b, 1f);
         isFading = false; // cho phep lam mo tiep lan nua neu user lai an Space
-        Debug.Log("Hoan thanh! An Space de thu lai lan nua!");
-
     }
 }

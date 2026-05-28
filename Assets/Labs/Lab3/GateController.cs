@@ -15,8 +15,6 @@ public class GateController : MonoBehaviour
 
     public void OpenGate()
     {
-        Debug.Log("🔔 Đã nhận được tín hiệu: Đang mở cả hai cánh cửa!");
-
         // 1. Mở cánh cửa gốc (cánh cửa này)
         if (animator != null)
         {
