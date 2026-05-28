@@ -1,0 +1,352 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Lab 1",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          294.345703125,
+          73.86328125
+        ],
+        [
+          338.75,
+          73.86328125
+        ],
+        [
+          338.75,
+          89.005126953125
+        ],
+        [
+          294.345703125,
+          89.005126953125
+        ]
+      ]
+    },
+    {
+      "title": "M\u1ee4C TI\u00caU",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          88.453125,
+          117.17578125
+        ],
+        [
+          153.98397827148438,
+          117.17578125
+        ],
+        [
+          153.98397827148438,
+          131.87109375
+        ],
+        [
+          88.453125,
+          131.87109375
+        ]
+      ]
+    },
+    {
+      "title": "N\u1ed8I DUNG",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          89.6484375,
+          368.9296875
+        ],
+        [
+          150.98399353027344,
+          368.9296875
+        ],
+        [
+          150.98399353027344,
+          382.19146728515625
+        ],
+        [
+          89.6484375,
+          382.19146728515625
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i t\u1eadp 1: Sinh \u0111\u1ed1i t\u01b0\u1ee3ng sau m\u1ed9t kho\u1ea3ng th\u1eddi gian",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          88.453125,
+          410.6953125
+        ],
+        [
+          351.84796142578125,
+          410.6953125
+        ],
+        [
+          351.84796142578125,
+          424.6171875
+        ],
+        [
+          88.453125,
+          424.6171875
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i t\u1eadp 2: L\u00e0m m\u1edd d\u1ea7n m\u1ed9t \u0111\u1ed1i t\u01b0\u1ee3ng theo th\u1eddi gian",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          90.02399444580078,
+          602.12109375
+        ],
+        [
+          359.19140625,
+          602.12109375
+        ],
+        [
+          359.19140625,
+          616.8414611816406
+        ],
+        [
+          90.02399444580078,
+          616.8414611816406
+        ]
+      ]
+    },
+    {
+      "title": "M\u00f4 t\u1ea3:",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          89.349609375,
+          632.4414672851562
+        ],
+        [
+          121.6919937133789,
+          632.4414672851562
+        ],
+        [
+          121.6919937133789,
+          644.4414672851562
+        ],
+        [
+          89.349609375,
+          644.4414672851562
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i t\u1eadp 3: Di chuy\u1ec3n tu\u1ea7n t\u1ef1 nhi\u1ec1u \u0111\u1ed1i t\u01b0\u1ee3ng",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          88.453125,
+          181.7578125
+        ],
+        [
+          319.35595703125,
+          181.7578125
+        ],
+        [
+          319.35595703125,
+          195.92144775390625
+        ],
+        [
+          88.453125,
+          195.92144775390625
+        ]
+      ]
+    },
+    {
+      "title": "M\u00f4 t\u1ea3:",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          88.453125,
+          211.521484375
+        ],
+        [
+          121.6919937133789,
+          211.521484375
+        ],
+        [
+          121.6919937133789,
+          223.521484375
+        ],
+        [
+          88.453125,
+          223.521484375
+        ]
+      ]
+    },
+    {
+      "title": "G\u1ee3i \u00fd:",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          89.05078125,
+          280.55145263671875
+        ],
+        [
+          120.70799255371094,
+          280.55145263671875
+        ],
+        [
+          120.70799255371094,
+          292.55145263671875
+        ],
+        [
+          89.05078125,
+          292.55145263671875
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i 4 : Gi\u1ea3ng vi\u00ean cho th\u00eam",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          90.02399444580078,
+          390.19921875
+        ],
+        [
+          235.04397583007812,
+          390.19921875
+        ],
+        [
+          235.04397583007812,
+          402.95147705078125
+        ],
+        [
+          90.02399444580078,
+          402.95147705078125
+        ]
+      ]
+    },
+    {
+      "title": "*** Y\u00caU C\u1ea6U N\u1ed8P B\u00c0I:",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          88.751953125,
+          416.109375
+        ],
+        [
+          217.88400268554688,
+          416.109375
+        ],
+        [
+          217.88400268554688,
+          430.5714416503906
+        ],
+        [
+          88.751953125,
+          430.5714416503906
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          62
+        ],
+        [
+          "Line",
+          27
+        ],
+        [
+          "SectionHeader",
+          6
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "ListItem",
+          6
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Picture",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          45
+        ],
+        [
+          "Line",
+          21
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          5
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Picture",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/GAM301-Lab1"
+}

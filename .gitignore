@@ -1,0 +1,51 @@
+# This .gitignore file is highly optimized for Unity 3D projects.
+
+# --- Unity Editor Folders ---
+/[L|l]ibrary/
+/[T|t]emp/
+/[O|o]bj/
+/[B|b]uild/
+/[B|b]uilds/
+/[L|l]ogs/
+/[U|u]serSettings/
+
+# --- Memory & Crash Dumps ---
+/[M|m]emoryCaptures/
+/[C|c]rash[D|d]umps/
+
+# --- Asset Store Packages ---
+/[A|a]ssets/AssetStoreTools*
+
+# --- Generated IDEs & Editor Files ---
+.vs/
+.idea/
+.vscode/
+/*.csproj
+/*.unityproj
+/*.sln
+/*.slnx
+/*.suo
+/*.tmp
+/*.user
+/*.userprefs
+/*.pidb
+/*.booproj
+/*.svd
+/*.class
+/*.targets
+
+# --- OS-specific Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Unity WebGL builds ---
+/[A|a]ssets/[S|s]treamingAssets/Build/
+/[A|a]ssets/[S|s]treamingAssets/buildinfo/
+
+# --- PlasticSCM & Version Control ---
+.plastic/

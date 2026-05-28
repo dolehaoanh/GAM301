@@ -1,0 +1,505 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Lab 7",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          293.44921875,
+          73.86328125
+        ],
+        [
+          334.5049743652344,
+          73.86328125
+        ],
+        [
+          334.5049743652344,
+          89.005126953125
+        ],
+        [
+          293.44921875,
+          89.005126953125
+        ]
+      ]
+    },
+    {
+      "title": "M\u1ee4C TI\u00caU",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          88.453125,
+          116.7890625
+        ],
+        [
+          153.98397827148438,
+          116.7890625
+        ],
+        [
+          153.98397827148438,
+          132.2578125
+        ],
+        [
+          88.453125,
+          132.2578125
+        ]
+      ]
+    },
+    {
+      "title": "N\u1ed8I DUNG",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          88.453125,
+          267.99609375
+        ],
+        [
+          150.98399353027344,
+          267.99609375
+        ],
+        [
+          150.98399353027344,
+          280.5514221191406
+        ],
+        [
+          88.453125,
+          280.5514221191406
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i t\u1eadp 1: \u00c1p d\u1ee5ng Object Pooling cho b\u00e0i Lab 5",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          88.453125,
+          295.06640625
+        ],
+        [
+          342.251953125,
+          295.06640625
+        ],
+        [
+          342.251953125,
+          308.21484375
+        ],
+        [
+          88.453125,
+          308.21484375
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          274.32421875,
+          376.27734375
+        ],
+        [
+          352.01953125,
+          376.27734375
+        ],
+        [
+          352.01953125,
+          390.97265625
+        ],
+        [
+          274.32421875,
+          390.97265625
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          97.119140625,
+          404.5078125
+        ],
+        [
+          152.701171875,
+          404.5078125
+        ],
+        [
+          152.701171875,
+          418.4296875
+        ],
+        [
+          97.119140625,
+          418.4296875
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i t\u1eadp 2: \u00c1p d\u1ee5ng Occlusion Culling cho b\u00e0i Lab 6",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          90.02399444580078,
+          113.30859375
+        ],
+        [
+          361.58203125,
+          113.30859375
+        ],
+        [
+          361.58203125,
+          126.92144775390625
+        ],
+        [
+          90.02399444580078,
+          126.92144775390625
+        ]
+      ]
+    },
+    {
+      "title": "B\u00e0i 3 : \u00c1p d\u1ee5ng Texture Compression",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          89.05078125,
+          209.6015625
+        ],
+        [
+          284.62799072265625,
+          209.6015625
+        ],
+        [
+          284.62799072265625,
+          223.5234375
+        ],
+        [
+          89.05078125,
+          223.5234375
+        ]
+      ]
+    },
+    {
+      "title": "Resize Algorithm :",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          89.05078125,
+          515.8914794921875
+        ],
+        [
+          188.4199981689453,
+          515.8914794921875
+        ],
+        [
+          188.4199981689453,
+          527.8914794921875
+        ],
+        [
+          89.05078125,
+          527.8914794921875
+        ]
+      ]
+    },
+    {
+      "title": "Compression : Ch\u1ea5t l\u01b0\u1ee3ng n\u00e9n c\u1ee7a texture.",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          89.6484375,
+          612.5214538574219
+        ],
+        [
+          300.0234375,
+          612.5214538574219
+        ],
+        [
+          300.0234375,
+          624.5214538574219
+        ],
+        [
+          89.6484375,
+          624.5214538574219
+        ]
+      ]
+    },
+    {
+      "title": "Use Crunch Compression :",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          89.947265625,
+          681.5214614868164
+        ],
+        [
+          230.80999755859375,
+          681.5214614868164
+        ],
+        [
+          230.80999755859375,
+          693.5214614868164
+        ],
+        [
+          89.947265625,
+          693.5214614868164
+        ]
+      ]
+    },
+    {
+      "title": "Load Type",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          89.947265625,
+          73.521484375
+        ],
+        [
+          145.82398986816406,
+          73.521484375
+        ],
+        [
+          145.82398986816406,
+          85.521484375
+        ],
+        [
+          89.947265625,
+          85.521484375
+        ]
+      ]
+    },
+    {
+      "title": "Preload Audio Data",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          89.6484375,
+          294.8987731933594
+        ],
+        [
+          200.4028778076172,
+          294.8987731933594
+        ],
+        [
+          200.4028778076172,
+          307.8587646484375
+        ],
+        [
+          89.6484375,
+          307.8587646484375
+        ]
+      ]
+    },
+    {
+      "title": "Quality :",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          89.6484375,
+          373.0714416503906
+        ],
+        [
+          138.13999938964844,
+          373.0714416503906
+        ],
+        [
+          138.13999938964844,
+          385.0714416503906
+        ],
+        [
+          89.6484375,
+          385.0714416503906
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          29
+        ],
+        [
+          "Text",
+          13
+        ],
+        [
+          "Line",
+          12
+        ],
+        [
+          "SectionHeader",
+          6
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Picture",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          70
+        ],
+        [
+          "Line",
+          23
+        ],
+        [
+          "Text",
+          12
+        ],
+        [
+          "SectionHeader",
+          5
+        ],
+        [
+          "Picture",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          23
+        ],
+        [
+          "Line",
+          11
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Picture",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          48
+        ],
+        [
+          "Line",
+          22
+        ],
+        [
+          "Text",
+          16
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Picture",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/GAM301-Lab7"
+}
