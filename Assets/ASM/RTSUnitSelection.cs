@@ -9,6 +9,10 @@ public class RTSUnitSelection : MonoBehaviour
     [Tooltip("Màu viền của khung quét chữ nhật")]
     public Color borderColor = new Color(0.12f, 0.7f, 1f, 0.8f);
 
+    [Header("Formation Settings")]
+    [Tooltip("Khoảng cách giãn cách giữa các quân lính khi xếp hàng tại điểm đích")]
+    public float formationSpacing = 1.8f;
+
     private Texture2D whiteTexture;
     private Vector3 startMousePosition;
     private bool isDrawing = false;
@@ -40,7 +44,7 @@ public class RTSUnitSelection : MonoBehaviour
             SelectUnitsInBox();
         }
 
-        // 3. Khi nhấn Chuột Phải: Di chuyển các quân đang chọn
+        // 3. Khi nhấn Chuột Phải: Di chuyển các quân đang chọn theo đội hình Grid
         if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
         {
             MoveSelectedUnits();
@@ -154,7 +158,7 @@ public class RTSUnitSelection : MonoBehaviour
         }
     }
 
-    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích
+    // Lệnh di chuyển toàn bộ quân lính đang chọn về điểm đích - NÂNG CẤP ĐỘI HÌNH ĐỐI XỨNG
     private void MoveSelectedUnits()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -162,12 +166,36 @@ public class RTSUnitSelection : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            foreach (RTSUnit unit in selectedUnits)
+            int unitCount = selectedUnits.Count;
+            
+            // Thiết lập đội hình tối đa 2 hàng ngang (RTS Standard Double-Line Formation)
+            int rows = (unitCount <= 2) ? 1 : 2;
+            int cols = Mathf.CeilToInt((float)unitCount / rows);
+
+            // Lấy góc quay của camera chiếu lên mặt đất để xoay đội hình luôn quay mặt về phía người chơi nhìn
+            Quaternion rotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
+
+            for (int i = 0; i < unitCount; i++)
             {
-                UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                // Tính tọa độ hàng và cột của từng con lính trong lưới
+                int row = i / cols;
+                int col = i % cols;
+
+                // Tính toán vị trí lệch (Offset) từ tâm điểm click chuột trái/phải
+                // (Thực hiện trừ đi một nửa để tâm đội hình trùng khớp hoàn hảo với điểm click chuột)
+                float xOffset = (col - (cols - 1) / 2.0f) * formationSpacing;
+                float zOffset = (row - (rows - 1) / 2.0f) * formationSpacing;
+
+                Vector3 localOffset = new Vector3(xOffset, 0f, zOffset);
+                Vector3 rotatedOffset = rotation * localOffset;
+
+                // Tọa độ đích đến cuối cùng đã được sắp xếp
+                Vector3 finalDestination = hit.point + rotatedOffset;
+
+                UnityEngine.AI.NavMeshAgent agent = selectedUnits[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
                 if (agent != null)
                 {
-                    agent.SetDestination(hit.point);
+                    agent.SetDestination(finalDestination);
                 }
             }
         }
