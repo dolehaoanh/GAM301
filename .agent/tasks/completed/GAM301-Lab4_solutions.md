@@ -181,12 +181,174 @@ public class Bullet : MonoBehaviour
 }
 ```
 
-### 2. Các bước cài đặt trên Unity Editor
-1.  **Thiết lập Tháp pháo:**
-    *   Kéo mô hình tháp `Turret.obj` vào, tạo Material và kéo texture `.png` tương ứng vào để hiển thị màu sắc voxel.
-    *   Căn chỉnh **Pivot** của prefab: Tạo Empty GameObject con `TurretHead_Pivot` đặt đúng tâm xoay của đầu súng, kéo lưới đầu súng làm con của nó.
-    *   Gắn `TurretController.cs` vào tháp, kéo `TurretHead_Pivot` vào ô `Part To Rotate`, tạo một Empty GameObject làm nòng súng kéo vào `Fire Point`.
-2.  **Tạo Đạn (Bullet Prefab):**
-    *   Tạo khối Sphere nhỏ làm đạn, gắn script `Bullet.cs`, gắn component **Rigidbody** (bật *Is Kinematic*, tắt *Use Gravity*), kéo làm Prefab và gắn vào biến `Bullet Prefab` của Tháp.
-3.  **Tạo Hiệu ứng va chạm (Hit Particle Effect):**
-    *   Tạo một **Particle System** phát tia lửa màu vàng/cam khi bắn trúng, cấu hình thời gian ngắn (0.4s), tắt *Looping*, bật *Emission Burst (15 hạt)*, đặt *Stop Action* thành **Destroy** để tự động giải phóng bộ nhớ. Lưu thành Prefab và gắn vào biến `Hit Effect Prefab` trên viên đạn.
+---
+
+## Bài tập 3: Viết cấu trúc FSM cho Quái
+
+### 1. Mã nguồn hoàn chỉnh (`MonsterFSM.cs`)
+```csharp
+using System.Collections;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class MonsterFSM : MonoBehaviour
+{
+    public enum FSMState { NormalWalk, ActionTriggered, SpeedBoost, Jump }
+
+    [Header("State Machine")]
+    public FSMState currentState = FSMState.NormalWalk;
+
+    [Header("Journey Tracking")]
+    public Transform destination;
+    private Vector3 startPosition;
+    private float totalDistance;
+    private bool hasTriggeredAction = false;
+
+    private NavMeshAgent agent;
+    private float normalSpeed;
+    private float normalAcceleration;
+
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        normalSpeed = agent.speed;
+        normalAcceleration = agent.acceleration;
+        agent.autoTraverseOffMeshLink = false;
+        startPosition = transform.position;
+
+        if (destination != null)
+        {
+            totalDistance = Vector3.Distance(startPosition, destination.position);
+            agent.SetDestination(destination.position);
+        }
+    }
+
+    public void InitializeDestination(Transform target)
+    {
+        destination = target;
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoTraverseOffMeshLink = false;
+        normalSpeed = agent.speed;
+        normalAcceleration = agent.acceleration;
+        startPosition = transform.position;
+
+        if (agent != null && destination != null)
+        {
+            totalDistance = Vector3.Distance(startPosition, destination.position);
+            agent.SetDestination(destination.position);
+        }
+    }
+
+    void Update()
+    {
+        if (destination == null) return;
+
+        if (agent != null && agent.isOnOffMeshLink && currentState != FSMState.Jump)
+        {
+            StartCoroutine(LinkJumpRoutine());
+        }
+
+        switch (currentState)
+        {
+            case FSMState.NormalWalk:
+                MonitorDistance();
+                break;
+        }
+    }
+
+    void MonitorDistance()
+    {
+        if (destination == null || hasTriggeredAction) return;
+
+        float remainingDistance = Vector3.Distance(transform.position, destination.position);
+        float percentageCompleted = 1f - (remainingDistance / totalDistance);
+
+        if (percentageCompleted >= 0.33f)
+        {
+            hasTriggeredAction = true;
+            currentState = FSMState.ActionTriggered;
+            TriggerRandomAction();
+        }
+    }
+
+    void TriggerRandomAction()
+    {
+        int choice = Random.Range(0, 2);
+        if (choice == 0) StartCoroutine(SpeedBoostRoutine());
+        else StartCoroutine(JumpRoutine());
+    }
+
+    IEnumerator SpeedBoostRoutine()
+    {
+        currentState = FSMState.SpeedBoost;
+        agent.acceleration = 9999f; // Tăng tốc độ phản hồi tức thì
+        agent.speed = normalSpeed * 4.44f;
+        yield return new WaitForSeconds(2f);
+        agent.speed = normalSpeed;
+        agent.acceleration = normalAcceleration;
+        currentState = FSMState.NormalWalk;
+    }
+
+    IEnumerator JumpRoutine()
+    {
+        currentState = FSMState.Jump;
+        agent.enabled = false;
+        Vector3 jumpStart = transform.position;
+        Vector3 jumpEnd = jumpStart + transform.forward * 3f;
+
+        float elapsedTime = 0f;
+        float jumpDuration = 1f;
+        float jumpHeight = 2.5f;
+
+        while (elapsedTime < jumpDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / jumpDuration;
+            Vector3 currentPos = Vector3.Lerp(jumpStart, jumpEnd, t);
+            currentPos.y = Mathf.Lerp(jumpStart.y, jumpEnd.y, t) + (4f * jumpHeight * t * (1f - t));
+            transform.position = currentPos;
+            yield return null;
+        }
+
+        transform.position = jumpEnd;
+        agent.enabled = true;
+        if (destination != null) agent.SetDestination(destination.position);
+        currentState = FSMState.NormalWalk;
+    }
+
+    IEnumerator LinkJumpRoutine()
+    {
+        currentState = FSMState.Jump;
+        OffMeshLinkData data = agent.currentOffMeshLinkData;
+        Vector3 jumpStart = transform.position;
+        Vector3 jumpEnd = data.endPos;
+
+        float elapsedTime = 0f;
+        float jumpDuration = 0.8f;
+        float jumpHeight = 2.0f;
+
+        while (elapsedTime < jumpDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / jumpDuration;
+            Vector3 currentPos = Vector3.Lerp(jumpStart, jumpEnd, t);
+            currentPos.y = Mathf.Lerp(jumpStart.y, jumpEnd.y, t) + (4f * jumpHeight * t * (1f - t));
+            transform.position = currentPos;
+            yield return null;
+        }
+
+        transform.position = jumpEnd;
+        agent.CompleteOffMeshLink();
+        currentState = FSMState.NormalWalk;
+    }
+}
+```
+
+---
+
+## Bài tập 4: Vượt chướng ngại vật & Hố ảo (NavMesh Links)
+
+### 1. Ý tưởng giải pháp
+*   **Hố ảo (Virtual Gap):** Đặt một Cube rỗng có gắn **NavMesh Obstacle** (bật **Carve**, tắt *Carve Only Stationary*, tăng `Size Y` lên 5) đè lên đường đi. Ẩn Renderer của Cube để tạo cảm giác có hố cắt ngang qua đường đi.
+*   **Chướng ngại vật (Fence Obstacle):** Đặt Cube chắn ngang đường, đặt **Static** và Bake lại NavMesh để tạo vùng trống không thể đi qua.
+*   **Nhảy vượt chướng ngại vật:** Sử dụng component **NavMesh Link** nối giữa điểm trước và điểm sau của hố/vật cản. Nhờ sự kiện `agent.isOnOffMeshLink` được phát hiện trong `MonsterFSM.cs`, quái sẽ tự động thực hiện một cú nhảy parabol mượt mà khi đi qua các liên kết này!
