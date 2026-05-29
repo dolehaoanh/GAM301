@@ -95,70 +95,37 @@ public class RTSSetupUtility
             }
         }
 
-        // 3. Tạo 5 cây gỗ đặc biệt (Special Harvestable Trees) gần Nông Dân dưới dạng Cylinder
-        Vector3 basePosition = playerTC.transform.position;
-        RTSUnit[] allUnits = Object.FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
-        foreach (var unit in allUnits)
+        // 3. Cấu hình 3 cây có sẵn trong Scene (TreeMine, TreeMine (1), TreeMine (2)) để khai thác được
+        string[] userTrees = new string[] { "TreeMine", "TreeMine (1)", "TreeMine (2)" };
+        foreach (string treeName in userTrees)
         {
-            if (unit != null && unit.unitType == RTSUnitType.Farmer && !unit.isEnemy)
+            GameObject treeGo = GameObject.Find(treeName);
+            if (treeGo != null)
             {
-                basePosition = unit.transform.position;
-                break;
+                // Đảm bảo có Collider
+                Collider col = treeGo.GetComponent<Collider>();
+                if (col == null)
+                {
+                    CapsuleCollider capCol = treeGo.AddComponent<CapsuleCollider>();
+                    capCol.center = new Vector3(0f, 1f, 0f);
+                    capCol.radius = 0.5f;
+                    capCol.height = 3.0f;
+                }
+
+                // Đảm bảo có ResourceNode
+                ResourceNode node = treeGo.GetComponent<ResourceNode>();
+                if (node == null)
+                {
+                    node = treeGo.AddComponent<ResourceNode>();
+                    Undo.RegisterCreatedObjectUndo(node, $"Configure {treeName} ResourceNode");
+                }
+                node.resourceType = RTSResourceType.Wood;
+                node.remainingResources = 500; // Tăng lên 500 tài nguyên
+                node.harvestRange = 2.5f;
+                
+                EditorUtility.SetDirty(node);
             }
         }
-
-        Vector3[] treeOffsets = new Vector3[]
-        {
-            new Vector3(-6f, 0f, 6f),
-            new Vector3(-9f, 0f, 2f),
-            new Vector3(-5f, 0f, -6f),
-            new Vector3(-2f, 0f, -9f),
-            new Vector3(-8f, 0f, -3f)
-        };
-
-        for (int i = 0; i < treeOffsets.Length; i++)
-        {
-            string treeName = $"Special_Harvestable_Tree_{i + 1}";
-            Vector3 spawnPos = basePosition + treeOffsets[i];
-            
-            if (Terrain.activeTerrain != null)
-            {
-                spawnPos.y = Terrain.activeTerrain.SampleHeight(spawnPos) + Terrain.activeTerrain.transform.position.y;
-            }
-
-            GameObject treeGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            treeGo.name = treeName;
-            treeGo.transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
-            treeGo.transform.position = spawnPos + Vector3.up * 1.8f;
-            treeGo.transform.rotation = Quaternion.identity;
-
-            var renderer = treeGo.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.material.color = new Color(0.12f, 0.42f, 0.16f); // Forest green
-            }
-
-            CapsuleCollider col = treeGo.GetComponent<CapsuleCollider>();
-            if (col == null)
-            {
-                col = treeGo.AddComponent<CapsuleCollider>();
-            }
-            col.center = Vector3.zero;
-            col.radius = 0.5f;
-            col.height = 2.0f;
-
-            ResourceNode node = treeGo.GetComponent<ResourceNode>();
-            if (node == null)
-            {
-                node = treeGo.AddComponent<ResourceNode>();
-            }
-            node.resourceType = RTSResourceType.Wood;
-            node.remainingResources = 300;
-            node.harvestRange = 2.5f;
-
-            Undo.RegisterCreatedObjectUndo(treeGo, $"Create {treeName}");
-        }
-        // Debug.Log("[RTS Setup] Đã tạo thành công 5 cây gỗ Đặc Biệt (Special Harvestable Trees) Cylinder 1.8x!");
 
         // 4. Tạo hoặc Cập nhật Căn Cứ Địch (Enemy Base) ở góc dưới bên phải bản đồ (X = 95f, Z = 35f)
         Vector3 enemyBasePos = new Vector3(95f, 0f, 35f);
