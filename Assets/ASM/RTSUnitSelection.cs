@@ -286,4 +286,97 @@ public class RTSUnitSelection : MonoBehaviour
         selectedUnits.Clear();
         UpdateHUD(); // <-- Ẩn HUD đi
     }
+
+    // ==========================================
+    // ⚔️ RTS PANEL COMMAND BUTTON FUNCTIONS ⚔️
+    // ==========================================
+
+    [Header("Command SFX Settings")]
+    public AudioClip stopCommandSFX;
+    public AudioClip attackCommandSFX;
+
+    // 1. Lệnh Di Chuyển (Move)
+    public void OnCommandMove()
+    {
+        if (selectedUnits.Count == 0) return;
+        Debug.Log($"[RTS Command] DI CHUYỂN BỘ BINH ({selectedUnits.Count} quân)!");
+        // (Trong tương lai có thể bật con trỏ định vị để click chuột trái di chuyển)
+    }
+
+    // 2. Lệnh Dừng Lại (Stop) - Dừng mọi chuyển động ngay lập tức
+    public void OnCommandStop()
+    {
+        if (selectedUnits.Count == 0) return;
+
+        foreach (RTSUnit unit in selectedUnits)
+        {
+            if (unit == null) continue;
+
+            UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.ResetPath(); // Hủy đường đi hiện tại để đứng yên
+            }
+        }
+
+        Debug.Log($"[RTS Command] DỪNG QUÂN NGAY LẬP TỨC ({selectedUnits.Count} quân)!");
+    }
+
+    // 3. Lệnh Tấn Công (Attack)
+    public void OnCommandAttack()
+    {
+        if (selectedUnits.Count == 0) return;
+        Debug.Log($"[RTS Command] XUẤT BINH TẤN CÔNG ĐỊCH ({selectedUnits.Count} quân)!");
+    }
+
+    // 4. Lệnh Giữ Vị Trí (Hold Position)
+    public void OnCommandHold()
+    {
+        if (selectedUnits.Count == 0) return;
+
+        foreach (RTSUnit unit in selectedUnits)
+        {
+            if (unit == null) continue;
+
+            UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.ResetPath(); // Hủy đường để giữ vị trí cố định
+            }
+        }
+
+        Debug.Log($"[RTS Command] THỦ THẾ / GIỮ VỮNG ĐỘI HÌNH ({selectedUnits.Count} quân)!");
+    }
+
+    // 5. Lệnh Tuần Tra (Patrol)
+    public void OnCommandPatrol()
+    {
+        if (selectedUnits.Count == 0) return;
+        Debug.Log($"[RTS Command] TUẦN TRA QUANH ĐỊA BÀN ({selectedUnits.Count} quân)!");
+    }
+
+    // 6. Lệnh Khai Thác / Xây Dựng (Gather / Build) - Cho phép Nông dân bắt đầu cuốc đất
+    public void OnCommandGather()
+    {
+        if (selectedUnits.Count == 0) return;
+
+        int farmerCount = 0;
+        foreach (RTSUnit unit in selectedUnits)
+        {
+            if (unit == null) continue;
+
+            // Nếu là nông dân, kích hoạt trigger "Work" (cuốc đất / chặt cây)
+            if (unit.unitType == RTSUnitType.Farmer)
+            {
+                Animator animator = unit.GetComponentInChildren<Animator>();
+                if (animator != null)
+                {
+                    animator.SetTrigger("Work"); // Kích hoạt trigger Work trong Animator!
+                }
+                farmerCount++;
+            }
+        }
+
+        Debug.Log($"[RTS Command] KHAI THÁC TÀI NGUYÊN (Kích hoạt cuốc đất cho {farmerCount} nông dân)!");
+    }
 }
