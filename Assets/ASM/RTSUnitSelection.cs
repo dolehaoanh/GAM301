@@ -213,6 +213,9 @@ public class RTSUnitSelection : MonoBehaviour
             {
                 MoveGroupInGrid(selectedUnits, hit.point, formationRotation);
             }
+
+            // Đặt lại con trỏ chuột về mặc định sau khi đã ra lệnh di chuyển thành công
+            SetRTSCursor(RTSCursorState.Default);
         }
     }
 
@@ -291,6 +294,51 @@ public class RTSUnitSelection : MonoBehaviour
     // ⚔️ RTS PANEL COMMAND BUTTON FUNCTIONS ⚔️
     // ==========================================
 
+    [Header("Custom Cursor Textures")]
+    [Tooltip("Ảnh con trỏ mặc định (Bàn tay/Mũi tên)")]
+    public Texture2D defaultCursor;
+    [Tooltip("Ảnh con trỏ khi chọn lệnh Di Chuyển (Move)")]
+    public Texture2D moveCursor;
+    [Tooltip("Ảnh con trỏ khi chọn lệnh Tấn Công (Attack)")]
+    public Texture2D attackCursor;
+    [Tooltip("Ảnh con trỏ khi chọn lệnh Khai Thác (Gather)")]
+    public Texture2D gatherCursor;
+
+    [Tooltip("Tâm của con trỏ chuột (Hotspot)")]
+    public Vector2 cursorHotspot = Vector2.zero;
+
+    public enum RTSCursorState
+    {
+        Default,
+        Move,
+        Attack,
+        Gather
+    }
+
+    // Hàm thay đổi hình dáng con trỏ chuột
+    public void SetRTSCursor(RTSCursorState state)
+    {
+        Texture2D activeTexture = null;
+        switch (state)
+        {
+            case RTSCursorState.Default:
+                activeTexture = defaultCursor;
+                break;
+            case RTSCursorState.Move:
+                activeTexture = moveCursor;
+                 break;
+            case RTSCursorState.Attack:
+                activeTexture = attackCursor;
+                break;
+            case RTSCursorState.Gather:
+                activeTexture = gatherCursor;
+                break;
+        }
+
+        // Thay đổi con trỏ chuột trong Unity
+        Cursor.SetCursor(activeTexture, cursorHotspot, CursorMode.Auto);
+    }
+
     [Header("Command SFX Settings")]
     public AudioClip stopCommandSFX;
     public AudioClip attackCommandSFX;
@@ -299,8 +347,10 @@ public class RTSUnitSelection : MonoBehaviour
     public void OnCommandMove()
     {
         if (selectedUnits.Count == 0) return;
+        
+        // Kích hoạt con trỏ lệnh di chuyển
+        SetRTSCursor(RTSCursorState.Move);
         Debug.Log($"[RTS Command] DI CHUYỂN BỘ BINH ({selectedUnits.Count} quân)!");
-        // (Trong tương lai có thể bật con trỏ định vị để click chuột trái di chuyển)
     }
 
     // 2. Lệnh Dừng Lại (Stop) - Dừng mọi chuyển động ngay lập tức
@@ -319,6 +369,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
+        SetRTSCursor(RTSCursorState.Default); // Trở về mặc định
         Debug.Log($"[RTS Command] DỪNG QUÂN NGAY LẬP TỨC ({selectedUnits.Count} quân)!");
     }
 
@@ -326,6 +377,9 @@ public class RTSUnitSelection : MonoBehaviour
     public void OnCommandAttack()
     {
         if (selectedUnits.Count == 0) return;
+        
+        // Kích hoạt con trỏ lệnh tấn công
+        SetRTSCursor(RTSCursorState.Attack);
         Debug.Log($"[RTS Command] XUẤT BINH TẤN CÔNG ĐỊCH ({selectedUnits.Count} quân)!");
     }
 
@@ -345,6 +399,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
+        SetRTSCursor(RTSCursorState.Default); // Trở về mặc định
         Debug.Log($"[RTS Command] THỦ THẾ / GIỮ VỮNG ĐỘI HÌNH ({selectedUnits.Count} quân)!");
     }
 
@@ -359,6 +414,9 @@ public class RTSUnitSelection : MonoBehaviour
     public void OnCommandGather()
     {
         if (selectedUnits.Count == 0) return;
+
+        // Kích hoạt con trỏ khai thác
+        SetRTSCursor(RTSCursorState.Gather);
 
         int farmerCount = 0;
         foreach (RTSUnit unit in selectedUnits)

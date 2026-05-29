@@ -44,17 +44,28 @@ public class RTSHUDController : MonoBehaviour
             originalPortraitTexture = selectedUnitPortrait.texture;
         }
 
-        // Khởi tạo các giá trị hiển thị giả lập ban đầu (chưa cần liên kết logic chiến đấu thực tế)
-        UpdateResourcesDisplay(500, 300, 8, 20);
+        // Tự động cập nhật dân số động và tài nguyên lặp đi lặp lại mỗi 0.5 giây (Tối ưu hóa hiệu năng, tránh giật lag)
+        InvokeRepeating(nameof(UpdateDynamicPopulation), 0f, 0.5f);
+        
         HideSelectionPanel();
+    }
+
+    private void UpdateDynamicPopulation()
+    {
+        // Đếm tổng số quân lính đang tồn tại thực tế trên bản đồ
+        RTSUnit[] allUnits = FindObjectsOfType<RTSUnit>();
+        int currentPop = allUnits.Length;
+        int maxPop = 20; // Giới hạn tối đa mặc định
+
+        UpdateResourcesDisplay(500, 300, currentPop, maxPop);
     }
 
     // Hàm cập nhật lượng tài nguyên hiển thị lên thanh TopBar
     public void UpdateResourcesDisplay(int gold, int wood, int currentPop, int maxPop)
     {
-        if (goldText != null) goldText.text = $"VÀNG: {gold}";
-        if (woodText != null) woodText.text = $"GỖ: {wood}";
-        if (populationText != null) populationText.text = $"DÂN SỐ: {currentPop}/{maxPop}";
+        if (goldText != null) goldText.text = $"GOLD: {gold}";
+        if (woodText != null) woodText.text = $"WOOD: {wood}";
+        if (populationText != null) populationText.text = $"POPULATION: {currentPop}/{maxPop}";
     }
 
     // Hàm hiển thị thông tin chi tiết khi quét trúng một quân lính bất kỳ
