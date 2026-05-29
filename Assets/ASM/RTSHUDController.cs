@@ -61,13 +61,17 @@ public class RTSHUDController : MonoBehaviour
     {
         if (go == null) return;
 
-        // Xóa NavMeshAgent
-        var agent = go.GetComponent<UnityEngine.AI.NavMeshAgent>();
-        if (agent != null) Destroy(agent);
+        // Xóa RTSUnitAnimation trước vì nó phụ thuộc vào NavMeshAgent [RequireComponent]
+        var anim = go.GetComponent<RTSUnitAnimation>();
+        if (anim != null) Destroy(anim);
 
         // Xóa RTSUnit để tránh nhiễu logic
         var unit = go.GetComponent<RTSUnit>();
         if (unit != null) Destroy(unit);
+
+        // Giờ mới xóa được NavMeshAgent vì không còn component phụ thuộc nào nữa
+        var agent = go.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) Destroy(agent);
 
         // Đóng băng Rigidbody nếu có
         var rb = go.GetComponent<Rigidbody>();
