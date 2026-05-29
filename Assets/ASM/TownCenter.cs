@@ -8,6 +8,17 @@ public class TownCenter : MonoBehaviour
 
     public float deliverRange = 3.5f; // Khoảng cách nông dân cần tiếp cận để giao hàng
 
+    [Header("Training Settings")]
+    public GameObject farmerPrefab; // Prefab của Nông Dân
+    public float trainingDuration = 5f; // Thời gian huấn luyện Nông Dân (5 giây)
+    public int farmerCost = 50; // Giá mua nông dân (50 Vàng)
+    public Transform spawnPoint; // Điểm xuất hiện của nông dân
+
+    [System.NonSerialized]
+    public bool isTraining = false;
+    [System.NonSerialized]
+    public float trainingTimer = 0f;
+
     private void OnEnable()
     {
         if (!AllTownCenters.Contains(this))
@@ -41,5 +52,71 @@ public class TownCenter : MonoBehaviour
         }
 
         return nearest;
+    }
+
+    // Bắt đầu huấn luyện Nông Dân
+    public bool StartTraining()
+    {
+        if (isTraining) return false;
+
+        // Tiêu hao 50 Vàng của người chơi
+        if (PlayerResourceManager.Instance != null && PlayerResourceManager.Instance.SpendResources(farmerCost, 0))
+        {
+            isTraining = true;
+            trainingTimer = trainingDuration;
+            Debug.Log($"[TownCenter] Bắt đầu huấn luyện Nông Dân! Chi phí: {farmerCost} Vàng.");
+            return true;
+        }
+        else
+        {
+            Debug.LogWarning("[TownCenter] Không đủ Vàng hoặc PlayerResourceManager chưa sẵn sàng!");
+            return false;
+        }
+    }
+
+    private void Update()
+    {
+        if (isTraining)
+        {
+            trainingTimer -= Time.deltaTime;
+            if (trainingTimer <= 0f)
+            {
+                isTraining = false;
+                SpawnFarmer();
+            }
+        }
+    }
+
+    private void SpawnFarmer()
+    {
+        if (farmerPrefab == null)
+        {
+            // Tự động tải Farmer prefab từ thư mục Assets/ASM nếu chưa được gán trong Inspector
+            #if UNITY_EDITOR
+            farmerPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ASM/Farmer.prefab");
+            #endif
+        }
+
+        if (farmerPrefab != null)
+        {
+            // Vị trí xuất hiện: spawnPoint nếu có, nếu không thì đứng chếch về phía trước nhà chính
+            Vector3 spawnPos = spawnPoint != null ? spawnPoint.position : transform.position + transform.forward * deliverRange;
+            
+            // Tìm vị trí hợp lệ trên NavMesh để tránh Farmer bị kẹt
+            UnityEngine.AI.NavMeshHit hit;
+            if (UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                spawnPos = hit.position;
+            }
+
+            GameObject farmerGo = Instantiate(farmerPrefab, spawnPos, Quaternion.identity);
+            farmerGo.name = $"Farmer_Trained_{Random.Range(100, 999)}";
+            
+            Debug.Log($"[TownCenter] Huấn luyện thành công Nông dân: {farmerGo.name} tại vị trí {spawnPos}!");
+        }
+        else
+        {
+            Debug.LogError("[TownCenter] Không thể huấn luyện vì không tìm thấy Farmer Prefab!");
+        }
     }
 }

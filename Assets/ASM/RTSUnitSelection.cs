@@ -17,6 +17,7 @@ public class RTSUnitSelection : MonoBehaviour
 
     // Danh sách toàn bộ lính đang được chọn hiện tại
     public List<RTSUnit> selectedUnits = new List<RTSUnit>();
+    public TownCenter selectedTownCenter;
 
     // Tham chiếu tự động tới HUD Controller
     private RTSHUDController hudController;
@@ -139,18 +140,40 @@ public class RTSUnitSelection : MonoBehaviour
     private void SingleClickSelect()
     {
         DeselectAll();
+        selectedTownCenter = null;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
         {
-            RTSUnit unit = hit.collider.GetComponent<RTSUnit>();
+            // Sử dụng GetComponentInParent để hỗ trợ chọn các mô hình con có Collider bên trong nhóm cha
+            RTSUnit unit = hit.collider.GetComponentInParent<RTSUnit>();
+            if (unit == null)
+            {
+                unit = hit.collider.GetComponent<RTSUnit>();
+            }
+
             if (unit != null)
             {
                 unit.Select();
                 selectedUnits.Add(unit);
                 Debug.Log($"[RTS Selection] Đã chọn 1 quân: {unit.gameObject.name}");
+            }
+            else
+            {
+                // Thử tìm chọn Nhà Chính (Town Center)
+                TownCenter tc = hit.collider.GetComponentInParent<TownCenter>();
+                if (tc == null)
+                {
+                    tc = hit.collider.GetComponent<TownCenter>();
+                }
+
+                if (tc != null)
+                {
+                    selectedTownCenter = tc;
+                    Debug.Log($"[RTS Selection] Đã chọn Nhà Chính: {tc.gameObject.name}");
+                }
             }
         }
         
@@ -305,8 +328,8 @@ public class RTSUnitSelection : MonoBehaviour
 
         if (hudController != null)
         {
-            // Gửi toàn bộ danh sách đang chọn để HUD xử lý hiển thị nâng cao (Leader + Counts + Group HP)
-            hudController.ShowUnitSelection(selectedUnits);
+            // Gửi toàn bộ danh sách đang chọn kèm theo Nhà Chính để HUD xử lý
+            hudController.ShowSelection(selectedUnits, selectedTownCenter);
         }
     }
 
@@ -317,6 +340,7 @@ public class RTSUnitSelection : MonoBehaviour
             if (unit != null) unit.Deselect();
         }
         selectedUnits.Clear();
+        selectedTownCenter = null;
         UpdateHUD(); // <-- Ẩn HUD đi
     }
 
@@ -365,8 +389,8 @@ public class RTSUnitSelection : MonoBehaviour
                 break;
         }
 
-        // Thay đổi con trỏ chuột trong Unity
-        Cursor.SetCursor(activeTexture, cursorHotspot, CursorMode.Auto);
+        // Thay đổi con trỏ chuột trong Unity ở dạng ForceSoftware để ngăn HĐH phóng to khi Maximize
+        Cursor.SetCursor(activeTexture, cursorHotspot, CursorMode.ForceSoftware);
     }
 
     [Header("Command SFX Settings")]
