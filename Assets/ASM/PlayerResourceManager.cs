@@ -6,9 +6,9 @@ public class PlayerResourceManager : MonoBehaviour
     public static PlayerResourceManager Instance { get; private set; }
 
     [Header("Starting Resources")]
-    public int gold = 100;
-    public int wood = 100;
-    public int maxPopulation = 20;
+    public int gold = 200;
+    public int wood = 200;
+    public int maxFood = 50;
 
     // Sự kiện phát ra khi tài nguyên thay đổi để HUD tự động cập nhật
     public static event Action OnResourcesChanged;
@@ -18,7 +18,6 @@ public class PlayerResourceManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // Không hủy khi chuyển Scene nếu cần (ở đây cùng 1 scene nên giữ đơn giản)
         }
         else
         {
@@ -38,6 +37,21 @@ public class PlayerResourceManager : MonoBehaviour
         wood += amount;
         OnResourcesChanged?.Invoke();
         Debug.Log($"[PlayerResources] +{amount} WOOD. Total: {wood}");
+    }
+
+    public int GetCurrentFoodUsed()
+    {
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
+        int foodUsed = 0;
+        foreach (RTSUnit unit in allUnits)
+        {
+            // Kiểm tra y > -100f và unit không phải enemy để tính cho người chơi
+            if (unit != null && unit.transform.position.y > -100f && !unit.isEnemy)
+            {
+                foodUsed += (unit.unitType == RTSUnitType.Farmer) ? 1 : 2;
+            }
+        }
+        return foodUsed;
     }
 
     public bool SpendResources(int goldAmount, int woodAmount)

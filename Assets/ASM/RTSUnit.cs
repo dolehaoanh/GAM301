@@ -11,6 +11,7 @@ public class RTSUnit : MonoBehaviour
     [Header("Unit Settings")]
     [Tooltip("Phân loại quân lính (Dân hay Lính)")]
     public RTSUnitType unitType = RTSUnitType.Soldier;
+    public bool isEnemy = false; // Phân biệt phe ta và phe địch
 
     [Header("Unit Stats Settings")]
     [Tooltip("Tên hiển thị của quân")]
@@ -31,6 +32,16 @@ public class RTSUnit : MonoBehaviour
     public float carriedAmount = 0f;
     public float maxCapacity = 10f;
     public RTSResourceType carriedType = RTSResourceType.None;
+
+    [Header("Combat Settings")]
+    public float attackRange = 2.5f;
+    public float scanRange = 15f;
+    public float attackDamage = 15f;
+    public float attackCooldown = 1.0f;
+    private float attackTimer = 0f;
+
+    public RTSUnit combatTarget;
+    public GameObject combatBuildingTarget;
 
     public enum RTSUnitState
     {
@@ -53,8 +64,20 @@ public class RTSUnit : MonoBehaviour
 
     private void Update()
     {
-        if (unitType != RTSUnitType.Farmer) return;
+        if (currentHP <= 0f) return;
 
+        if (unitType == RTSUnitType.Farmer)
+        {
+            UpdateFarmer();
+        }
+        else if (unitType == RTSUnitType.Soldier)
+        {
+            UpdateSoldier();
+        }
+    }
+
+    private void UpdateFarmer()
+    {
         if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         switch (currentState)
@@ -69,7 +92,7 @@ public class RTSUnit : MonoBehaviour
                     break;
                 }
 
-                // Đi đến bãi tài nguyên (Chỉ gọi SetDestination một lần hoặc khi đích đến thay đổi)
+                // Đi đến bãi tài nguyên
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
                     if (!navAgent.hasPath || navAgent.destination != targetResourceNode.transform.position)
@@ -93,7 +116,6 @@ public class RTSUnit : MonoBehaviour
             case RTSUnitState.Gathering:
                 if (targetResourceNode == null)
                 {
-                    // Nếu tài nguyên bị khai thác hết, tìm bãi khác gần đó hoặc đi tìm nhà chính giao hàng nếu có mang tài nguyên
                     if (carriedAmount > 0)
                     {
                         GoToDeliver();
@@ -155,7 +177,7 @@ public class RTSUnit : MonoBehaviour
                     }
                 }
 
-                // Đi giao tài nguyên (Chỉ gọi SetDestination một lần hoặc khi đích đến thay đổi)
+                // Đi giao tài nguyên
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
                     if (!navAgent.hasPath || navAgent.destination != targetTownCenter.transform.position)
@@ -201,6 +223,208 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
+    private void UpdateSoldier()
+    {
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+
+        if (attackTimer > 0f)
+        {
+            attackTimer -= Time.deltaTime;
+        }
+
+        // TỰ ĐỘNG QUÉT ĐỊCH
+        // 1. Quét tìm lính đối thủ trước
+        if (combatTarget == null || combatTarget.currentHP <= 0f)
+        {
+            combatTarget = FindNearestEnemyUnit();
+        }
+
+        // 2. Nếu không có lính đối thủ, quét tìm nhà đối thủ (TownCenter hoặc Barracks)
+        if (combatTarget == null && combatBuildingTarget == null)
+        {
+            combatBuildingTarget = FindNearestEnemyBuilding();
+        }
+
+        // 3. Tự động tấn công
+        if (combatTarget != null)
+        {
+            float distance = Vector3.Distance(transform.position, combatTarget.transform.position);
+            if (distance <= attackRange)
+            {
+                if (navAgent != null && navAgent.isOnNavMesh) navAgent.ResetPath();
+
+                Vector3 lookDir = (combatTarget.transform.position - transform.position).normalized;
+                lookDir.y = 0f;
+                if (lookDir != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.LookRotation(lookDir);
+                }
+
+                if (attackTimer <= 0f)
+                {
+                    attackTimer = attackCooldown;
+                    TriggerAttackAnimation();
+                    combatTarget.TakeDamage(attackDamage);
+                }
+            }
+            else
+            {
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    navAgent.SetDestination(combatTarget.transform.position);
+                }
+            }
+        }
+        else if (combatBuildingTarget != null)
+        {
+            float distance = Vector3.Distance(transform.position, combatBuildingTarget.transform.position);
+            float buildingAttackRange = attackRange + 1.5f;
+
+            if (distance <= buildingAttackRange)
+            {
+                if (navAgent != null && navAgent.isOnNavMesh) navAgent.ResetPath();
+
+                Vector3 lookDir = (combatBuildingTarget.transform.position - transform.position).normalized;
+                lookDir.y = 0f;
+                if (lookDir != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.LookRotation(lookDir);
+                }
+
+                if (attackTimer <= 0f)
+                {
+                    attackTimer = attackCooldown;
+                    TriggerAttackAnimation();
+
+                    // Giả lập phá hủy nhà (in log, có thể phá hủy trực tiếp khi đánh đủ số lần)
+                    Debug.Log($"[RTS Combat] Attacking enemy building: {combatBuildingTarget.name}!");
+                }
+            }
+            else
+            {
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    navAgent.SetDestination(combatBuildingTarget.transform.position);
+                }
+            }
+        }
+    }
+
+    private RTSUnit FindNearestEnemyUnit()
+    {
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsSortMode.None);
+        RTSUnit nearest = null;
+        float minDist = scanRange;
+
+        foreach (RTSUnit unit in allUnits)
+        {
+            if (unit == null || unit == this || unit.currentHP <= 0f) continue;
+            if (unit.isEnemy != this.isEnemy && unit.transform.position.y > -100f)
+            {
+                float dist = Vector3.Distance(transform.position, unit.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = unit;
+                }
+            }
+        }
+        return nearest;
+    }
+
+    private GameObject FindNearestEnemyBuilding()
+    {
+        float minDist = scanRange;
+        GameObject nearest = null;
+
+        // Quét TownCenters
+        foreach (TownCenter tc in TownCenter.AllTownCenters)
+        {
+            if (tc == null) continue;
+            if (tc.isEnemy != this.isEnemy)
+            {
+                float dist = Vector3.Distance(transform.position, tc.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = tc.gameObject;
+                }
+            }
+        }
+
+        // Quét Barracks
+        foreach (Barracks b in Barracks.AllBarracks)
+        {
+            if (b == null) continue;
+            if (b.isEnemy != this.isEnemy)
+            {
+                float dist = Vector3.Distance(transform.position, b.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = b.gameObject;
+                }
+            }
+        }
+
+        return nearest;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (currentHP <= 0f) return;
+
+        currentHP -= damage;
+        if (currentHP < 0f) currentHP = 0f;
+
+        Debug.Log($"[RTS Combat] {gameObject.name} took {damage} damage! HP remaining: {currentHP}/{maxHP}");
+
+        if (currentHP <= 0f)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log($"[RTS Combat] {gameObject.name} has died!");
+        Deselect();
+
+        var col = GetComponent<Collider>();
+        if (col != null) Destroy(col);
+        if (navAgent != null) Destroy(navAgent);
+
+        StartCoroutine(SinkAndDestroy());
+    }
+
+    private System.Collections.IEnumerator SinkAndDestroy()
+    {
+        float timer = 0f;
+        while (timer < 1.5f)
+        {
+            transform.position += Vector3.down * Time.deltaTime * 0.6f;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(gameObject);
+    }
+
+    private void TriggerAttackAnimation()
+    {
+        Animator animator = GetComponentInChildren<Animator>();
+        if (animator == null) return;
+
+        bool hasWork = false;
+        foreach (AnimatorControllerParameter p in animator.parameters)
+        {
+            if (p.name == "Work") { hasWork = true; break; }
+        }
+        if (hasWork)
+        {
+            animator.SetTrigger("Work");
+        }
+    }
+
     private void GoToDeliver()
     {
         targetTownCenter = TownCenter.FindNearest(transform.position);
@@ -214,7 +438,6 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    // Hàm gọi từ bên ngoài khi người chơi click chuột phải vào mỏ vàng/cây gỗ
     public void StartHarvesting(ResourceNode node)
     {
         if (unitType != RTSUnitType.Farmer) return;
@@ -222,7 +445,6 @@ public class RTSUnit : MonoBehaviour
         targetResourceNode = node;
         currentState = RTSUnitState.MovingToResource;
         
-        // Nếu đang mang tài nguyên khác loại, xóa đi để lấy loại mới
         if (carriedType != RTSResourceType.None && carriedType != node.resourceType)
         {
             carriedAmount = 0;
@@ -241,15 +463,12 @@ public class RTSUnit : MonoBehaviour
             {
                 visualBag = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 visualBag.name = "CarriedResourceBag_Visual";
-                // Gắn vào lưng nông dân
                 visualBag.transform.SetParent(transform);
-                visualBag.transform.localPosition = new Vector3(0f, 1.2f, -0.4f); // Vị trí trên lưng
+                visualBag.transform.localPosition = new Vector3(0f, 1.2f, -0.4f);
                 visualBag.transform.localScale = new Vector3(0.35f, 0.35f, 0.35f);
                 
-                // Xóa bỏ Collider để không gây va chạm NavMesh
                 Destroy(visualBag.GetComponent<Collider>());
                 
-                // Đổi màu tương ứng loại tài nguyên mang theo
                 Renderer r = visualBag.GetComponent<Renderer>();
                 if (r != null)
                 {
@@ -273,17 +492,51 @@ public class RTSUnit : MonoBehaviour
         // Tự động phân biệt màu sắc và tên mặc định dựa trên loại quân
         if (unitType == RTSUnitType.Farmer)
         {
-            selectionColor = new Color(0f, 1f, 0.2f, 0.9f); // Màu xanh cỏ cho Dân
+            selectionColor = new Color(0f, 1f, 0.2f, 0.9f);
             if (unitName == "Binh Sĩ") unitName = "Nông Dân";
         }
         else if (unitType == RTSUnitType.Soldier)
         {
-            selectionColor = new Color(1f, 0.2f, 0f, 0.9f);  // Màu đỏ cam cho Lính chiến
+            selectionColor = new Color(1f, 0.2f, 0f, 0.9f);
             if (unitName == "Binh Sĩ") unitName = "Chiến Binh";
         }
 
+        ApplyFactionColors();
         CreateSelectionRing();
         Deselect();
+    }
+
+    private void ApplyFactionColors()
+    {
+        var renderers = GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+        {
+            if (r == null || r is LineRenderer) continue;
+
+            Material mat = r.material;
+            if (mat != null)
+            {
+                if (isEnemy)
+                {
+                    // Địch màu đỏ
+                    mat.color = new Color(1.0f, 0.15f, 0.15f, 1f);
+                }
+                else
+                {
+                    // Phe ta
+                    if (unitType == RTSUnitType.Soldier)
+                    {
+                        // Nhuộm xanh lam cho Chiến binh
+                        mat.color = new Color(0.1f, 0.4f, 1.0f, 1f);
+                    }
+                    else if (unitType == RTSUnitType.Farmer)
+                    {
+                        // Nhuộm xanh lá dịu cho Nông dân
+                        mat.color = new Color(0.3f, 1.0f, 0.5f, 1f);
+                    }
+                }
+            }
+        }
     }
 
     private void CreateSelectionRing()

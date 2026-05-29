@@ -18,6 +18,7 @@ public class RTSUnitSelection : MonoBehaviour
     // Danh sách toàn bộ lính đang được chọn hiện tại
     public List<RTSUnit> selectedUnits = new List<RTSUnit>();
     public TownCenter selectedTownCenter;
+    public Barracks selectedBarracks;
 
     // Tham chiếu tự động tới HUD Controller
     private RTSHUDController hudController;
@@ -141,6 +142,7 @@ public class RTSUnitSelection : MonoBehaviour
     {
         DeselectAll();
         selectedTownCenter = null;
+        selectedBarracks = null;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -173,6 +175,21 @@ public class RTSUnitSelection : MonoBehaviour
                 {
                     selectedTownCenter = tc;
                     Debug.Log($"[RTS Selection] Đã chọn Nhà Chính: {tc.gameObject.name}");
+                }
+                else
+                {
+                    // Thử tìm chọn Nhà Lính (Barracks)
+                    Barracks b = hit.collider.GetComponentInParent<Barracks>();
+                    if (b == null)
+                    {
+                        b = hit.collider.GetComponent<Barracks>();
+                    }
+
+                    if (b != null)
+                    {
+                        selectedBarracks = b;
+                        Debug.Log($"[RTS Selection] Đã chọn Nhà Lính: {b.gameObject.name}");
+                    }
                 }
             }
         }
@@ -328,8 +345,8 @@ public class RTSUnitSelection : MonoBehaviour
 
         if (hudController != null)
         {
-            // Gửi toàn bộ danh sách đang chọn kèm theo Nhà Chính để HUD xử lý
-            hudController.ShowSelection(selectedUnits, selectedTownCenter);
+            // Gửi toàn bộ danh sách đang chọn kèm theo Nhà Chính và Nhà Lính để HUD xử lý
+            hudController.ShowSelection(selectedUnits, selectedTownCenter, selectedBarracks);
         }
     }
 
@@ -341,6 +358,7 @@ public class RTSUnitSelection : MonoBehaviour
         }
         selectedUnits.Clear();
         selectedTownCenter = null;
+        selectedBarracks = null;
         UpdateHUD(); // <-- Ẩn HUD đi
     }
 

@@ -73,6 +73,11 @@ public class RTSHUDController : MonoBehaviour
     private TMPro.TextMeshProUGUI trainFarmerCooldownText;
     private TownCenter activeSelectedTownCenter;
 
+    private Button trainSoldierButton;
+    private UnityEngine.UI.Image trainSoldierCooldownOverlay;
+    private TMPro.TextMeshProUGUI trainSoldierCooldownText;
+    private Barracks activeSelectedBarracks;
+
     private void Start()
     {
         // 1. Sao lưu vị trí/kích thước gốc của NameText và HPSlider để phục vụ chuyển đổi UI
@@ -159,6 +164,7 @@ public class RTSHUDController : MonoBehaviour
 
         // Khởi tạo nút mua Nông dân của Nhà Chính
         CreateTrainFarmerButton();
+        CreateTrainSoldierButton();
 
         // Lưu trữ sprite khung viền vàng để nhân bản cho thẻ nhóm
         var frameGo = selectionPanel.transform.Find("PortraitFrame");
@@ -263,25 +269,14 @@ public class RTSHUDController : MonoBehaviour
     {
         if (PlayerResourceManager.Instance == null) return;
 
-        // Đếm tổng số quân lính đang tồn tại thực tế trên bản đồ
-        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
-        int currentPop = 0;
-        
-        foreach (RTSUnit unit in allUnits)
-        {
-            if (unit != null && unit.transform.position.y > -100f)
-            {
-                currentPop++;
-            }
-        }
-        
-        int maxPop = PlayerResourceManager.Instance.maxPopulation;
+        int currentFood = PlayerResourceManager.Instance.GetCurrentFoodUsed();
+        int maxFood = PlayerResourceManager.Instance.maxFood;
 
         UpdateResourcesDisplay(
             PlayerResourceManager.Instance.gold, 
             PlayerResourceManager.Instance.wood, 
-            currentPop, 
-            maxPop
+            currentFood, 
+            maxFood
         );
     }
 
@@ -291,11 +286,11 @@ public class RTSHUDController : MonoBehaviour
     }
 
     // Hàm cập nhật lượng tài nguyên hiển thị lên thanh TopBar
-    public void UpdateResourcesDisplay(int gold, int wood, int currentPop, int maxPop)
+    public void UpdateResourcesDisplay(int gold, int wood, int currentFood, int maxFood)
     {
         if (goldText != null) goldText.text = $"GOLD: {gold}";
         if (woodText != null) woodText.text = $"WOOD: {wood}";
-        if (populationText != null) populationText.text = $"POPULATION: {currentPop}/{maxPop}";
+        if (populationText != null) populationText.text = $"FOOD: {currentFood}/{maxFood}";
     }
 
     // ==================================================
@@ -317,6 +312,9 @@ public class RTSHUDController : MonoBehaviour
         rectTrans.pivot = new Vector2(0.5f, 0.5f);
         rectTrans.anchoredPosition = new Vector2(-75f, 35f); // Đặt ở vị trí ô lệnh đầu tiên
 
+        // Thêm LayoutElement để Grid Layout Group của CommandPanel quản lý
+        btnGo.AddComponent<LayoutElement>();
+
         var img = btnGo.AddComponent<UnityEngine.UI.Image>();
         
         // Tải ảnh Gather đại diện cho Nông Dân làm Portrait tĩnh cho nút bấm
@@ -324,6 +322,9 @@ public class RTSHUDController : MonoBehaviour
         var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonGather.jpg");
         if (sprite != null) img.sprite = sprite;
         #endif
+        // Fail-safe: Lấy sprite từ Button_Gather có sẵn
+        Sprite gatherSprite = commandPanel.transform.Find("Button_Gather")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
+        if (gatherSprite != null) img.sprite = gatherSprite;
         img.color = Color.white;
 
         trainFarmerButton = btnGo.AddComponent<Button>();
@@ -373,6 +374,82 @@ public class RTSHUDController : MonoBehaviour
         }
     }
 
+    private void CreateTrainSoldierButton()
+    {
+        if (commandPanel == null) return;
+
+        // Tạo Nút huấn luyện Binh Sĩ bên trong Action Command Panel (Bottom-Right)
+        GameObject btnGo = new GameObject("TrainSoldierButton");
+        btnGo.transform.SetParent(commandPanel.transform, false);
+        
+        var rectTrans = btnGo.AddComponent<RectTransform>();
+        rectTrans.sizeDelta = new Vector2(70f, 70f);
+        rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTrans.pivot = new Vector2(0.5f, 0.5f);
+
+        // Thêm LayoutElement để Grid Layout Group của CommandPanel quản lý
+        btnGo.AddComponent<LayoutElement>();
+
+        var img = btnGo.AddComponent<UnityEngine.UI.Image>();
+        
+        // Tải ảnh đại diện cho Lính bấm từ ButtonAttack hoặc lấy sprite có sẵn
+        #if UNITY_EDITOR
+        var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonAttack.jpg");
+        if (sprite != null) img.sprite = sprite;
+        #endif
+        // Fail-safe: Lấy sprite từ Button_Attack có sẵn
+        Sprite attackSprite = commandPanel.transform.Find("Button_Attack")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
+        if (attackSprite != null) img.sprite = attackSprite;
+        img.color = Color.white;
+
+        trainSoldierButton = btnGo.AddComponent<Button>();
+        trainSoldierButton.onClick.AddListener(OnTrainSoldierClicked);
+
+        // Tạo hình ảnh phủ làm hiệu ứng Cooldown đè lên nút
+        GameObject overlayGo = new GameObject("CooldownOverlay");
+        overlayGo.transform.SetParent(btnGo.transform, false);
+        var overlayRect = overlayGo.AddComponent<RectTransform>();
+        overlayRect.anchorMin = Vector2.zero;
+        overlayRect.anchorMax = Vector2.one;
+        overlayRect.sizeDelta = Vector2.zero;
+
+        trainSoldierCooldownOverlay = overlayGo.AddComponent<UnityEngine.UI.Image>();
+        trainSoldierCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); // Màu tối mờ 72%
+        trainSoldierCooldownOverlay.type = UnityEngine.UI.Image.Type.Filled;
+        trainSoldierCooldownOverlay.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
+        trainSoldierCooldownOverlay.fillOrigin = (int)UnityEngine.UI.Image.Origin360.Top;
+        trainSoldierCooldownOverlay.fillClockwise = false;
+        trainSoldierCooldownOverlay.fillAmount = 0f;
+
+        // Tạo text đếm ngược giây hiển thị ở giữa nút huấn luyện
+        GameObject txtGo = new GameObject("CooldownText");
+        txtGo.transform.SetParent(btnGo.transform, false);
+        var txtRect = txtGo.AddComponent<RectTransform>();
+        txtRect.anchorMin = Vector2.zero;
+        txtRect.anchorMax = Vector2.one;
+        txtRect.sizeDelta = Vector2.zero;
+
+        trainSoldierCooldownText = txtGo.AddComponent<TMPro.TextMeshProUGUI>();
+        trainSoldierCooldownText.alignment = TMPro.TextAlignmentOptions.Center;
+        trainSoldierCooldownText.fontSize = 18f;
+        trainSoldierCooldownText.color = Color.white;
+        trainSoldierCooldownText.text = "";
+
+        // Gán font chữ medieval nếu có
+        if (customGameFont != null) trainSoldierCooldownText.font = customGameFont;
+
+        btnGo.SetActive(false); // Ẩn mặc định khi chưa chọn nhà lính
+    }
+
+    private void OnTrainSoldierClicked()
+    {
+        if (activeSelectedBarracks != null)
+        {
+            activeSelectedBarracks.StartTraining();
+        }
+    }
+
     private void Update()
     {
         // Đồng bộ đếm ngược huấn luyện Nông Dân thời gian thực của Nhà Chính lên HUD
@@ -407,6 +484,38 @@ public class RTSHUDController : MonoBehaviour
             }
         }
 
+        // Đồng bộ đếm ngược huấn luyện Binh Sĩ của Nhà Lính lên HUD
+        if (activeSelectedBarracks != null && trainSoldierButton != null && trainSoldierButton.gameObject.activeSelf)
+        {
+            if (activeSelectedBarracks.isTraining)
+            {
+                trainSoldierButton.interactable = false; // Đang train thì khóa nút
+                
+                // fillAmount giảm dần theo tiến trình huấn luyện
+                float progress = activeSelectedBarracks.trainingTimer / activeSelectedBarracks.trainingDuration;
+                if (trainSoldierCooldownOverlay != null)
+                {
+                    trainSoldierCooldownOverlay.fillAmount = progress;
+                }
+                if (trainSoldierCooldownText != null)
+                {
+                    trainSoldierCooldownText.text = $"{activeSelectedBarracks.trainingTimer:F1}s";
+                }
+            }
+            else
+            {
+                trainSoldierButton.interactable = true; // Sẵn sàng để train tiếp
+                if (trainSoldierCooldownOverlay != null)
+                {
+                    trainSoldierCooldownOverlay.fillAmount = 0f;
+                }
+                if (trainSoldierCooldownText != null)
+                {
+                    trainSoldierCooldownText.text = "";
+                }
+            }
+        }
+
         // Đảm bảo HP Bar luôn nằm trên cùng (không bị card đè mất) khi ở chế độ nhiều quân
         if (selectionPanel != null && selectionPanel.activeSelf && selectedUnitHPBar != null && selectedUnitHPBar.gameObject.activeSelf)
         {
@@ -421,8 +530,8 @@ public class RTSHUDController : MonoBehaviour
         }
     }
 
-    // Hàm hiển thị thông tin chi tiết khi chọn quân lính hoặc Nhà Chính (Town Center)
-    public void ShowSelection(System.Collections.Generic.List<RTSUnit> selectedList, TownCenter selectedTC)
+    // Hàm hiển thị thông tin chi tiết khi chọn quân lính hoặc Nhà Chính (Town Center) hoặc Nhà Lính (Barracks)
+    public void ShowSelection(System.Collections.Generic.List<RTSUnit> selectedList, TownCenter selectedTC, Barracks selectedB = null)
     {
         // Fail-safe để nạp lại portraitFrameSprite nếu nó bị null
         if (portraitFrameSprite == null && selectionPanel != null)
@@ -446,9 +555,11 @@ public class RTSHUDController : MonoBehaviour
         activeGroupPortraits.Clear();
 
         activeSelectedTownCenter = selectedTC;
+        activeSelectedBarracks = selectedB;
 
         // Reset các nút lệnh trong command panel
         if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(false);
+        if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(false);
         if (commandButtons != null)
         {
             foreach (var btn in commandButtons)
@@ -458,6 +569,101 @@ public class RTSHUDController : MonoBehaviour
         }
 
         if (selectionPanel != null) selectionPanel.SetActive(true);
+
+        // --- TRƯỜNG HỢP C: CHỌN NHÀ LÍNH (BARRACKS) ---
+        if (selectedB != null)
+        {
+            // Ẩn tất cả các nút lệnh của quân lính, chỉ hiện nút Train Soldier
+            if (commandButtons != null)
+            {
+                foreach (var btn in commandButtons)
+                {
+                    if (btn != null) btn.gameObject.SetActive(false);
+                }
+            }
+            if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(true);
+
+            // Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f)
+            if (selectedUnitName != null)
+            {
+                var r = selectedUnitName.GetComponent<RectTransform>();
+                r.anchorMin = new Vector2(0f, 1f);
+                r.anchorMax = new Vector2(0f, 1f);
+                r.pivot = new Vector2(0.5f, 1f); // Set to (0.5, 1) for perfect top-center alignment above portrait
+                r.anchoredPosition = new Vector2(60f, -12f); // Căn giữa cách đỉnh 12px
+                r.sizeDelta = new Vector2(200f, 22f); // Rộng 200px tránh bị clip
+                selectedUnitName.alignment = TMPro.TextAlignmentOptions.Center;
+                selectedUnitName.fontSize = 22f; // Đồng bộ font size 22f
+                selectedUnitName.text = "NHÀ LÍNH"; 
+            }
+
+            // Đặt HP Bar Nhà Lính nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
+            if (selectedUnitHPBar != null)
+            {
+                var r = selectedUnitHPBar.GetComponent<RectTransform>();
+                r.anchorMin = new Vector2(0f, 0f);
+                r.anchorMax = new Vector2(0f, 0f);
+                r.pivot = originalHPPivot;
+                r.anchoredPosition = new Vector2(60f, 12f); // HP Bar đối xứng ở X=60, cách đáy 12px
+                r.sizeDelta = new Vector2(112f, originalHPSize.y); // Rộng 112px
+                selectedUnitHPBar.gameObject.SetActive(true);
+                selectedUnitHPBar.maxValue = 800f; // Máu Nhà Lính
+                selectedUnitHPBar.value = 800f;
+
+                // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
+                selectedUnitHPBar.transform.SetAsLastSibling();
+                var pos = r.localPosition;
+                pos.z = -10f;
+                r.localPosition = pos;
+            }
+
+            // Gán ảnh chân dung tĩnh cho Nhà Lính và căn chỉnh size 112x112 dịch xuống Y=-10
+            if (selectedUnitPortrait != null)
+            {
+                selectedUnitPortrait.gameObject.SetActive(true);
+                var r = selectedUnitPortrait.rectTransform;
+                r.anchorMin = new Vector2(0f, 0.5f);
+                r.anchorMax = new Vector2(0f, 0.5f);
+                r.pivot = new Vector2(0.5f, 0.5f);
+                r.anchoredPosition = new Vector2(60f, -10f); // X=60, Y=-10 (dịch xuống 10px để tránh đè chữ)
+                r.sizeDelta = new Vector2(112f, 112f);
+
+                // Lấy sprite của Button_Attack để làm ảnh đại diện cho Nhà Lính!
+                Sprite attackSprite = commandPanel.transform.Find("Button_Attack")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
+                if (attackSprite != null)
+                {
+                    selectedUnitPortrait.texture = attackSprite.texture;
+                }
+                selectedUnitPortrait.color = Color.white;
+            }
+
+            // Bật nền vàng đối xứng X=60, Y=-10
+            if (singlePortraitBackground != null)
+            {
+                singlePortraitBackground.gameObject.SetActive(true);
+                var r = singlePortraitBackground.rectTransform;
+                r.anchorMin = new Vector2(0f, 0.5f);
+                r.anchorMax = new Vector2(0f, 0.5f);
+                r.pivot = new Vector2(0.5f, 0.5f);
+                r.anchoredPosition = new Vector2(60f, -10f);
+                r.sizeDelta = new Vector2(112f, 112f);
+            }
+
+            // Khung viền đối xứng X=60, Y=-10
+            var frame = selectionPanel.transform.Find("PortraitFrame");
+            if (frame != null)
+            {
+                frame.gameObject.SetActive(true);
+                var r = frame.GetComponent<RectTransform>();
+                r.anchorMin = new Vector2(0f, 0.5f);
+                r.anchorMax = new Vector2(0f, 0.5f);
+                r.pivot = new Vector2(0.5f, 0.5f);
+                r.anchoredPosition = new Vector2(60f, -10f);
+                r.sizeDelta = new Vector2(120f, 120f);
+            }
+
+            return;
+        }
 
         // --- TRƯỜNG HỢP A: CHỌN NHÀ CHÍNH (TOWN CENTER) ---
         if (selectedTC != null)
@@ -848,10 +1054,12 @@ public class RTSHUDController : MonoBehaviour
         activeGroupPortraits.Clear();
 
         activeSelectedTownCenter = null;
+        activeSelectedBarracks = null;
 
         if (selectionPanel != null) selectionPanel.SetActive(false);
         if (singlePortraitBackground != null) singlePortraitBackground.gameObject.SetActive(false);
         if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(false);
+        if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(false);
 
         if (commandButtons != null)
         {

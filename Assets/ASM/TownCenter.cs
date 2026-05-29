@@ -7,6 +7,7 @@ public class TownCenter : MonoBehaviour
     public static List<TownCenter> AllTownCenters = new List<TownCenter>();
 
     public float deliverRange = 3.5f; // Khoảng cách nông dân cần tiếp cận để giao hàng
+    public bool isEnemy = false; // Phân biệt Nhà Chính người chơi và địch
 
     [Header("Training Settings")]
     public GameObject farmerPrefab; // Prefab của Nông Dân
@@ -59,8 +60,18 @@ public class TownCenter : MonoBehaviour
     {
         if (isTraining) return false;
 
+        if (PlayerResourceManager.Instance == null) return false;
+
+        // Kiểm tra giới hạn Lương thực (Food) trước khi huấn luyện (Nông dân tốn 1 Lương thực)
+        int currentFood = PlayerResourceManager.Instance.GetCurrentFoodUsed();
+        if (currentFood + 1 > PlayerResourceManager.Instance.maxFood)
+        {
+            Debug.LogWarning("[TownCenter] Không đủ giới hạn Lương thực (Food) để mua Nông Dân!");
+            return false;
+        }
+
         // Tiêu hao 50 Vàng của người chơi
-        if (PlayerResourceManager.Instance != null && PlayerResourceManager.Instance.SpendResources(farmerCost, 0))
+        if (PlayerResourceManager.Instance.SpendResources(farmerCost, 0))
         {
             isTraining = true;
             trainingTimer = trainingDuration;
@@ -110,8 +121,15 @@ public class TownCenter : MonoBehaviour
             }
 
             GameObject farmerGo = Instantiate(farmerPrefab, spawnPos, Quaternion.identity);
-            farmerGo.name = $"Farmer_Trained_{Random.Range(100, 999)}";
+            farmerGo.name = isEnemy ? $"Enemy_Farmer_{Random.Range(100, 999)}" : $"Farmer_Trained_{Random.Range(100, 999)}";
             
+            // Đồng bộ faction isEnemy cho Nông dân
+            RTSUnit unit = farmerGo.GetComponent<RTSUnit>();
+            if (unit != null)
+            {
+                unit.isEnemy = this.isEnemy;
+            }
+
             Debug.Log($"[TownCenter] Huấn luyện thành công Nông dân: {farmerGo.name} tại vị trí {spawnPos}!");
         }
         else
