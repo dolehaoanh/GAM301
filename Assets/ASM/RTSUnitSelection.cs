@@ -167,6 +167,33 @@ public class RTSUnitSelection : MonoBehaviour
             int unitCount = selectedUnits.Count;
             if (unitCount == 0) return;
 
+            // Kiểm tra xem người chơi nhấp chuột phải trúng Mỏ Vàng hoặc Cây Gỗ không
+            ResourceNode clickedNode = hit.collider.GetComponentInParent<ResourceNode>();
+            if (clickedNode == null)
+            {
+                clickedNode = hit.collider.GetComponent<ResourceNode>();
+            }
+
+            if (clickedNode != null)
+            {
+                int farmerGatherers = 0;
+                foreach (RTSUnit unit in selectedUnits)
+                {
+                    if (unit != null && unit.unitType == RTSUnitType.Farmer)
+                    {
+                        unit.StartHarvesting(clickedNode);
+                        farmerGatherers++;
+                    }
+                }
+
+                if (farmerGatherers > 0)
+                {
+                    Debug.Log($"[RTS Command] Đã điều {farmerGatherers} nông dân đi khai thác {clickedNode.resourceType}!");
+                    SetRTSCursor(RTSCursorState.Default);
+                    return;
+                }
+            }
+
             List<RTSUnit> soldiers = new List<RTSUnit>();
             List<RTSUnit> farmers = new List<RTSUnit>();
             Vector3 groupCenter = Vector3.zero;

@@ -27,8 +27,219 @@ public class RTSUnit : MonoBehaviour
     public float selectionRingWidth = 0.08f;
     public Color selectionColor = new Color(0f, 1f, 0.5f, 0.9f); 
 
+    [Header("Gatherer Settings")]
+    public float carriedAmount = 0f;
+    public float maxCapacity = 10f;
+    public RTSResourceType carriedType = RTSResourceType.None;
+
+    public enum RTSUnitState
+    {
+        Idle,
+        MovingToResource,
+        Gathering,
+        MovingToDeliver
+    }
+    public RTSUnitState currentState = RTSUnitState.Idle;
+
+    public ResourceNode targetResourceNode;
+    public TownCenter targetTownCenter;
+
+    private float gatherTimer = 0f;
+    private GameObject visualBag;
+    private UnityEngine.AI.NavMeshAgent navAgent;
+
     private LineRenderer selectionLine;
     private bool isSelected = false;
+
+    private void Update()
+    {
+        if (unitType != RTSUnitType.Farmer) return;
+
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+
+        switch (currentState)
+        {
+            case RTSUnitState.Idle:
+                break;
+
+            case RTSUnitState.MovingToResource:
+                if (targetResourceNode == null)
+                {
+                    currentState = RTSUnitState.Idle;
+                    break;
+                }
+
+                // Đi đến bãi tài nguyên
+                if (navAgent != null)
+                {
+                    navAgent.SetDestination(targetResourceNode.transform.position);
+                }
+
+                if (Vector3.Distance(transform.position, targetResourceNode.transform.position) <= targetResourceNode.harvestRange)
+                {
+                    currentState = RTSUnitState.Gathering;
+                    gatherTimer = 0f;
+                    if (navAgent != null) navAgent.ResetPath();
+                }
+                break;
+
+            case RTSUnitState.Gathering:
+                if (targetResourceNode == null)
+                {
+                    // Nếu tài nguyên bị khai thác hết, tìm bãi khác gần đó hoặc đi tìm nhà chính giao hàng nếu có mang tài nguyên
+                    if (carriedAmount > 0)
+                    {
+                        GoToDeliver();
+                    }
+                    else
+                    {
+                        currentState = RTSUnitState.Idle;
+                    }
+                    break;
+                }
+
+                gatherTimer += Time.deltaTime;
+                if (gatherTimer >= 1.2f) // Cứ mỗi 1.2 giây khai thác 1 lần
+                {
+                    gatherTimer = 0f;
+
+                    // Kích hoạt animation cuốc đất/chặt cây
+                    Animator animator = GetComponentInChildren<Animator>();
+                    if (animator != null)
+                    {
+                        animator.SetTrigger("Work");
+                    }
+
+                    int gathered = targetResourceNode.Gather(2);
+                    if (gathered > 0)
+                    {
+                        carriedAmount += gathered;
+                        carriedType = targetResourceNode.resourceType;
+                        UpdateVisualBag();
+                    }
+
+                    if (carriedAmount >= maxCapacity)
+                    {
+                        GoToDeliver();
+                    }
+                }
+                break;
+
+            case RTSUnitState.MovingToDeliver:
+                if (targetTownCenter == null)
+                {
+                    targetTownCenter = TownCenter.FindNearest(transform.position);
+                    if (targetTownCenter == null)
+                    {
+                        currentState = RTSUnitState.Idle;
+                        break;
+                    }
+                }
+
+                if (navAgent != null)
+                {
+                    navAgent.SetDestination(targetTownCenter.transform.position);
+                }
+
+                if (Vector3.Distance(transform.position, targetTownCenter.transform.position) <= targetTownCenter.deliverRange)
+                {
+                    // Giao tài nguyên
+                    if (PlayerResourceManager.Instance != null)
+                    {
+                        if (carriedType == RTSResourceType.Gold)
+                        {
+                            PlayerResourceManager.Instance.AddGold((int)carriedAmount);
+                        }
+                        else if (carriedType == RTSResourceType.Wood)
+                        {
+                            PlayerResourceManager.Instance.AddWood((int)carriedAmount);
+                        }
+                    }
+
+                    carriedAmount = 0;
+                    carriedType = RTSResourceType.None;
+                    UpdateVisualBag();
+
+                    // Quay lại bãi tài nguyên tiếp tục khai thác nếu bãi vẫn còn
+                    if (targetResourceNode != null)
+                    {
+                        currentState = RTSUnitState.MovingToResource;
+                    }
+                    else
+                    {
+                        currentState = RTSUnitState.Idle;
+                    }
+                }
+                break;
+        }
+    }
+
+    private void GoToDeliver()
+    {
+        targetTownCenter = TownCenter.FindNearest(transform.position);
+        if (targetTownCenter != null)
+        {
+            currentState = RTSUnitState.MovingToDeliver;
+        }
+        else
+        {
+            currentState = RTSUnitState.Idle;
+        }
+    }
+
+    // Hàm gọi từ bên ngoài khi người chơi click chuột phải vào mỏ vàng/cây gỗ
+    public void StartHarvesting(ResourceNode node)
+    {
+        if (unitType != RTSUnitType.Farmer) return;
+
+        targetResourceNode = node;
+        currentState = RTSUnitState.MovingToResource;
+        
+        // Nếu đang mang tài nguyên khác loại, xóa đi để lấy loại mới
+        if (carriedType != RTSResourceType.None && carriedType != node.resourceType)
+        {
+            carriedAmount = 0;
+            carriedType = RTSResourceType.None;
+            UpdateVisualBag();
+        }
+    }
+
+    private void UpdateVisualBag()
+    {
+        if (unitType != RTSUnitType.Farmer) return;
+
+        if (carriedAmount > 0)
+        {
+            if (visualBag == null)
+            {
+                visualBag = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                visualBag.name = "CarriedResourceBag_Visual";
+                // Gắn vào lưng nông dân
+                visualBag.transform.SetParent(transform);
+                visualBag.transform.localPosition = new Vector3(0f, 1.2f, -0.4f); // Vị trí trên lưng
+                visualBag.transform.localScale = new Vector3(0.35f, 0.35f, 0.35f);
+                
+                // Xóa bỏ Collider để không gây va chạm NavMesh
+                Destroy(visualBag.GetComponent<Collider>());
+                
+                // Đổi màu tương ứng loại tài nguyên mang theo
+                Renderer r = visualBag.GetComponent<Renderer>();
+                if (r != null)
+                {
+                    r.material = new Material(Shader.Find("Sprites/Default"));
+                    r.material.color = carriedType == RTSResourceType.Gold ? new Color(1f, 0.85f, 0f) : new Color(0.55f, 0.35f, 0.15f);
+                }
+            }
+        }
+        else
+        {
+            if (visualBag != null)
+            {
+                Destroy(visualBag);
+                visualBag = null;
+            }
+        }
+    }
 
     private void Start()
     {

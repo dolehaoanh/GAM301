@@ -46,12 +46,22 @@ public class RTSHUDController : MonoBehaviour
 
         // Tự động cập nhật dân số động và tài nguyên lặp đi lặp lại mỗi 0.5 giây (Tối ưu hóa hiệu năng, tránh giật lag)
         InvokeRepeating(nameof(UpdateDynamicPopulation), 0f, 0.5f);
+
+        // Đăng ký lắng nghe sự kiện thay đổi tài nguyên
+        PlayerResourceManager.OnResourcesChanged += UpdateHUDResources;
         
         HideSelectionPanel();
     }
 
-    private void UpdateDynamicPopulation()
+    private void OnDestroy()
     {
+        PlayerResourceManager.OnResourcesChanged -= UpdateHUDResources;
+    }
+
+    private void UpdateHUDResources()
+    {
+        if (PlayerResourceManager.Instance == null) return;
+
         // Đếm tổng số quân lính đang tồn tại thực tế trên bản đồ
         RTSUnit[] allUnits = FindObjectsOfType<RTSUnit>();
         int currentPop = 0;
@@ -64,9 +74,19 @@ public class RTSHUDController : MonoBehaviour
             }
         }
         
-        int maxPop = 20; // Giới hạn tối đa mặc định
+        int maxPop = PlayerResourceManager.Instance.maxPopulation;
 
-        UpdateResourcesDisplay(500, 300, currentPop, maxPop);
+        UpdateResourcesDisplay(
+            PlayerResourceManager.Instance.gold, 
+            PlayerResourceManager.Instance.wood, 
+            currentPop, 
+            maxPop
+        );
+    }
+
+    private void UpdateDynamicPopulation()
+    {
+        UpdateHUDResources();
     }
 
     // Hàm cập nhật lượng tài nguyên hiển thị lên thanh TopBar
