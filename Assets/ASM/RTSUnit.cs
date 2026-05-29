@@ -95,9 +95,14 @@ public class RTSUnit : MonoBehaviour
                 // Đi đến bãi tài nguyên
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
-                    if (!navAgent.hasPath || navAgent.destination != targetResourceNode.transform.position)
+                    Vector3 targetPos = targetResourceNode.transform.position;
+                    Vector3 currentDest = navAgent.destination;
+                    bool needsNewPath = !navAgent.hasPath || 
+                                        Mathf.Abs(currentDest.x - targetPos.x) > 0.1f || 
+                                        Mathf.Abs(currentDest.z - targetPos.z) > 0.1f;
+                    if (needsNewPath)
                     {
-                        navAgent.SetDestination(targetResourceNode.transform.position);
+                        navAgent.SetDestination(targetPos);
                     }
                 }
 
@@ -180,9 +185,14 @@ public class RTSUnit : MonoBehaviour
                 // Đi giao tài nguyên
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
-                    if (!navAgent.hasPath || navAgent.destination != targetTownCenter.transform.position)
+                    Vector3 targetPos = targetTownCenter.transform.position;
+                    Vector3 currentDest = navAgent.destination;
+                    bool needsNewPath = !navAgent.hasPath || 
+                                        Mathf.Abs(currentDest.x - targetPos.x) > 0.1f || 
+                                        Mathf.Abs(currentDest.z - targetPos.z) > 0.1f;
+                    if (needsNewPath)
                     {
-                        navAgent.SetDestination(targetTownCenter.transform.position);
+                        navAgent.SetDestination(targetPos);
                     }
                 }
 
