@@ -28,7 +28,7 @@ public class RTSUnitSelection : MonoBehaviour
         whiteTexture.Apply();
 
         // Tự động tìm HUD Controller trong Scene
-        hudController = FindObjectOfType<RTSHUDController>();
+        hudController = FindFirstObjectByType<RTSHUDController>();
     }
 
     private void Update()
@@ -117,7 +117,7 @@ public class RTSUnitSelection : MonoBehaviour
         float minY = Mathf.Min(startMousePosition.y, Input.mousePosition.y);
         float maxY = Mathf.Max(startMousePosition.y, Input.mousePosition.y);
 
-        RTSUnit[] allUnits = FindObjectsOfType<RTSUnit>();
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsSortMode.None);
 
         foreach (RTSUnit unit in allUnits)
         {
@@ -253,8 +253,24 @@ public class RTSUnitSelection : MonoBehaviour
         int count = group.Count;
         if (count == 0) return;
 
-        int rows = (count <= 2) ? 1 : 2;
-        int cols = Mathf.CeilToInt((float)count / rows);
+        // Tự động phân loại: Nếu là Chiến Binh (Soldier), xếp thành 1 hàng ngang dàn trận cạnh nhau (Single Row)
+        bool isSoldierGroup = (group[0] != null && group[0].unitType == RTSUnitType.Soldier);
+
+        int rows = 1;
+        int cols = count;
+
+        if (isSoldierGroup)
+        {
+            // Hàng ngang xếp dàn trận cạnh nhau vuông góc hướng đi
+            rows = 1;
+            cols = count;
+        }
+        else
+        {
+            // Nông dân giữ nguyên đội hình khối hộp (Grid) mặc định ban đầu
+            rows = (count <= 2) ? 1 : 2;
+            cols = Mathf.CeilToInt((float)count / rows);
+        }
 
         for (int i = 0; i < count; i++)
         {
@@ -272,7 +288,7 @@ public class RTSUnitSelection : MonoBehaviour
             Vector3 finalDestination = centerPoint + rotatedOffset;
 
             UnityEngine.AI.NavMeshAgent agent = group[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
-            if (agent != null)
+            if (agent != null && agent.isOnNavMesh)
             {
                 agent.SetDestination(finalDestination);
             }
@@ -284,28 +300,13 @@ public class RTSUnitSelection : MonoBehaviour
     {
         if (hudController == null)
         {
-            hudController = FindObjectOfType<RTSHUDController>();
+            hudController = FindFirstObjectByType<RTSHUDController>();
         }
 
         if (hudController != null)
         {
-            if (selectedUnits.Count > 0)
-            {
-                // Hiển thị thông số của con lính đầu tiên trong danh sách đang chọn
-                RTSUnit firstSelected = selectedUnits[0];
-                hudController.ShowUnitSelection(
-                    firstSelected.portrait, 
-                    firstSelected.unitName, 
-                    firstSelected.currentHP, 
-                    firstSelected.maxHP,
-                    firstSelected.unitType // <-- Gửi thêm loại quân để đồng bộ khuôn mặt 3D Portrait
-                );
-            }
-            else
-            {
-                // Ẩn bảng đi nếu click đất trống (không chọn ai)
-                hudController.HideSelectionPanel();
-            }
+            // Gửi toàn bộ danh sách đang chọn để HUD xử lý hiển thị nâng cao (Leader + Counts + Group HP)
+            hudController.ShowUnitSelection(selectedUnits);
         }
     }
 

@@ -39,6 +39,17 @@ public class RTSHUDController : MonoBehaviour
 
     private void Start()
     {
+        // Tự động khôi phục và gán Render Texture từ Portrait Camera nếu bị trống trong Inspector
+        if (selectedUnitPortrait != null && selectedUnitPortrait.texture == null)
+        {
+            var portCam = GameObject.Find("PortraitCamera")?.GetComponent<Camera>();
+            if (portCam != null && portCam.targetTexture != null)
+            {
+                selectedUnitPortrait.texture = portCam.targetTexture;
+                Debug.Log($"[RTS Portrait] Tự động khôi phục và gán Render Texture từ camera: {portCam.name}!");
+            }
+        }
+
         if (selectedUnitPortrait != null)
         {
             originalPortraitTexture = selectedUnitPortrait.texture;
@@ -88,7 +99,7 @@ public class RTSHUDController : MonoBehaviour
         if (PlayerResourceManager.Instance == null) return;
 
         // Đếm tổng số quân lính đang tồn tại thực tế trên bản đồ
-        RTSUnit[] allUnits = FindObjectsOfType<RTSUnit>();
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsSortMode.None);
         int currentPop = 0;
         
         foreach (RTSUnit unit in allUnits)
@@ -122,16 +133,25 @@ public class RTSHUDController : MonoBehaviour
         if (populationText != null) populationText.text = $"POPULATION: {currentPop}/{maxPop}";
     }
 
-    // Hàm hiển thị thông tin chi tiết khi quét trúng một quân lính bất kỳ
-    public void ShowUnitSelection(Sprite portrait, string unitName, float currentHP, float maxHP, RTSUnitType unitType)
+    // Hàm hiển thị thông tin chi tiết khi chọn một hoặc nhiều quân lính
+    public void ShowUnitSelection(System.Collections.Generic.List<RTSUnit> selectedList)
     {
+        if (selectedList == null || selectedList.Count == 0)
+        {
+            HideSelectionPanel();
+            return;
+        }
+
         if (selectionPanel != null) selectionPanel.SetActive(true);
-        
+
+        // Leader (Thủ lĩnh) là con quân đầu tiên được chọn
+        RTSUnit leader = selectedList[0];
+
         if (selectedUnitPortrait != null)
         {
-            if (portrait != null)
+            if (leader.portrait != null)
             {
-                selectedUnitPortrait.texture = portrait.texture;
+                selectedUnitPortrait.texture = leader.portrait.texture;
                 selectedUnitPortrait.color = Color.white; // Màu gốc đầy đủ
             }
             else
@@ -151,16 +171,50 @@ public class RTSHUDController : MonoBehaviour
             }
         }
 
-        // Tự động bật khuôn mặt 3D của loại quân được chọn trong Portrait Room
-        if (portraitFarmerInstance != null) portraitFarmerInstance.SetActive(unitType == RTSUnitType.Farmer);
-        if (portraitSoldierInstance != null) portraitSoldierInstance.SetActive(unitType == RTSUnitType.Soldier);
+        // Tự động bật khuôn mặt 3D của loại quân được chọn (Thủ lĩnh) trong Portrait Room
+        if (portraitFarmerInstance != null) portraitFarmerInstance.SetActive(leader.unitType == RTSUnitType.Farmer);
+        if (portraitSoldierInstance != null) portraitSoldierInstance.SetActive(leader.unitType == RTSUnitType.Soldier);
 
-        if (selectedUnitName != null) selectedUnitName.text = unitName;
+        // Cập nhật tên và quân số đạo quân (Leader Portrait + Đếm số lượng)
+        if (selectedUnitName != null)
+        {
+            if (selectedList.Count == 1)
+            {
+                selectedUnitName.text = leader.unitName;
+            }
+            else
+            {
+                // Đếm số lượng từng loại lớp quân
+                int soldierCount = 0;
+                int farmerCount = 0;
+                foreach (var unit in selectedList)
+                {
+                    if (unit != null)
+                    {
+                        if (unit.unitType == RTSUnitType.Soldier) soldierCount++;
+                        else farmerCount++;
+                    }
+                }
+                // Định dạng hiển thị chuyên nghiệp: CHIẾN BINH (8 Soldiers | 4 Farmers)
+                selectedUnitName.text = $"{leader.unitName} ({soldierCount} Soldiers | {farmerCount} Farmers)";
+            }
+        }
         
+        // Cập nhật thanh HP Slider (Nếu chọn nhiều quân, hiện tổng HP tích lũy của cả đạo quân)
         if (selectedUnitHPBar != null)
         {
-            selectedUnitHPBar.maxValue = maxHP;
-            selectedUnitHPBar.value = currentHP;
+            float currentTotalHP = 0f;
+            float maxTotalHP = 0f;
+            foreach (var unit in selectedList)
+            {
+                if (unit != null)
+                {
+                    currentTotalHP += unit.currentHP;
+                    maxTotalHP += unit.maxHP;
+                }
+            }
+            selectedUnitHPBar.maxValue = maxTotalHP;
+            selectedUnitHPBar.value = currentTotalHP;
         }
     }
 
