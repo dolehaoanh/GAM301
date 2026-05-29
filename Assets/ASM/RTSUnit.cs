@@ -518,21 +518,21 @@ public class RTSUnit : MonoBehaviour
             {
                 if (isEnemy)
                 {
-                    // Địch màu đỏ
-                    mat.color = new Color(1.0f, 0.15f, 0.15f, 1f);
+                    // Địch màu đỏ pastel nhẹ nhàng
+                    mat.color = new Color(1.0f, 0.6f, 0.6f, 1f);
                 }
                 else
                 {
                     // Phe ta
                     if (unitType == RTSUnitType.Soldier)
                     {
-                        // Nhuộm xanh lam cho Chiến binh
-                        mat.color = new Color(0.1f, 0.4f, 1.0f, 1f);
+                        // Nhuộm xanh lam pastel dịu dàng cho Chiến binh
+                        mat.color = new Color(0.55f, 0.75f, 1.0f, 1f);
                     }
                     else if (unitType == RTSUnitType.Farmer)
                     {
-                        // Nhuộm xanh lá dịu cho Nông dân
-                        mat.color = new Color(0.3f, 1.0f, 0.5f, 1f);
+                        // Nhuộm xanh lá pastel thanh thoát cho Nông dân
+                        mat.color = new Color(0.6f, 0.9f, 0.7f, 1f);
                     }
                 }
             }

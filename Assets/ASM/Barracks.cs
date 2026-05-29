@@ -61,6 +61,26 @@ public class Barracks : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ApplyFactionColors();
+    }
+
+    private void ApplyFactionColors()
+    {
+        var renderers = GetComponentsInChildren<Renderer>();
+        Color factionColor = isEnemy ? new Color(1.0f, 0.6f, 0.6f, 1f) : new Color(0.55f, 0.75f, 1.0f, 1f);
+        foreach (var r in renderers)
+        {
+            if (r == null || r is LineRenderer) continue;
+            Material mat = r.material;
+            if (mat != null)
+            {
+                mat.color = factionColor;
+            }
+        }
+    }
+
     private void Update()
     {
         if (isTraining)
