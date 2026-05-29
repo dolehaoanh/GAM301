@@ -54,7 +54,16 @@ public class RTSHUDController : MonoBehaviour
     {
         // Đếm tổng số quân lính đang tồn tại thực tế trên bản đồ
         RTSUnit[] allUnits = FindObjectsOfType<RTSUnit>();
-        int currentPop = allUnits.Length;
+        int currentPop = 0;
+        
+        foreach (RTSUnit unit in allUnits)
+        {
+            if (unit != null && unit.transform.position.y > -100f)
+            {
+                currentPop++;
+            }
+        }
+        
         int maxPop = 20; // Giới hạn tối đa mặc định
 
         UpdateResourcesDisplay(500, 300, currentPop, maxPop);

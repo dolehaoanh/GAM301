@@ -121,6 +121,8 @@ public class RTSUnitSelection : MonoBehaviour
 
         foreach (RTSUnit unit in allUnits)
         {
+            if (unit == null || unit.transform.position.y < -100f) continue;
+
             Vector3 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
 
             if (screenPos.x > minX && screenPos.x < maxX && screenPos.y > minY && screenPos.y < maxY)
