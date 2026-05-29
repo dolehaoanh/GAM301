@@ -312,7 +312,7 @@ public class RTSUnit : MonoBehaviour
 
     private RTSUnit FindNearestEnemyUnit()
     {
-        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsSortMode.None);
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
         RTSUnit nearest = null;
         float minDist = scanRange;
 

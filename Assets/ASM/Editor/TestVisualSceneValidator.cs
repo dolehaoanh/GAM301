@@ -71,7 +71,7 @@ public class TestVisualSceneValidator
         int enemyBrightRedMinimapIcons = 0;
         int playerBrightGreenMinimapIcons = 0;
 
-        foreach (var unit in GameObject.FindObjectsByType<RTSUnit>(FindObjectsSortMode.None))
+        foreach (var unit in Object.FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude))
         {
             if (unit == null) continue;
             foreach (var r in unit.GetComponentsInChildren<Renderer>(true))

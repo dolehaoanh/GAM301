@@ -33,7 +33,7 @@ public class RTSSetupUtility
             if (oldTree != null) Undo.DestroyObjectImmediate(oldTree);
         }
 
-        foreach (var go in GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsInactive.Exclude))
         {
             if (go != null && (go.name.StartsWith("Enemy_Farmer_Init_") || go.name.StartsWith("Enemy_Soldier_Init_")))
             {
@@ -97,7 +97,7 @@ public class RTSSetupUtility
 
         // 3. Tạo 5 cây gỗ đặc biệt (Special Harvestable Trees) gần Nông Dân dưới dạng Cylinder
         Vector3 basePosition = playerTC.transform.position;
-        RTSUnit[] allUnits = GameObject.FindObjectsByType<RTSUnit>(FindObjectsSortMode.None);
+        RTSUnit[] allUnits = Object.FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
         foreach (var unit in allUnits)
         {
             if (unit != null && unit.unitType == RTSUnitType.Farmer && !unit.isEnemy)
@@ -247,15 +247,15 @@ public class RTSSetupUtility
         }
 
         // 5. Cập nhật màu sắc cho TẤT CẢ các Unit và Building hiện có trong Scene trong Editor
-        foreach (var tc in GameObject.FindObjectsByType<TownCenter>(FindObjectsSortMode.None))
+        foreach (var tc in Object.FindObjectsByType<TownCenter>(FindObjectsInactive.Exclude))
         {
             if (tc != null) SetFactionColorInEditor(tc.gameObject, tc.isEnemy);
         }
-        foreach (var b in GameObject.FindObjectsByType<Barracks>(FindObjectsSortMode.None))
+        foreach (var b in Object.FindObjectsByType<Barracks>(FindObjectsInactive.Exclude))
         {
             if (b != null) SetFactionColorInEditor(b.gameObject, b.isEnemy);
         }
-        foreach (var unit in GameObject.FindObjectsByType<RTSUnit>(FindObjectsSortMode.None))
+        foreach (var unit in Object.FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude))
         {
             if (unit != null) SetFactionColorInEditor(unit.gameObject, unit.isEnemy);
         }
