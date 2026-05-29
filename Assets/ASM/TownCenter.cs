@@ -93,17 +93,37 @@ public class TownCenter : MonoBehaviour
     private void ApplyFactionColors()
     {
         var renderers = GetComponentsInChildren<Renderer>();
-        Color factionColor = isEnemy ? new Color(1.0f, 0.6f, 0.6f, 1f) : new Color(0.55f, 0.75f, 1.0f, 1f);
         foreach (var r in renderers)
         {
             if (r == null || r is LineRenderer) continue;
             Material mat = r.material;
             if (mat != null)
             {
-                mat.color = factionColor;
+                // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
+                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || 
+                                     mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
+                
+                if (isMinimapIcon)
+                {
+                    mat.color = isEnemy ? new Color(1f, 0f, 0f, 1f) : new Color(0f, 1f, 0f, 1f);
+                }
+                else
+                {
+                    mat.color = isEnemy ? new Color(1.0f, 0.6f, 0.6f, 1f) : new Color(0.55f, 0.75f, 1.0f, 1f);
+                }
             }
         }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (!Application.isPlaying)
+        {
+            ApplyFactionColors();
+        }
+    }
+#endif
 
     private void Update()
     {

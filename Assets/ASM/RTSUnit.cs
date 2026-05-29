@@ -516,28 +516,59 @@ public class RTSUnit : MonoBehaviour
             Material mat = r.material;
             if (mat != null)
             {
-                if (isEnemy)
+                // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
+                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || 
+                                     mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
+                
+                if (isMinimapIcon)
                 {
-                    // Địch màu đỏ pastel nhẹ nhàng
-                    mat.color = new Color(1.0f, 0.6f, 0.6f, 1f);
+                    if (isEnemy)
+                    {
+                        // Quads hiển thị icon địch trên map phải là màu đỏ tươi sáng (bright red: 255, 0, 0)
+                        mat.color = new Color(1f, 0f, 0f, 1f);
+                    }
+                    else
+                    {
+                        // Quads hiển thị icon ta trên map là màu xanh lá tươi sáng (bright green: 0, 255, 0)
+                        mat.color = new Color(0f, 1f, 0f, 1f);
+                    }
                 }
                 else
                 {
-                    // Phe ta
-                    if (unitType == RTSUnitType.Soldier)
+                    if (isEnemy)
                     {
-                        // Nhuộm xanh lam pastel dịu dàng cho Chiến binh
-                        mat.color = new Color(0.55f, 0.75f, 1.0f, 1f);
+                        // Địch màu đỏ pastel nhẹ nhàng
+                        mat.color = new Color(1.0f, 0.6f, 0.6f, 1f);
                     }
-                    else if (unitType == RTSUnitType.Farmer)
+                    else
                     {
-                        // Nhuộm xanh lá pastel thanh thoát cho Nông dân
-                        mat.color = new Color(0.6f, 0.9f, 0.7f, 1f);
+                        // Phe ta
+                        if (unitType == RTSUnitType.Soldier)
+                        {
+                            // Nhuộm xanh lam pastel dịu dàng cho Chiến binh
+                            mat.color = new Color(0.55f, 0.75f, 1.0f, 1f);
+                        }
+                        else if (unitType == RTSUnitType.Farmer)
+                        {
+                            // Nhuộm xanh lá pastel thanh thoát cho Nông dân
+                            mat.color = new Color(0.6f, 0.9f, 0.7f, 1f);
+                        }
                     }
                 }
             }
         }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (!Application.isPlaying)
+        {
+            // Trong Editor tự động tô màu ngay lập tức
+            ApplyFactionColors();
+        }
+    }
+#endif
 
     private void CreateSelectionRing()
     {
