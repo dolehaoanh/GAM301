@@ -110,11 +110,23 @@ public class RTSUnit : MonoBehaviour
                 {
                     gatherTimer = 0f;
 
-                    // Kích hoạt animation cuốc đất/chặt cây
+                    // Kích hoạt animation cuốc đất/chặt cây nếu có tham số
                     Animator animator = GetComponentInChildren<Animator>();
                     if (animator != null)
                     {
-                        animator.SetTrigger("Work");
+                        bool hasWorkParam = false;
+                        foreach (AnimatorControllerParameter param in animator.parameters)
+                        {
+                            if (param.name == "Work")
+                            {
+                                hasWorkParam = true;
+                                break;
+                            }
+                        }
+                        if (hasWorkParam)
+                        {
+                            animator.SetTrigger("Work");
+                        }
                     }
 
                     int gathered = targetResourceNode.Gather(2);

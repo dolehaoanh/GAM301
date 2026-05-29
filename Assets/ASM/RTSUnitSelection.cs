@@ -458,7 +458,19 @@ public class RTSUnitSelection : MonoBehaviour
                 Animator animator = unit.GetComponentInChildren<Animator>();
                 if (animator != null)
                 {
-                    animator.SetTrigger("Work"); // Kích hoạt trigger Work trong Animator!
+                    bool hasWorkParam = false;
+                    foreach (AnimatorControllerParameter param in animator.parameters)
+                    {
+                        if (param.name == "Work")
+                        {
+                            hasWorkParam = true;
+                            break;
+                        }
+                    }
+                    if (hasWorkParam)
+                    {
+                        animator.SetTrigger("Work"); // Kích hoạt trigger Work trong Animator!
+                    }
                 }
                 farmerCount++;
             }

@@ -44,6 +44,10 @@ public class RTSHUDController : MonoBehaviour
             originalPortraitTexture = selectedUnitPortrait.texture;
         }
 
+        // Dọn dẹp các component không cần thiết ở phòng chân dung 3D để tránh lỗi NavMesh dưới lòng đất Y = -500
+        CleanPortraitInstance(portraitFarmerInstance);
+        CleanPortraitInstance(portraitSoldierInstance);
+
         // Tự động cập nhật dân số động và tài nguyên lặp đi lặp lại mỗi 0.5 giây (Tối ưu hóa hiệu năng, tránh giật lag)
         InvokeRepeating(nameof(UpdateDynamicPopulation), 0f, 0.5f);
 
@@ -51,6 +55,23 @@ public class RTSHUDController : MonoBehaviour
         PlayerResourceManager.OnResourcesChanged += UpdateHUDResources;
         
         HideSelectionPanel();
+    }
+
+    private void CleanPortraitInstance(GameObject go)
+    {
+        if (go == null) return;
+
+        // Xóa NavMeshAgent
+        var agent = go.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) Destroy(agent);
+
+        // Xóa RTSUnit để tránh nhiễu logic
+        var unit = go.GetComponent<RTSUnit>();
+        if (unit != null) Destroy(unit);
+
+        // Đóng băng Rigidbody nếu có
+        var rb = go.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
     }
 
     private void OnDestroy()
