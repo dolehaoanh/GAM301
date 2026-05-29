@@ -69,17 +69,24 @@ public class RTSUnit : MonoBehaviour
                     break;
                 }
 
-                // Đi đến bãi tài nguyên
-                if (navAgent != null)
+                // Đi đến bãi tài nguyên (Chỉ gọi SetDestination một lần hoặc khi đích đến thay đổi)
+                if (navAgent != null && navAgent.isOnNavMesh)
                 {
-                    navAgent.SetDestination(targetResourceNode.transform.position);
+                    if (!navAgent.hasPath || navAgent.destination != targetResourceNode.transform.position)
+                    {
+                        navAgent.SetDestination(targetResourceNode.transform.position);
+                    }
                 }
 
-                if (Vector3.Distance(transform.position, targetResourceNode.transform.position) <= targetResourceNode.harvestRange)
+                float distToResource = Vector3.Distance(transform.position, targetResourceNode.transform.position);
+                bool reachedResource = distToResource <= targetResourceNode.harvestRange || 
+                                     (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= targetResourceNode.harvestRange);
+
+                if (reachedResource)
                 {
                     currentState = RTSUnitState.Gathering;
                     gatherTimer = 0f;
-                    if (navAgent != null) navAgent.ResetPath();
+                    if (navAgent != null && navAgent.isOnNavMesh) navAgent.ResetPath();
                 }
                 break;
 
@@ -136,12 +143,20 @@ public class RTSUnit : MonoBehaviour
                     }
                 }
 
-                if (navAgent != null)
+                // Đi giao tài nguyên (Chỉ gọi SetDestination một lần hoặc khi đích đến thay đổi)
+                if (navAgent != null && navAgent.isOnNavMesh)
                 {
-                    navAgent.SetDestination(targetTownCenter.transform.position);
+                    if (!navAgent.hasPath || navAgent.destination != targetTownCenter.transform.position)
+                    {
+                        navAgent.SetDestination(targetTownCenter.transform.position);
+                    }
                 }
 
-                if (Vector3.Distance(transform.position, targetTownCenter.transform.position) <= targetTownCenter.deliverRange)
+                float distToTC = Vector3.Distance(transform.position, targetTownCenter.transform.position);
+                bool reachedTC = distToTC <= targetTownCenter.deliverRange ||
+                                 (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= targetTownCenter.deliverRange);
+
+                if (reachedTC)
                 {
                     // Giao tài nguyên
                     if (PlayerResourceManager.Instance != null)
