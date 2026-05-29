@@ -105,7 +105,7 @@ public class TestVisualSceneValidator
         Directory.CreateDirectory(dirPath);
         string filePath = Path.Combine(dirPath, "scene_validation.txt");
         File.WriteAllText(filePath, sb.ToString());
-        Debug.Log("[TestVisualSceneValidator] Báo cáo xác minh đã được ghi vào: " + filePath);
+        // Debug.Log("[TestVisualSceneValidator] Báo cáo xác minh đã được ghi vào: " + filePath);
     }
 }
 #endif

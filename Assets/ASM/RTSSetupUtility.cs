@@ -4,7 +4,7 @@ using UnityEditor;
 
 public class RTSSetupUtility
 {
-    [MenuItem("RTS Game/Setup Buildings, Enemies & Trees")]
+    // [MenuItem("RTS Game/Setup Buildings, Enemies & Trees")]
     public static void SetupScene()
     {
         // 1. Tìm TownCenter phe ta trong Scene (phải tìm theo tên để tránh nhầm với Enemy_TownCenter)
