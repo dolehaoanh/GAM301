@@ -158,7 +158,7 @@ public class RTSSetupUtility
 
             Undo.RegisterCreatedObjectUndo(treeGo, $"Create {treeName}");
         }
-        Debug.Log("[RTS Setup] Đã tạo thành công 5 cây gỗ Đặc Biệt (Special Harvestable Trees) Cylinder 1.8x!");
+        // Debug.Log("[RTS Setup] Đã tạo thành công 5 cây gỗ Đặc Biệt (Special Harvestable Trees) Cylinder 1.8x!");
 
         // 4. Tạo hoặc Cập nhật Căn Cứ Địch (Enemy Base) ở góc dưới bên phải bản đồ (X = 95f, Z = 35f)
         Vector3 enemyBasePos = new Vector3(95f, 0f, 35f);
@@ -208,7 +208,8 @@ public class RTSSetupUtility
         }
         enemyB.isEnemy = true;
 
-        // Sinh sẵn một số lính và nông dân phe địch
+        /*
+        // Sinh sẵn một số lính và nông dân phe địch (Tạm thời vô hiệu hóa theo yêu cầu của user)
         GameObject farmerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ASM/Farmer.prefab");
         GameObject soldierPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ASM/Soldier.prefab");
 
@@ -245,6 +246,7 @@ public class RTSSetupUtility
                 }
             }
         }
+        */
 
         // 5. Cập nhật màu sắc cho TẤT CẢ các Unit và Building hiện có trong Scene trong Editor
         foreach (var tc in Object.FindObjectsByType<TownCenter>(FindObjectsInactive.Exclude))
@@ -264,7 +266,7 @@ public class RTSSetupUtility
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         
-        Debug.Log("<color=lime><b>[RTS Setup] HOÀN THÀNH SETUP THÀNH CÔNG!</b></color> Hãy nhấn nút 'Play' trong Editor và kiểm tra game ngay!");
+        // Debug.Log("<color=lime><b>[RTS Setup] HOÀN THÀNH SETUP THÀNH CÔNG!</b></color> Hãy nhấn nút 'Play' trong Editor và kiểm tra game ngay!");
     }
 
     private static void SetFactionColorInEditor(GameObject go, bool isEnemy)

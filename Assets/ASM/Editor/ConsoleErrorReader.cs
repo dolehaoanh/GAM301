@@ -69,7 +69,7 @@ public class ConsoleErrorReader
             Directory.CreateDirectory(dirPath);
             string filePath = Path.Combine(dirPath, "console_errors.txt");
             File.WriteAllText(filePath, sb.ToString());
-            Debug.Log("[ConsoleErrorReader] Scanned console. Found " + errorCount + " errors. Written to: " + filePath);
+            // Debug.Log("[ConsoleErrorReader] Scanned console. Found " + errorCount + " errors. Written to: " + filePath);
         }
         catch (Exception ex)
         {
