@@ -28,7 +28,7 @@ public class RTSUnitSelection : MonoBehaviour
         whiteTexture.Apply();
 
         // Tự động tìm HUD Controller trong Scene
-        hudController = FindFirstObjectByType<RTSHUDController>();
+        hudController = FindAnyObjectByType<RTSHUDController>();
     }
 
     private void Update()
@@ -117,7 +117,7 @@ public class RTSUnitSelection : MonoBehaviour
         float minY = Mathf.Min(startMousePosition.y, Input.mousePosition.y);
         float maxY = Mathf.Max(startMousePosition.y, Input.mousePosition.y);
 
-        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsSortMode.None);
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
 
         foreach (RTSUnit unit in allUnits)
         {
@@ -300,7 +300,7 @@ public class RTSUnitSelection : MonoBehaviour
     {
         if (hudController == null)
         {
-            hudController = FindFirstObjectByType<RTSHUDController>();
+            hudController = FindAnyObjectByType<RTSHUDController>();
         }
 
         if (hudController != null)
