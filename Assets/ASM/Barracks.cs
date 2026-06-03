@@ -72,7 +72,27 @@ public class Barracks : MonoBehaviour
         foreach (var r in renderers)
         {
             if (r == null || r is LineRenderer) continue;
-            Material mat = r.material;
+            Material mat = null;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject)) continue;
+                if (r.sharedMaterial == null) continue;
+                
+                if (!r.sharedMaterial.name.Contains("(Instance)"))
+                {
+                    Material instantiatedMat = new Material(r.sharedMaterial);
+                    instantiatedMat.name = r.sharedMaterial.name + " (Instance)";
+                    r.sharedMaterial = instantiatedMat;
+                }
+                mat = r.sharedMaterial;
+            }
+            else
+#endif
+            {
+                mat = r.material;
+            }
+
             if (mat != null)
             {
                 // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
@@ -87,8 +107,20 @@ public class Barracks : MonoBehaviour
                 {
                     mat.color = isEnemy ? new Color(1.0f, 0.6f, 0.6f, 1f) : new Color(0.55f, 0.75f, 1.0f, 1f);
                 }
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    UnityEditor.EditorUtility.SetDirty(r);
+                }
+#endif
             }
         }
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            UnityEditor.EditorUtility.SetDirty(gameObject);
+        }
+#endif
     }
 
 #if UNITY_EDITOR

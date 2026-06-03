@@ -7,6 +7,11 @@ public class RTSSetupUtility
     // [MenuItem("RTS Game/Setup Buildings, Enemies & Trees")]
     public static void SetupScene()
     {
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Assignment")
+        {
+            return;
+        }
+
         // 1. Tìm TownCenter phe ta trong Scene (phải tìm theo tên để tránh nhầm với Enemy_TownCenter)
         GameObject playerTCGo = GameObject.Find("TownCenter");
         if (playerTCGo == null)
@@ -239,6 +244,8 @@ public class RTSSetupUtility
     private static void SetFactionColorInEditor(GameObject go, bool isEnemy)
     {
         if (go == null) return;
+        if (PrefabUtility.IsPartOfPrefabAsset(go)) return;
+
         var renderers = go.GetComponentsInChildren<Renderer>();
         Color factionColor;
         if (isEnemy)
@@ -260,21 +267,24 @@ public class RTSSetupUtility
 
         foreach (var r in renderers)
         {
-            if (r == null || r is LineRenderer) continue;
+            if (r == null || r is LineRenderer || r.sharedMaterial == null) continue;
             
             // Lấy tên vật liệu để kiểm tra minimap icon
-            string matName = r.sharedMaterial != null ? r.sharedMaterial.name : "";
+            string matName = r.sharedMaterial.name;
             bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || 
                                  matName.Contains("MinimapIcon") || matName.Contains("Icon");
             
-            if (isMinimapIcon)
+            Color targetColor = isMinimapIcon ? (isEnemy ? new Color(1f, 0f, 0f, 1f) : new Color(0f, 1f, 0f, 1f)) : factionColor;
+
+            // Instantiate material in editor to avoid modifying shared assets and avoid prefab errors
+            if (!r.sharedMaterial.name.Contains("(Instance)"))
             {
-                r.material.color = isEnemy ? new Color(1f, 0f, 0f, 1f) : new Color(0f, 1f, 0f, 1f);
+                Material instantiatedMat = new Material(r.sharedMaterial);
+                instantiatedMat.name = r.sharedMaterial.name + " (Instance)";
+                r.sharedMaterial = instantiatedMat;
             }
-            else
-            {
-                r.material.color = factionColor;
-            }
+
+            r.sharedMaterial.color = targetColor;
             EditorUtility.SetDirty(r);
         }
         EditorUtility.SetDirty(go);

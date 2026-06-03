@@ -523,7 +523,27 @@ public class RTSUnit : MonoBehaviour
         {
             if (r == null || r is LineRenderer) continue;
 
-            Material mat = r.material;
+            Material mat = null;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject)) continue;
+                if (r.sharedMaterial == null) continue;
+                
+                if (!r.sharedMaterial.name.Contains("(Instance)"))
+                {
+                    Material instantiatedMat = new Material(r.sharedMaterial);
+                    instantiatedMat.name = r.sharedMaterial.name + " (Instance)";
+                    r.sharedMaterial = instantiatedMat;
+                }
+                mat = r.sharedMaterial;
+            }
+            else
+#endif
+            {
+                mat = r.material;
+            }
+
             if (mat != null)
             {
                 // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
@@ -565,8 +585,20 @@ public class RTSUnit : MonoBehaviour
                         }
                     }
                 }
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    UnityEditor.EditorUtility.SetDirty(r);
+                }
+#endif
             }
         }
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            UnityEditor.EditorUtility.SetDirty(gameObject);
+        }
+#endif
     }
 
 #if UNITY_EDITOR
