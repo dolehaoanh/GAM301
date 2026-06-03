@@ -356,14 +356,15 @@ public class RTSSetupUtility
             cayTuongTac.transform.rotation = Quaternion.AngleAxis(cayHienTai.rotation * Mathf.Rad2Deg, Vector3.up);
             cayTuongTac.name = $"{mauCayGoc.name}_ThuHoachDuoc_{i}";
 
-            // Đảm bảo cây có Collider để Click chọn và va chạm
+            // Đảm bảo cây có Collider để Click chọn và va chạm với kích thước thế giới chính xác
             Collider boVaCham = cayTuongTac.GetComponent<Collider>();
             if (boVaCham == null)
             {
                 CapsuleCollider boVaChamHinhTru = cayTuongTac.AddComponent<CapsuleCollider>();
-                boVaChamHinhTru.center = new Vector3(0f, 1f, 0f);
-                boVaChamHinhTru.radius = 0.5f;
-                boVaChamHinhTru.height = 3.0f;
+                // Chia tỷ lệ cục bộ cho kích thước gốc của Prefab để giữ kích thước thế giới chuẩn (Radius ~0.5m-1.5m, Height ~3m-9m)
+                boVaChamHinhTru.center = new Vector3(0f, 1.0f / scaleGoc.y, 0f);
+                boVaChamHinhTru.radius = 0.5f / scaleGoc.x;
+                boVaChamHinhTru.height = 3.0f / scaleGoc.y;
             }
 
             // Đảm bảo cây có script ResourceNode để khai thác
