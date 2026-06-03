@@ -293,10 +293,21 @@ public class RTSSetupUtility
     [MenuItem("RTS Game/Chuyển đổi cây địa hình thành cây thu hoạch được")]
     public static void ChuyenDoiCayDiaHinh()
     {
-        Terrain banDo = Terrain.activeTerrain;
+        Terrain banDo = null;
+        GameObject mapGo = GameObject.Find("Map");
+        if (mapGo != null)
+        {
+            banDo = mapGo.GetComponent<Terrain>();
+        }
+
         if (banDo == null)
         {
-            Debug.LogError("[Chuyển đổi Cây] Không tìm thấy Địa hình (Terrain) nào đang hoạt động trong Scene!");
+            banDo = Terrain.activeTerrain;
+        }
+
+        if (banDo == null)
+        {
+            Debug.LogError("[Chuyển đổi Cây] Không tìm thấy Địa hình (Terrain) nào tên là 'Map' hoặc đang hoạt động trong Scene!");
             return;
         }
 
@@ -345,29 +356,16 @@ public class RTSSetupUtility
 
             // Lấy kích thước gốc của Prefab (ví dụ: 100, 100, 100) để nhân tỷ lệ chính xác
             Vector3 scaleGoc = mauCayGoc.transform.localScale;
-            // Hệ số phóng to thêm theo ý muốn của người dùng (ví dụ: 1.5f để cây to và dễ click hơn)
-            float heSoPhongToThem = 1.5f;
 
             cayTuongTac.transform.localScale = new Vector3(
-                cayHienTai.widthScale * scaleGoc.x * heSoPhongToThem,
-                cayHienTai.heightScale * scaleGoc.y * heSoPhongToThem,
-                cayHienTai.widthScale * scaleGoc.z * heSoPhongToThem
+                cayHienTai.widthScale * scaleGoc.x,
+                cayHienTai.heightScale * scaleGoc.y,
+                cayHienTai.widthScale * scaleGoc.z
             );
             cayTuongTac.transform.rotation = Quaternion.AngleAxis(cayHienTai.rotation * Mathf.Rad2Deg, Vector3.up);
             cayTuongTac.name = $"{mauCayGoc.name}_ThuHoachDuoc_{i}";
 
-            // Đảm bảo cây có Collider để Click chọn và va chạm với kích thước thế giới chính xác
-            Collider boVaCham = cayTuongTac.GetComponent<Collider>();
-            if (boVaCham == null)
-            {
-                CapsuleCollider boVaChamHinhTru = cayTuongTac.AddComponent<CapsuleCollider>();
-                // Chia tỷ lệ cục bộ cho kích thước gốc của Prefab để giữ kích thước thế giới chuẩn (Radius ~0.5m-1.5m, Height ~3m-9m)
-                boVaChamHinhTru.center = new Vector3(0f, 1.0f / scaleGoc.y, 0f);
-                boVaChamHinhTru.radius = 0.5f / scaleGoc.x;
-                boVaChamHinhTru.height = 3.0f / scaleGoc.y;
-            }
-
-            // Đảm bảo cây có script ResourceNode để khai thác
+            // Đảm bảo cây có script ResourceNode để khai thác (Sử dụng Collider được thiết lập sẵn trong Prefab gốc)
             ResourceNode nguonTaiNguyen = cayTuongTac.GetComponent<ResourceNode>();
             if (nguonTaiNguyen == null)
             {
@@ -393,10 +391,21 @@ public class RTSSetupUtility
     [MenuItem("RTS Game/Phóng to tất cả cây trên Terrain")]
     public static void PhongToCayTerrain()
     {
-        Terrain banDo = Terrain.activeTerrain;
+        Terrain banDo = null;
+        GameObject mapGo = GameObject.Find("Map");
+        if (mapGo != null)
+        {
+            banDo = mapGo.GetComponent<Terrain>();
+        }
+
         if (banDo == null)
         {
-            Debug.LogError("[Phóng to Cây] Không tìm thấy Địa hình (Terrain) nào đang hoạt động trong Scene!");
+            banDo = Terrain.activeTerrain;
+        }
+
+        if (banDo == null)
+        {
+            Debug.LogError("[Phóng to Cây] Không tìm thấy Địa hình (Terrain) nào tên là 'Map' hoặc đang hoạt động trong Scene!");
             return;
         }
 
