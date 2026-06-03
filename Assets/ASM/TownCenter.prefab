@@ -47,6 +47,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TownCenter
   deliverRange: 6
+  isEnemy: 0
+  farmerPrefab: {fileID: 0}
+  trainingDuration: 5
+  farmerCost: 50
+  spawnPoint: {fileID: 0}
 --- !u!65 &6677749029735865618
 BoxCollider:
   m_ObjectHideFlags: 0

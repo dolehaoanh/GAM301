@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RTSUnit
   unitType: 1
+  isEnemy: 0
   unitName: "Binh S\u0129"
   portrait: {fileID: 0}
   maxHP: 100
@@ -193,6 +194,18 @@ MonoBehaviour:
   selectionRingRadius: 0.8
   selectionRingWidth: 0.08
   selectionColor: {r: 0, g: 1, b: 0.5, a: 0.9}
+  carriedAmount: 0
+  maxCapacity: 10
+  carriedType: 0
+  attackRange: 2.5
+  scanRange: 15
+  attackDamage: 15
+  attackCooldown: 1
+  combatTarget: {fileID: 0}
+  combatBuildingTarget: {fileID: 0}
+  currentState: 0
+  targetResourceNode: {fileID: 0}
+  targetTownCenter: {fileID: 0}
 --- !u!195 &8736636503078164706
 NavMeshAgent:
   m_ObjectHideFlags: 0
