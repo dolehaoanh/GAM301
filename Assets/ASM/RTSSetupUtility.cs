@@ -289,5 +289,141 @@ public class RTSSetupUtility
         }
         EditorUtility.SetDirty(go);
     }
+
+    [MenuItem("RTS Game/Chuyển đổi cây địa hình thành cây thu hoạch được")]
+    public static void ChuyenDoiCayDiaHinh()
+    {
+        Terrain banDo = Terrain.activeTerrain;
+        if (banDo == null)
+        {
+            Debug.LogError("[Chuyển đổi Cây] Không tìm thấy Địa hình (Terrain) nào đang hoạt động trong Scene!");
+            return;
+        }
+
+        TerrainData duLieuBanDo = banDo.terrainData;
+        if (duLieuBanDo == null)
+        {
+            Debug.LogError("[Chuyển đổi Cây] Không tìm thấy dữ liệu địa hình (TerrainData)!");
+            return;
+        }
+
+        TreeInstance[] danhSachCay = duLieuBanDo.treeInstances;
+        TreePrototype[] danhSachMauCay = duLieuBanDo.treePrototypes;
+
+        Vector3 viTriDiaHinh = banDo.transform.position;
+        Vector3 kichThuocDiaHinh = duLieuBanDo.size;
+
+        Undo.IncrementCurrentGroup();
+        Undo.SetCurrentGroupName("Chuyen Doi Cay Dia Hinh");
+
+        // Tạo GameObject cha để gom nhóm cây cho gọn Hierarchy
+        GameObject nhomCha = GameObject.Find("Nhom_Cay_Thu_Hoach");
+        if (nhomCha == null)
+        {
+            nhomCha = new GameObject("Nhom_Cay_Thu_Hoach");
+            Undo.RegisterCreatedObjectUndo(nhomCha, "Tao Nhom Cay Cha");
+        }
+
+        int soLuongThanhCong = 0;
+
+        for (int i = 0; i < danhSachCay.Length; i++)
+        {
+            TreeInstance cayHienTai = danhSachCay[i];
+
+            // Tính toán vị trí thế giới của cây
+            Vector3 viTriCucBo = Vector3.Scale(cayHienTai.position, kichThuocDiaHinh);
+            Vector3 viTriTheGioi = viTriDiaHinh + viTriCucBo;
+
+            if (cayHienTai.prototypeIndex >= danhSachMauCay.Length) continue;
+            GameObject mauCayGoc = danhSachMauCay[cayHienTai.prototypeIndex].prefab;
+            if (mauCayGoc == null) continue;
+
+            // Nhân bản Prefab trong Scene và gán nhóm cha
+            GameObject cayTuongTac = (GameObject)PrefabUtility.InstantiatePrefab(mauCayGoc);
+            cayTuongTac.transform.SetParent(nhomCha.transform);
+            cayTuongTac.transform.position = viTriTheGioi;
+
+            // Lấy kích thước gốc của Prefab (ví dụ: 100, 100, 100) để nhân tỷ lệ chính xác
+            Vector3 scaleGoc = mauCayGoc.transform.localScale;
+            // Hệ số phóng to thêm theo ý muốn của người dùng (ví dụ: 1.5f để cây to và dễ click hơn)
+            float heSoPhongToThem = 1.5f;
+
+            cayTuongTac.transform.localScale = new Vector3(
+                cayHienTai.widthScale * scaleGoc.x * heSoPhongToThem,
+                cayHienTai.heightScale * scaleGoc.y * heSoPhongToThem,
+                cayHienTai.widthScale * scaleGoc.z * heSoPhongToThem
+            );
+            cayTuongTac.transform.rotation = Quaternion.AngleAxis(cayHienTai.rotation * Mathf.Rad2Deg, Vector3.up);
+            cayTuongTac.name = $"{mauCayGoc.name}_ThuHoachDuoc_{i}";
+
+            // Đảm bảo cây có Collider để Click chọn và va chạm
+            Collider boVaCham = cayTuongTac.GetComponent<Collider>();
+            if (boVaCham == null)
+            {
+                CapsuleCollider boVaChamHinhTru = cayTuongTac.AddComponent<CapsuleCollider>();
+                boVaChamHinhTru.center = new Vector3(0f, 1f, 0f);
+                boVaChamHinhTru.radius = 0.5f;
+                boVaChamHinhTru.height = 3.0f;
+            }
+
+            // Đảm bảo cây có script ResourceNode để khai thác
+            ResourceNode nguonTaiNguyen = cayTuongTac.GetComponent<ResourceNode>();
+            if (nguonTaiNguyen == null)
+            {
+                nguonTaiNguyen = cayTuongTac.AddComponent<ResourceNode>();
+            }
+            nguonTaiNguyen.resourceType = RTSResourceType.Wood;
+            nguonTaiNguyen.remainingResources = 500; // 500 Gỗ mỗi cây
+            nguonTaiNguyen.harvestRange = 2.5f;
+
+            // Cho phép Ctrl+Z để hoàn tác việc sinh GameObject
+            Undo.RegisterCreatedObjectUndo(cayTuongTac, "Tao Cay Thu Hoach");
+            soLuongThanhCong++;
+        }
+
+        // Xóa sạch các cây tĩnh trên Terrain để tránh bị trùng lặp cây
+        Undo.RegisterCompleteObjectUndo(duLieuBanDo, "Xoa Cay Tren Terrain");
+        duLieuBanDo.treeInstances = new TreeInstance[0];
+        banDo.Flush();
+
+        Debug.Log($"<color=lime><b>[Chuyển đổi Cây] THÀNH CÔNG!</b></color> Đã chuyển đổi {soLuongThanhCong} cây tĩnh trên địa hình thành các vật thể GameObjects (nằm trong thư mục Nhom_Cay_Thu_Hoach)!");
+    }
+
+    [MenuItem("RTS Game/Phóng to tất cả cây trên Terrain")]
+    public static void PhongToCayTerrain()
+    {
+        Terrain banDo = Terrain.activeTerrain;
+        if (banDo == null)
+        {
+            Debug.LogError("[Phóng to Cây] Không tìm thấy Địa hình (Terrain) nào đang hoạt động trong Scene!");
+            return;
+        }
+
+        TerrainData duLieuBanDo = banDo.terrainData;
+        if (duLieuBanDo == null) return;
+
+        TreeInstance[] danhSachCay = duLieuBanDo.treeInstances;
+        if (danhSachCay == null || danhSachCay.Length == 0)
+        {
+            Debug.LogWarning("[Phóng to Cây] Không có cây nào trên địa hình để phóng to!");
+            return;
+        }
+
+        Undo.RegisterCompleteObjectUndo(duLieuBanDo, "Phong To Cay Terrain");
+
+        // Hệ số phóng to (phóng to gấp 2 lần)
+        float heSoNhan = 2.0f; 
+
+        for (int i = 0; i < danhSachCay.Length; i++)
+        {
+            danhSachCay[i].widthScale *= heSoNhan;
+            danhSachCay[i].heightScale *= heSoNhan;
+        }
+
+        duLieuBanDo.treeInstances = danhSachCay;
+        banDo.Flush();
+
+        Debug.Log($"<color=lime><b>[Phóng to Cây] THÀNH CÔNG!</b></color> Đã phóng to {danhSachCay.Length} cây trên địa hình lên gấp {heSoNhan} lần!");
+    }
 }
 #endif

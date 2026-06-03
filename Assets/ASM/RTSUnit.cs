@@ -106,9 +106,15 @@ public class RTSUnit : MonoBehaviour
                     }
                 }
 
-                float distToResource = Vector3.Distance(transform.position, targetResourceNode.transform.position);
-                bool reachedResource = distToResource <= targetResourceNode.harvestRange || 
-                                     (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= targetResourceNode.harvestRange);
+                Vector3 flatUnitPos = new Vector3(transform.position.x, 0f, transform.position.z);
+                Vector3 flatResourcePos = new Vector3(targetResourceNode.transform.position.x, 0f, targetResourceNode.transform.position.z);
+                float distToResource = Vector3.Distance(flatUnitPos, flatResourcePos);
+                
+                // Sử dụng bán kính hiệu dụng tối thiểu là 3.0 để dễ tiếp cận các cây cao/to
+                float effectiveRange = Mathf.Max(targetResourceNode.harvestRange, 3.0f);
+                
+                bool reachedResource = distToResource <= effectiveRange || 
+                                     (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= effectiveRange);
 
                 if (reachedResource)
                 {
@@ -196,9 +202,15 @@ public class RTSUnit : MonoBehaviour
                     }
                 }
 
-                float distToTC = Vector3.Distance(transform.position, targetTownCenter.transform.position);
-                bool reachedTC = distToTC <= targetTownCenter.deliverRange ||
-                                 (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= targetTownCenter.deliverRange);
+                Vector3 flatUnitPosTC = new Vector3(transform.position.x, 0f, transform.position.z);
+                Vector3 flatTCPos = new Vector3(targetTownCenter.transform.position.x, 0f, targetTownCenter.transform.position.z);
+                float distToTC = Vector3.Distance(flatUnitPosTC, flatTCPos);
+                
+                // Sử dụng khoảng cách hiệu dụng tối thiểu là 3.5 để giao tài nguyên dễ dàng
+                float effectiveDeliverRange = Mathf.Max(targetTownCenter.deliverRange, 3.5f);
+                
+                bool reachedTC = distToTC <= effectiveDeliverRange ||
+                                 (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= effectiveDeliverRange);
 
                 if (reachedTC)
                 {
