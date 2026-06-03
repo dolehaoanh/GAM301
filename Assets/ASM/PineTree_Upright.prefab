@@ -123,16 +123,51 @@ PrefabInstance:
       propertyPath: m_Name
       value: Resource_PineTree
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 38d07ab3b19c941adacdfe1919c4598a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38d07ab3b19c941adacdfe1919c4598a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7881736782620947086}
   m_SourcePrefab: {fileID: 100100000, guid: 38d07ab3b19c941adacdfe1919c4598a, type: 3}
 --- !u!23 &7998448320973152189 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 38d07ab3b19c941adacdfe1919c4598a, type: 3}
   m_PrefabInstance: {fileID: 8701420669240214329}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8358907609578946152 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 38d07ab3b19c941adacdfe1919c4598a, type: 3}
+  m_PrefabInstance: {fileID: 8701420669240214329}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &7881736782620947086
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8358907609578946152}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.0017343556
+  m_Height: 0.0063746106
+  m_Direction: 2
+  m_Center: {x: -0.00013593616, y: 0.00012301048, z: -0.0032135337}
 --- !u!4 &9172458611408069842 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 38d07ab3b19c941adacdfe1919c4598a, type: 3}
