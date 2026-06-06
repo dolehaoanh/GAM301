@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class RTSUnitSelection : MonoBehaviour
 {
     [Header("Visual Settings")]
-    public Color boxColor = new Color(0.12f, 0.7f, 1f, 0.15f); 
+    public Color boxColor = new Color(0.12f, 0.7f, 1f, 0.15f);
     public Color borderColor = new Color(0.12f, 0.7f, 1f, 0.8f);
 
     [Header("Formation Settings")]
@@ -23,6 +23,8 @@ public class RTSUnitSelection : MonoBehaviour
     // Tham chiếu tự động tới HUD Controller
     private RTSHUDController hudController;
 
+    // Lưu 10 nhóm (đạo quân, đánh chỉ số từ 0 đến 9)
+    private List<RTSUnit>[] controlGroups = new List<RTSUnit>[10];
     private void Start()
     {
         whiteTexture = new Texture2D(1, 1);
@@ -31,6 +33,12 @@ public class RTSUnitSelection : MonoBehaviour
 
         // Tự động tìm HUD Controller trong Scene
         hudController = FindAnyObjectByType<RTSHUDController>();
+
+        // Initialize các control group lists (để không bị lỗi null reference)
+        for (int i = 0; i < 10; i++)
+        {
+            controlGroups[i] = new List<RTSUnit>();
+        }
     }
 
     private void Update()
@@ -38,7 +46,7 @@ public class RTSUnitSelection : MonoBehaviour
         // 1. Nhấp chuột trái xuống (chỉ bắt đầu vẽ hộp chọn nếu không nhấp trên UI)
         if (Input.GetMouseButtonDown(0))
         {
-            if (UnityEngine.EventSystems.EventSystem.current != null && 
+            if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
                 return;
@@ -61,7 +69,7 @@ public class RTSUnitSelection : MonoBehaviour
         // 3. Nhấp chuột phải di chuyển (bỏ qua nếu nhấp trên UI, vd: nhấp nút bấm)
         if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
         {
-            if (UnityEngine.EventSystems.EventSystem.current != null && 
+            if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
                 return;
@@ -80,7 +88,7 @@ public class RTSUnitSelection : MonoBehaviour
 
             GUI.color = borderColor;
             DrawScreenRectBorder(rect, 1.5f);
-            
+
             GUI.color = Color.white;
         }
     }
@@ -89,10 +97,10 @@ public class RTSUnitSelection : MonoBehaviour
     {
         screenPosition1.y = Screen.height - screenPosition1.y;
         screenPosition2.y = Screen.height - screenPosition2.y;
-        
+
         var topLeft = Vector3.Min(screenPosition1, screenPosition2);
         var bottomRight = Vector3.Max(screenPosition1, screenPosition2);
-        
+
         return new Rect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
     }
 
@@ -133,7 +141,7 @@ public class RTSUnitSelection : MonoBehaviour
                 selectedUnits.Add(unit);
             }
         }
-        
+
         Debug.Log($"[RTS Selection] Đã chọn thành công {selectedUnits.Count} quân lính!");
         UpdateHUD(); // <-- Cập nhật hiển thị lên HUD Canvas
     }
@@ -193,7 +201,7 @@ public class RTSUnitSelection : MonoBehaviour
                 }
             }
         }
-        
+
         UpdateHUD(); // <-- Cập nhật hiển thị lên HUD Canvas
     }
 
@@ -242,7 +250,7 @@ public class RTSUnitSelection : MonoBehaviour
             foreach (RTSUnit unit in selectedUnits)
             {
                 if (unit == null) continue;
-                
+
                 groupCenter += unit.transform.position;
                 activeUnits++;
 
@@ -398,7 +406,7 @@ public class RTSUnitSelection : MonoBehaviour
                 break;
             case RTSCursorState.Move:
                 activeTexture = moveCursor;
-                 break;
+                break;
             case RTSCursorState.Attack:
                 activeTexture = attackCursor;
                 break;
@@ -419,7 +427,7 @@ public class RTSUnitSelection : MonoBehaviour
     public void OnCommandMove()
     {
         if (selectedUnits.Count == 0) return;
-        
+
         // Kích hoạt con trỏ lệnh di chuyển
         SetRTSCursor(RTSCursorState.Move);
         Debug.Log($"[RTS Command] DI CHUYỂN BỘ BINH ({selectedUnits.Count} quân)!");
@@ -449,7 +457,7 @@ public class RTSUnitSelection : MonoBehaviour
     public void OnCommandAttack()
     {
         if (selectedUnits.Count == 0) return;
-        
+
         // Kích hoạt con trỏ lệnh tấn công
         SetRTSCursor(RTSCursorState.Attack);
         Debug.Log($"[RTS Command] XUẤT BINH TẤN CÔNG ĐỊCH ({selectedUnits.Count} quân)!");
@@ -520,5 +528,21 @@ public class RTSUnitSelection : MonoBehaviour
         }
 
         Debug.Log($"[RTS Command] KHAI THÁC TÀI NGUYÊN (Kích hoạt cuốc đất cho {farmerCount} nông dân)!");
+    }
+
+    // Hàm handle các đạo quân
+    private void HandleControlGroups()
+    {
+        // Kiểm tra xem nút Cmd (Mac) hay nút Ctrl (PC) đang đc nhấn & giữ
+        bool isModifierHeld = Input.GetKey(KeyCode.LeftControl) ||
+                                Input.GetKey(KeyCode.RightControl) ||
+                                Input.GetKey(KeyCode.LeftCommand) ||
+                                Input.GetKey(KeyCode.RightCommand);
+
+        // Loop qua các phím alpha keys từ 0 đến 9
+        for (int i = 0; i < 10; i++)
+        {
+            // 
+        }
     }
 }
