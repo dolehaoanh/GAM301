@@ -43,6 +43,9 @@ public class RTSUnitSelection : MonoBehaviour
 
     private void Update()
     {
+        // Kiểm tra đầu vào chức năng gọi/tạo nhóm đạo quân
+        HandleControlGroups();
+
         // 1. Nhấp chuột trái xuống (chỉ bắt đầu vẽ hộp chọn nếu không nhấp trên UI)
         if (Input.GetMouseButtonDown(0))
         {
@@ -527,7 +530,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        Debug.Log($"[RTS Command] KHAI THÁC TÀI NGUYÊN (Kích hoạt cuốc đất cho {farmerCount} nông dân)!");
+        Debug.Log($"KHAI THÁC TÀI NGUYÊN (Kích hoạt cuốc đất cho {farmerCount} nông dân)!");
     }
 
     // Hàm handle các đạo quân
@@ -542,7 +545,68 @@ public class RTSUnitSelection : MonoBehaviour
         // Loop qua các phím alpha keys từ 0 đến 9
         for (int i = 0; i < 10; i++)
         {
-            // 
+            // Chuyển loop index thành KeyCodeedoCyeK (ví dụ phím 0 có KeyCode.Alpha0 là 48, Alpha1 là 49,...)
+            KeyCode key = KeyCode.Alpha0 + i;
+
+            if (Input.GetKeyDown(key))
+            {
+                if (isModifierHeld)
+                {
+                    // Nếu player đang ấn Cmd/Ctrl + Số: gán nhóm quân đang chọn vào nhóm i
+                    SaveControlGroup(i);
+                }
+                else
+                {
+                    // Nếu player đang ấn chỉ số: chọn nhóm i
+                    RecallControlGroup(i);
+                }
+                break; // Ngừng kiểm tra các phím khác khi 1 phím đã đc ấn
+            }
         }
+    }
+
+    // Hàm lưu nhóm quân đang chọn
+    private void SaveControlGroup(int groupIndex)
+    {
+        controlGroups[groupIndex].Clear();
+
+        foreach (RTSUnit unit in selectedUnits)
+        {
+            if (unit != null)
+            {
+                controlGroups[groupIndex].Add(unit);
+            }
+        }
+        Debug.Log($"Lưu đạo quân: đã gán {controlGroups[groupIndex].Count} quân vào Nhóm {groupIndex}");
+    }
+
+    // Hàm chọn nhóm quân đã lưu
+    private void RecallControlGroup(int groupIndex)
+    {
+        // 1. Dọn dẹp các unit đã bị destroy (chết) trong đạo quân đc gọi bằng phím tắt đã lưu
+        controlGroups[groupIndex].RemoveAll(unit => unit == null);
+
+        if (controlGroups[groupIndex].Count == 0)
+        {
+            Debug.Log($"Chọn đạo quân: Đạo quân số {groupIndex} không có unit nào.");
+        }
+
+        // 2. Bỏ chọn các unit đang chọn (trước khi đảo sang đạo quân đã gán phím tắt)
+        DeselectAll();
+
+        // 3. Chọn tất cả các unit trong nhóm này
+        foreach (RTSUnit unit in controlGroups[groupIndex])
+        {
+            if (unit != null)
+            {
+                unit.Select();
+                selectedUnits.Add(unit);
+            }
+        }
+
+        // 4. Cập nhật HUD UI
+        UpdateHUD();
+
+        Debug.Log($"Đã chọn lại đạo quân {groupIndex} (có {selectedUnits.Count} quân)");
     }
 }
