@@ -123,7 +123,7 @@ MonoBehaviour:
   firePoint: {fileID: 796507232825959302}
   bulletPrefab: {fileID: 71731967200468523, guid: 3d55fc6b8d9a54faea016e43a2a099e1, type: 3}
   range: 7.77
-  fireRate: 6.66
+  fireRate: 66.6
   rotationSpeed: 22.2
 --- !u!4 &796507232825959302 stripped
 Transform:

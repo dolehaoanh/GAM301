@@ -16,7 +16,7 @@ Sinh viên sử dụng bài Lab 4 bổ sung thêm các hiệu ứng
 
 ![](_page_0_Picture_9.jpeg)
 
-## **Bài tập 1: Hiệu ứng Năng lượng cho đạn bắn**
+## **[x] Bài tập 1: Hiệu ứng Năng lượng cho đạn bắn**
 
 Làm cho đạn bắn phát ra ánh sáng hoặc vệt sáng năng lượng khi bay.
 
@@ -71,7 +71,7 @@ Cách làm :
 - Tạo một **Material** mới từ Shader Graph (BulletTrailShader).
 - Gán Material này vào **Trail Renderer** của đạn.
 
-## **Bài tập 2: Hiệu ứng Nổ khi Đạn Va Chạm**
+## **[x] Bài tập 2: Hiệu ứng Nổ khi Đạn Va Chạm**
 
 Khi đạn va chạm với Quái sẽ tạo ra hiệu ứng Nổ Gợi ý :
 
@@ -99,11 +99,11 @@ Khi đạn va chạm với Quái sẽ tạo ra hiệu ứng Nổ Gợi ý :
 
 Thêm Câu lệnh sinh vụ nổ và Destroy viên đạn khi va chạm
 
-## **Bài 3 : Tạo hiệu ứng tuyết rơi cho Game**
+## **[x] Bài 3 : Tạo hiệu ứng tuyết rơi cho Game**
 
 Bổ sung hiệu ứng tuyết rơi bằng Shader Graph hoặc VFX Graph
 
-**Bài 4 : Tạo hiệu ứng Sticker hay Decal sử dụng Decal Shader In hình logo FPT lên khối Cube hoặc bức tường**
+**[x] Bài 4 : Tạo hiệu ứng Sticker hay Decal sử dụng Decal Shader In hình logo FPT lên khối Cube hoặc bức tường**
 
 ![](_page_4_Picture_1.jpeg)
 
