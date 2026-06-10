@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7bc3193bfe8c64e4a9a829f54e90825a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Editor/PhysicsSimulatorRule.cs
+  uploadId: 915198

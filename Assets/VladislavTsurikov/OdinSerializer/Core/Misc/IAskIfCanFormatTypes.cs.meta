@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: daf3010b6c7898b47a5603dd30834beb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Core/Misc/IAskIfCanFormatTypes.cs
+  uploadId: 915198

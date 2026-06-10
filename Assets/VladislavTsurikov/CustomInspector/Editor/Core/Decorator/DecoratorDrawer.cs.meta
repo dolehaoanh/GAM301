@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 946d929b565524c419e9967a541eab02
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/Core/Decorator/DecoratorDrawer.cs
+  uploadId: 915198

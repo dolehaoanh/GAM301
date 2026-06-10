@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e827223a50d666d4d81afb032562db80
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Core/FormatterLocators/IFormatterLocator.cs
+  uploadId: 915198

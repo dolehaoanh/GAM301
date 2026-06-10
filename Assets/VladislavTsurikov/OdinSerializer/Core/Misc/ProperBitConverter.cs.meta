@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 23a67932dd313454f969165d21449216
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Core/Misc/ProperBitConverter.cs
+  uploadId: 915198

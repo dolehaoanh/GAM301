@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d3a038b4196f5d84884cb8e79a193653
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Unity Integration/UnityReferenceResolver.cs
+  uploadId: 915198

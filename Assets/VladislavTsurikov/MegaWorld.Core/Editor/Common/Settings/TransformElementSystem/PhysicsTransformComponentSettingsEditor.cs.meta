@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 0f90a97906ce4599af7c92d28b2671e8
+timeCreated: 1664293734
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Editor/Common/Settings/TransformElementSystem/PhysicsTransformComponentSettingsEditor.cs
+  uploadId: 915198

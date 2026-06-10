@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f1ee908b9af5d9a42981bef80fb9635e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Core/Misc/SerializationAbortException.cs
+  uploadId: 915198

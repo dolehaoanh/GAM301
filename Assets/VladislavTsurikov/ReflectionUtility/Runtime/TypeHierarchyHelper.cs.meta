@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 505eeb0237185c54e834c2acc6d5ecd5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/ReflectionUtility/Runtime/TypeHierarchyHelper.cs
+  uploadId: 915198

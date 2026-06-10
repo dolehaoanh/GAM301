@@ -1,0 +1,21 @@
+{
+    "name": "VladislavTsurikov.Popup",
+    "rootNamespace": "",
+    "references": [
+        "VladislavTsurikov.SearchUtility",
+        "VladislavTsurikov.ReflectionUtility",
+        "VladislavTsurikov.Core",
+        "VladislavTsurikov.GraphRuntime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

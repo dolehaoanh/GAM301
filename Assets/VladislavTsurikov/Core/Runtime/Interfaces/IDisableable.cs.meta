@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 6019d65301454d3891b1d86ccbaceb8b
+timeCreated: 1707668796
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Core/Runtime/Interfaces/IDisableable.cs
+  uploadId: 915198

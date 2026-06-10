@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 996ab4716883d6a41b37b649bc0b425b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CsCodeGenerator/Runtime/FileModel.cs
+  uploadId: 915198

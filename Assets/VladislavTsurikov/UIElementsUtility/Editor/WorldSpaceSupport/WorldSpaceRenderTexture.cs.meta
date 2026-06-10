@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: b4c2e45cf90747748263fbc69b9041c3
+timeCreated: 1718305565
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/UIElementsUtility/Editor/WorldSpaceSupport/WorldSpaceRenderTexture.cs
+  uploadId: 915198

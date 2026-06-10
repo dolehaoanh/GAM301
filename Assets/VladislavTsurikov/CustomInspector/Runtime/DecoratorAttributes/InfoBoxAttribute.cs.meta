@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a154a8aa01a23e0458dbcbaae8049801
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Runtime/DecoratorAttributes/InfoBoxAttribute.cs
+  uploadId: 915198

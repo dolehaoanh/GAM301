@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: de66877c093648ab84ac3d3185fdb63f
+timeCreated: 1704988574
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/PhysXPainter/Undo/CreatedTerrainObjectSimulatedBody.cs
+  uploadId: 915198

@@ -1,0 +1,22 @@
+{
+    "name": "VladislavTsurikov.CustomInspector",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6f7c2c763c464614a3efc88a2e2e88c8",
+        "GUID:c58cb679f31162c47bc160d1f716ecea",
+        "GUID:a4cac7205a624b644ba15c8a468d3ad8",
+        "GUID:5c9c0ef81e306bb4fb8182d62410223a",
+        "GUID:86afa44309ced704d99b18db08754600",
+        "VladislavTsurikov.IMGUIUtility",
+        "VladislavTsurikov.Popup"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

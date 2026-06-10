@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ce9acb4c89fd77746a90c158718c588d
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/AttributeUtility/VladislavTsurikov.AttributeUtility.asmdef
+  uploadId: 915198

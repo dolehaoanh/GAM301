@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: e9d9557b2c4c4e039822f8ca70bc6fc4
+timeCreated: 1731861488
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/IMGUIRecursiveFieldsDrawer.cs
+  uploadId: 915198

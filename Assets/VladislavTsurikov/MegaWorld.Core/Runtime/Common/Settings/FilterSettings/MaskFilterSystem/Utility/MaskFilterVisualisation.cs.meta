@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 2a9543d103a449698bf90988d0be4b8f
+timeCreated: 1697475106
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/FilterSettings/MaskFilterSystem/Utility/MaskFilterVisualisation.cs
+  uploadId: 915198

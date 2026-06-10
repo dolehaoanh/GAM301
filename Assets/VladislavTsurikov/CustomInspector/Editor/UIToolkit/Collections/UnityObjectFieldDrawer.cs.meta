@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 667f3abb0b71b1d44a0675f19630d6b2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/UIToolkit/Collections/UnityObjectFieldDrawer.cs
+  uploadId: 915198

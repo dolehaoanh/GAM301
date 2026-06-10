@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using VladislavTsurikov.CustomInspector.Runtime;
+using VladislavTsurikov.MegaWorld.Runtime.Core;
+using VladislavTsurikov.ReflectionUtility;
+using VladislavTsurikov.UnityUtility.Runtime;
+using Random = UnityEngine.Random;
+
+namespace VladislavTsurikov.MegaWorld.Runtime.Common.Settings.TransformElementSystem
+{
+    [Serializable]
+    [Name("Snap Rotation")]
+    [MegaWorldDocUrl("transform-components/snap-rotation")]
+    public class SnapRotation : TransformComponent
+    {
+        [Order(0)]
+        public bool RotateAxisX;
+
+        [Order(1)]
+        public bool RotateAxisY = true;
+
+        [Order(2)]
+        public bool RotateAxisZ;
+
+        [Order(3)]
+        [Range(0.1f, 360f)]
+        public float SnapRotationAngle = 90f;
+
+        public override void SetInstanceData(ref Instance instance, float fitness, Vector3 normal)
+        {
+            List<float> rotationValueList = new();
+            int count = 0;
+            for (float value = 0; value <= 360f; value += SnapRotationAngle)
+            {
+                rotationValueList.Add(value);
+                count++;
+            }
+
+            if (count != 0)
+            {
+                float randomX = 0;
+                float randomY = 0;
+                float randomZ = 0;
+
+                if (RotateAxisX)
+                {
+                    randomX = rotationValueList[Random.Range(0, rotationValueList.Count)];
+                }
+
+                if (RotateAxisY)
+                {
+                    randomY = rotationValueList[Random.Range(0, rotationValueList.Count)];
+                }
+
+                if (RotateAxisZ)
+                {
+                    randomZ = rotationValueList[Random.Range(0, rotationValueList.Count)];
+                }
+
+                Quaternion rotationX = Quaternion.AngleAxis(randomX, Vector3.right);
+                Quaternion rotationY = Quaternion.AngleAxis(randomY, Vector3.up);
+                Quaternion rotationZ = Quaternion.AngleAxis(randomZ, Vector3.forward);
+
+                instance.Rotation = rotationX * rotationY * rotationZ;
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e2949e54cc4d4942983a82d7c6830fb3
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/IMGUIUtility/Editor/ElementStack/VladislavTsurikov.IMGUIUtility.CustomInspectorIntegration.asmdef
+  uploadId: 915198

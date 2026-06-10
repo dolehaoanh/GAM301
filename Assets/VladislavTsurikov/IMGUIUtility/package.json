@@ -1,0 +1,17 @@
+﻿{
+  "name": "com.vladislavtsurikov.imguiutility",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.IMGUIUtility",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.IMGUIUtility.",
+  "dependencies": {
+    "com.vladislavtsurikov.attributeutility": "1.0.0",
+    "com.vladislavtsurikov.color": "1.0.0",
+    "com.vladislavtsurikov.core": "1.0.0",
+    "com.vladislavtsurikov.deepcopy": "1.0.0",
+    "com.vladislavtsurikov.popup": "1.0.0",
+    "com.vladislavtsurikov.reflectionutility": "1.0.0",
+    "com.vladislavtsurikov.unityutility": "1.0.0",
+    "com.vladislavtsurikov.utility": "1.0.0"
+  }
+}

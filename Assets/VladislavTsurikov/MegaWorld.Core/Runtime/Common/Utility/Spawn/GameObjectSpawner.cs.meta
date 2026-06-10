@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 20d042601d714da7b9b761c75d55aa88
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Utility/Spawn/GameObjectSpawner.cs
+  uploadId: 915198

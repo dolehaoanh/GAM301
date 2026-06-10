@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: cdeff59fdf95cb540ae801b7d6807ecf
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Utility/Runtime/IRemovable.cs
+  uploadId: 915198

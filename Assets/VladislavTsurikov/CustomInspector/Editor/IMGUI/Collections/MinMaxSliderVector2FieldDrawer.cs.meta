@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: fb521e20653e29c40a1c32dba3a08f7a
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Collections/MinMaxSliderVector2FieldDrawer.cs
+  uploadId: 915198

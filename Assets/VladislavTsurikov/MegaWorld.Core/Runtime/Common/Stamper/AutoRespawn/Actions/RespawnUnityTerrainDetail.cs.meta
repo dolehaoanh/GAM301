@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 4f3e7c75671f421aa33ce7b73088c7a1
+timeCreated: 1697465721
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Stamper/AutoRespawn/Actions/RespawnUnityTerrainDetail.cs
+  uploadId: 915198

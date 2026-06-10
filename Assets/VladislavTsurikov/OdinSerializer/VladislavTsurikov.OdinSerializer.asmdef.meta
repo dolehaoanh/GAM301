@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c58cb679f31162c47bc160d1f716ecea
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/VladislavTsurikov.OdinSerializer.asmdef
+  uploadId: 915198

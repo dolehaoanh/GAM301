@@ -1,0 +1,11 @@
+﻿{
+  "name": "com.vladislavtsurikov.scriptableobjectutility",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.ScriptableObjectUtility",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.ScriptableObjectUtility.",
+  "dependencies": {
+    "com.vladislavtsurikov.core": "1.0.0",
+    "com.vladislavtsurikov.odinserializer": "1.0.0"
+  }
+}

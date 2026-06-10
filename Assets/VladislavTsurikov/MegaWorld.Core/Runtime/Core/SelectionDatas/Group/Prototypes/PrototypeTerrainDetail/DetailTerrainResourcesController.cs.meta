@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8f2d78440fbd5d247b089488b4336551
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Core/SelectionDatas/Group/Prototypes/PrototypeTerrainDetail/DetailTerrainResourcesController.cs
+  uploadId: 915198

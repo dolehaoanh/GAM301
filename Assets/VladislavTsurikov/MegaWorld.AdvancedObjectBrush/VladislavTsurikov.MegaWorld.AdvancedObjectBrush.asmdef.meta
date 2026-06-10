@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: fdf665f70db15544f8c9ae32bf101303
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.AdvancedObjectBrush/VladislavTsurikov.MegaWorld.AdvancedObjectBrush.asmdef
+  uploadId: 915198

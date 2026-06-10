@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2a400728d5f9e3541900bf1dc560868c
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CsCodeGenerator/VladislavTsurikov.CsCodeGenerator.asmdef
+  uploadId: 915198

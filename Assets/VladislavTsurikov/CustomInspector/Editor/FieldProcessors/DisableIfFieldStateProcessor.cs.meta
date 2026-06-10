@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 22f21e68780c472b8923b9b5173a20d3
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/FieldProcessors/DisableIfFieldStateProcessor.cs
+  uploadId: 915198

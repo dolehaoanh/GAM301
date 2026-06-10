@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4049bdfc6758f8e48867d7247cc03b0f
+ComputeShaderImporter:
+  externalObjects: {}
+  currentAPIMask: 4
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/FilterSettings/MaskFilterSystem/Resources/Height.compute
+  uploadId: 915198

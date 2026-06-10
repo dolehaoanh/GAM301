@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="Root" class="search-view">
+        <ui:VisualElement name="windowSearchBoxVisualContainer">
+            <ui:VisualElement name="searchIcon"/>
+            <ui:Label name="autoCompleteLabel"/>
+            <ui:Label name="searchPlaceholderLabel" text="Start typing to search..."/>
+            <ui:TextField name="searchBox"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,11 @@
+﻿{
+  "name": "com.vladislavtsurikov.bvh",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.BVH",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.BVH.",
+  "dependencies": {
+    "com.vladislavtsurikov.math": "1.0.0",
+    "com.vladislavtsurikov.unityutility": "1.0.0"
+  }
+}

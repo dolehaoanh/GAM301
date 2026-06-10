@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: fedc9959715d48e18f0feec544714afa
+timeCreated: 1695901268
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Core/SelectionDatas/Group/Prototypes/PrototypeTerrainObject/UnspawnTerrainObject.cs
+  uploadId: 915198

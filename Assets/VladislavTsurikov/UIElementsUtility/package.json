@@ -1,0 +1,16 @@
+﻿{
+  "name": "com.vladislavtsurikov.uielementsutility",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.UIElementsUtility",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.UIElementsUtility.",
+  "dependencies": {
+    "com.vladislavtsurikov.attributeutility": "1.0.0",
+    "com.vladislavtsurikov.color": "1.0.0",
+    "com.vladislavtsurikov.core": "1.0.0",
+    "com.vladislavtsurikov.cscodegenerator": "1.0.0",
+    "com.vladislavtsurikov.reflectionutility": "1.0.0",
+    "com.vladislavtsurikov.scriptableobjectutility": "1.0.0",
+    "com.vladislavtsurikov.utility": "1.0.0"
+  }
+}

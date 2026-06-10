@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 40ad33eb631b4658856ccfca42164edd
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/TerrainUtility/Runtime/Scene/AreaMask.cs
+  uploadId: 915198

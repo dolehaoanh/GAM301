@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 5adf2653aa544f9eacc4447b976473ae
+timeCreated: 1706369995
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/FilterSettings/MaskFilterSystem/Shaders/ExpandDown.shader
+  uploadId: 915198

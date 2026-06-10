@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b8f141313ab1adb4c884cd1eb569ef91
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Decorators/RequiredDecoratorDrawer.cs
+  uploadId: 915198

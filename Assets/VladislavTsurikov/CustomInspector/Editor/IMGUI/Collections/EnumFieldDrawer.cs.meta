@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: dc9ddad0cf024512ba7585741ed1e779
+timeCreated: 1733121689
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Collections/EnumFieldDrawer.cs
+  uploadId: 915198

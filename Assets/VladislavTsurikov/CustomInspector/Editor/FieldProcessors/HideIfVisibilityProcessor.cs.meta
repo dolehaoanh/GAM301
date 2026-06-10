@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 448e4ada72f644a294561d89ee149ab6
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/FieldProcessors/HideIfVisibilityProcessor.cs
+  uploadId: 915198

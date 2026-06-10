@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 3d6b37c086dc4d0a8085243ad385618f
+timeCreated: 1702809990
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/ScatterSystem/DefaultWaitingNextFrame.cs
+  uploadId: 915198

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: cd24e4996db241a291ad0ee8f2e4fa2c
+timeCreated: 1694259123
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Core/Runtime/Interfaces/IHasName.cs
+  uploadId: 915198

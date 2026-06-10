@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 82ed22da9400e67448663d3a47c94647
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/SceneDataSystem/Editor/Content/VisualElements/LayoutGroup_VisualElements.asset
+  uploadId: 915198

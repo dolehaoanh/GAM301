@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: c45e97fc1670407439eb28e9a867e964
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/ScriptableObjectUtility/Runtime/ScriptableObjectRegistry.cs
+  uploadId: 915198

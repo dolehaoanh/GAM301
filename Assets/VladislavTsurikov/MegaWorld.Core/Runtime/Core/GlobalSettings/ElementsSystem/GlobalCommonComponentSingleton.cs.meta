@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: bd630bd29e0a4564bab4536bfdd4e35d
+timeCreated: 1698160479
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Core/GlobalSettings/ElementsSystem/GlobalCommonComponentSingleton.cs
+  uploadId: 915198

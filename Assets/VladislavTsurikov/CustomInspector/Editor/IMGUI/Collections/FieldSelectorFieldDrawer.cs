@@ -1,0 +1,82 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using VladislavTsurikov.CustomInspector.Editor.Core;
+using VladislavTsurikov.CustomInspector.Editor.IMGUI;
+using VladislavTsurikov.Popup.Editor;
+
+namespace QuestsSystem.IntegrationActionFlow.Pointer
+{
+    public sealed class FieldSelectorFieldDrawerMatcher : FieldDrawerMatcher<IMGUIFieldDrawer>
+    {
+        public override Type DrawerType => typeof(FieldSelectorFieldDrawer);
+
+        public override bool CanDraw(FieldInfo field)
+        {
+            return typeof(FieldSelector).IsAssignableFrom(field.FieldType);
+        }
+    }
+
+    public class FieldSelectorFieldDrawer : IMGUIFieldDrawer
+    {
+        public override object Draw(Rect rect, GUIContent label, FieldInfo fieldInfo, object target, object value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            if (value is not FieldSelector fieldSelector)
+            {
+                return value;
+            }
+
+            Rect labelRect = new(rect.x, rect.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
+            Rect buttonRect = new(rect.x + EditorGUIUtility.labelWidth + 5, rect.y,
+                rect.width - EditorGUIUtility.labelWidth - 5, EditorGUIUtility.singleLineHeight);
+
+            if (fieldSelector.DeclaringType == null)
+            {
+                EditorGUI.LabelField(labelRect, "DeclaringType is not set");
+                return value;
+            }
+
+            EditorGUI.LabelField(labelRect, label);
+
+            string currentFieldName = fieldSelector.FieldInfo?.Name ?? "(None)";
+            if (GUI.Button(buttonRect, currentFieldName))
+            {
+                OpenFieldSelectorPopup(buttonRect, fieldSelector);
+            }
+
+            return value;
+        }
+
+        private void OpenFieldSelectorPopup(Rect buttonRect, FieldSelector fieldSelector)
+        {
+            List<FieldInfo> fields = GetValidFields(fieldSelector.DeclaringType, fieldSelector);
+
+            SelectorPopup.Open(
+                buttonRect,
+                "Select Field",
+                fields,
+                field => field.Name,
+                selectedField => fieldSelector.FieldName = selectedField.Name
+            );
+        }
+
+        private List<FieldInfo> GetValidFields(Type declaringType, FieldSelector fieldSelector)
+        {
+            BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+            return declaringType.GetFields(bindingFlags)
+                .Where(field => (field.IsPrivate || field.IsPublic) && fieldSelector.IsValidFieldType(field.FieldType))
+                .ToList();
+        }
+    }
+}
+#endif

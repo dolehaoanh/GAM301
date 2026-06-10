@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ae79102cc058470cb721e278fe64f34f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/IMGUIUtility/Editor/ElementStack/ReorderableList/ReorderableListStackEditor.cs
+  uploadId: 915198

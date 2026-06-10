@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 9e24528e5a0d4f91a1c5d36fe2e3a834
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/FilterSettings/MaskFilterSystem/Shaders/AreaMaskCrop.shader
+  uploadId: 915198

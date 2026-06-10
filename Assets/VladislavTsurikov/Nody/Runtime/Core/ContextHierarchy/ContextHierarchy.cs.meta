@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e653c98654d00184d831acc8883791a0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Nody/Runtime/Core/ContextHierarchy/ContextHierarchy.cs
+  uploadId: 915198

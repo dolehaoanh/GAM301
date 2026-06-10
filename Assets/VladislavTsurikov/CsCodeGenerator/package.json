@@ -1,0 +1,7 @@
+﻿{
+  "name": "com.vladislavtsurikov.cscodegenerator",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.CsCodeGenerator",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.CsCodeGenerator."
+}

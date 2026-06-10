@@ -1,0 +1,7 @@
+﻿{
+  "name": "com.vladislavtsurikov.cpunoise",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.CPUNoise",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.CPUNoise."
+}

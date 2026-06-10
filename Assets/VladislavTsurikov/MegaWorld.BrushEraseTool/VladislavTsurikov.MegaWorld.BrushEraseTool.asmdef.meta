@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cfe565d2ac2ff8c4b8083c48e83949c0
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.BrushEraseTool/VladislavTsurikov.MegaWorld.BrushEraseTool.asmdef
+  uploadId: 915198

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 4d898944fd39405fa2fdbc079066b02d
+timeCreated: 1731765547
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Collections/BoolFieldDrawer.cs
+  uploadId: 915198

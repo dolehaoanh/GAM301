@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f5fb799a8ec04094d874ff83777e444b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Runtime/DecoratorAttributes/HelpBoxAttribute.cs
+  uploadId: 915198

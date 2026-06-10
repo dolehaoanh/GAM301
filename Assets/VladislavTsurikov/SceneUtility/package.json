@@ -1,0 +1,16 @@
+﻿{
+  "name": "com.vladislavtsurikov.sceneutility",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.SceneUtility",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.SceneUtility.",
+  "dependencies": {
+    "com.cysharp.unitask": "2.5.10",
+    "com.unity.addressables": "2.8.0",
+    "com.vladislavtsurikov.custominspector": "1.0.0",
+    "com.vladislavtsurikov.odinserializer": "1.0.0",
+    "com.vladislavtsurikov.reflectionutility": "1.0.0",
+    "com.vladislavtsurikov.scriptableobjectutility": "1.0.0",
+    "com.vladislavtsurikov.utility": "1.0.0"
+  }
+}

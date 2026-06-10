@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b0cfc8a79f2db1942a48a82806936003
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Runtime/DecoratorAttributes/GroupAttribute.cs
+  uploadId: 915198

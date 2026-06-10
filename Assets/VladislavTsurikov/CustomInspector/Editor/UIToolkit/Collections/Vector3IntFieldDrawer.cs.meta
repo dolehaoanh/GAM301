@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5677b5d92132f6046aac82f18f4da172
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/UIToolkit/Collections/Vector3IntFieldDrawer.cs
+  uploadId: 915198

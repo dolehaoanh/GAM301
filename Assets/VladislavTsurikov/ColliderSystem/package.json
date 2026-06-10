@@ -1,0 +1,17 @@
+﻿{
+  "name": "com.vladislavtsurikov.collidersystem",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.ColliderSystem",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.ColliderSystem.",
+  "dependencies": {
+    "com.vladislavtsurikov.autodefines": "1.0.0",
+    "com.vladislavtsurikov.bvh": "1.0.0",
+    "com.vladislavtsurikov.core": "1.0.0",
+    "com.vladislavtsurikov.math": "1.0.0",
+    "com.vladislavtsurikov.nody": "1.0.0",
+    "com.vladislavtsurikov.scenedatasystem": "1.0.0",
+    "com.vladislavtsurikov.unityutility": "1.0.0",
+    "com.vladislavtsurikov.utility": "1.0.0"
+  }
+}

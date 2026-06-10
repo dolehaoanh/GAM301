@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4f59636e8a8accc49afd512011e09c72
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/SceneDataSystem/Editor/Content/SelectableColorPalette_EditorUI.asset
+  uploadId: 915198

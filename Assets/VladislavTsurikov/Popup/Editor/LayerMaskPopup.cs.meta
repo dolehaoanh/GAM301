@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3d11d69b92d1497ea0e66910e8015c93
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Popup/Editor/LayerMaskPopup.cs
+  uploadId: 915198

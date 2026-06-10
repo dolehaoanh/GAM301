@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="Root" class="popup">
+        <ui:VisualElement name="TitleBar" class="popup__title-bar">
+            <ui:Label name="TitleLabel" class="popup__title" text="Popup"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="ContentHost" class="popup__content"/>
+        <ui:VisualElement name="ResizeHandle" class="popup__resize-handle"/>
+    </ui:VisualElement>
+</ui:UXML>

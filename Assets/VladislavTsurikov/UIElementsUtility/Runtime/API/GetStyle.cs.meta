@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ce63f5add6fbbf04a859a6131e35edc5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/UIElementsUtility/Runtime/API/GetStyle.cs
+  uploadId: 915198

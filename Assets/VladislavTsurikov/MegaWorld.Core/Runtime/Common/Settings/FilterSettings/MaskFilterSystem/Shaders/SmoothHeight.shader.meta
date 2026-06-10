@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 49e30d2d41d68bb46813f0f4ec976609
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/FilterSettings/MaskFilterSystem/Shaders/SmoothHeight.shader
+  uploadId: 915198

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ce01bd2c0dd8835428254a7dfa8e3cd1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Core/Formatters/PrimitiveArrayFormatter.cs
+  uploadId: 915198

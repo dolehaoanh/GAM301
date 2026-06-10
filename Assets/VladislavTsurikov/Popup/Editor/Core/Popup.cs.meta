@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b7c8c430f13c4e3a9d4a31f83b50f2cc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Popup/Editor/Core/Popup.cs
+  uploadId: 915198

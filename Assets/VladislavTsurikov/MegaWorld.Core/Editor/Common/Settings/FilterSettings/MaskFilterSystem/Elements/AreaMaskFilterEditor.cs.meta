@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 26932afb62174f868fad50a534b34b7f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Editor/Common/Settings/FilterSettings/MaskFilterSystem/Elements/AreaMaskFilterEditor.cs
+  uploadId: 915198

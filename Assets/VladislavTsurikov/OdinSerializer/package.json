@@ -1,0 +1,7 @@
+﻿{
+  "name": "com.vladislavtsurikov.odinserializer",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.OdinSerializer",
+  "unity": "2021.3",
+  "description": "UPM package for OdinSerializer."
+}

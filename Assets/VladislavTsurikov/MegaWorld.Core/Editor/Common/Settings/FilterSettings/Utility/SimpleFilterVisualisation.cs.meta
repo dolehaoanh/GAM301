@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: b0d37811e55c4e42bf61936a2e159bcd
+timeCreated: 1697560462
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Editor/Common/Settings/FilterSettings/Utility/SimpleFilterVisualisation.cs
+  uploadId: 915198

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: b762518053a14c89bd80eceae1acb014
+timeCreated: 1731765528
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Collections/FloatFieldDrawer.cs
+  uploadId: 915198

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7927f102a36647d0a17f011d0d769beb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Nody/Runtime/AdvancedNodeStack/Attributes/CreateNodesAttribute.cs
+  uploadId: 915198

@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: a55c1ddee22f4f5291788c0067befe0d
+timeCreated: 1698418039
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/OverlapCheckSettings/OverlapInstance.cs
+  uploadId: 915198

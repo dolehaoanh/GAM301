@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 63942dbacd9648d8b11140e01a526106
+timeCreated: 1731860599
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/Core/RecursiveFieldsDrawer.cs
+  uploadId: 915198

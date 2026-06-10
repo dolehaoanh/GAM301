@@ -1,0 +1,16 @@
+.list-view-item {
+    flex-direction: row;
+    align-items: center;
+}
+
+.list-view-item__index {
+    min-width: 24px;
+    -unity-text-align: middle-center;
+    color: rgb(153, 153, 153);
+}
+
+.list-view-item__content {
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: center;
+}

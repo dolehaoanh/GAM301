@@ -1,0 +1,10 @@
+﻿{
+  "name": "com.vladislavtsurikov.terrainutility",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.TerrainUtility",
+  "unity": "2021.3",
+  "description": "Editor-side terrain creation and height application utilities for Unity terrain workflows.",
+  "dependencies": {
+    "com.vladislavtsurikov.custominspector": "1.0.0"
+  }
+}

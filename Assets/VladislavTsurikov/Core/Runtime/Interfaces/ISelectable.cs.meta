@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: be58b8012d0f47c1beced222ad82d863
+timeCreated: 1694258692
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Core/Runtime/Interfaces/ISelectable.cs
+  uploadId: 915198

@@ -1,0 +1,12 @@
+﻿{
+  "name": "com.vladislavtsurikov.utility",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.Utility",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.Utility.",
+  "dependencies": {
+    "com.cysharp.unitask": "2.5.10",
+    "com.unity.addressables": "2.8.0",
+    "com.vladislavtsurikov.odinserializer": "1.0.0"
+  }
+}

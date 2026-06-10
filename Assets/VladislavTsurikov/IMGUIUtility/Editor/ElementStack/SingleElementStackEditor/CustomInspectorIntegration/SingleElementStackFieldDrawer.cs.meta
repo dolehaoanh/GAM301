@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 80389b05092d4db1a55fde1ef366a853
+timeCreated: 1732480906
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/IMGUIUtility/Editor/ElementStack/SingleElementStackEditor/CustomInspectorIntegration/SingleElementStackFieldDrawer.cs
+  uploadId: 915198

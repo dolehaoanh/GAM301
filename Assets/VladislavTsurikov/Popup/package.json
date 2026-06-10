@@ -1,0 +1,13 @@
+﻿{
+  "name": "com.vladislavtsurikov.popup",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.Popup",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.Popup.",
+  "dependencies": {
+    "com.vladislavtsurikov.core": "1.0.0",
+    "com.vladislavtsurikov.graphruntime": "1.0.0",
+    "com.vladislavtsurikov.reflectionutility": "1.0.0",
+    "com.vladislavtsurikov.searchutility": "1.0.0"
+  }
+}

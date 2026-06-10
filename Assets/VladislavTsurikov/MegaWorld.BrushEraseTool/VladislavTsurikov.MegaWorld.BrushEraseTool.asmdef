@@ -1,0 +1,40 @@
+{
+    "name": "VladislavTsurikov.MegaWorld.BrushEraseTool",
+    "rootNamespace": "",
+    "references": [
+        "VladislavTsurikov.MegaWorld.Core",
+        "VladislavTsurikov.Core",
+        "VladislavTsurikov.AttributeUtility",
+        "VladislavTsurikov.Math",
+        "VladislavTsurikov.ColliderSystem",
+        "VladislavTsurikov.Nody",
+        "VladislavTsurikov.IMGUIUtility",
+        "VladislavTsurikov.IMGUIUtility.CustomInspectorIntegration",
+        "VladislavTsurikov.OdinSerializer",
+        "VladislavTsurikov.SceneDataSystem",
+        "VladislavTsurikov.ShortcutCombo",
+        "VladislavTsurikov.Timer",
+        "VladislavTsurikov.Undo",
+        "VladislavTsurikov.Utility",
+        "VladislavTsurikov.Color",
+        "VladislavTsurikov.ScriptableObjectUtility",
+        "VladislavTsurikov.UnityUtility",
+        "VladislavTsurikov.ReflectionUtility",
+        "VladislavTsurikov.CPUNoise",
+        "VladislavTsurikov.CustomInspector",
+        "VladislavTrurikov.GameObjectCollider",
+        "VladislavTsurikov.AutoDefines",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

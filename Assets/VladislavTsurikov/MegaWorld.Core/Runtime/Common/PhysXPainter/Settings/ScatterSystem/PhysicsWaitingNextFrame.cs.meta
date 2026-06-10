@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: e1e54d95eaae4d2c98dc5d68e5e86ba0
+timeCreated: 1702811305
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/PhysXPainter/Settings/ScatterSystem/PhysicsWaitingNextFrame.cs
+  uploadId: 915198

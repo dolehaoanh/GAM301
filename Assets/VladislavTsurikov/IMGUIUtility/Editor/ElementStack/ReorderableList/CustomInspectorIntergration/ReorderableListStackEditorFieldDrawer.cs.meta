@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 3092aa65aa2f45118ac975ba089aac0b
+timeCreated: 1736449058
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/IMGUIUtility/Editor/ElementStack/ReorderableList/CustomInspectorIntergration/ReorderableListStackEditorFieldDrawer.cs
+  uploadId: 915198

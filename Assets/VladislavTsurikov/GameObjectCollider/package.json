@@ -1,0 +1,16 @@
+﻿{
+  "name": "com.vladislavtsurikov.gameobjectcollider",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.GameObjectCollider",
+  "unity": "2021.3",
+  "description": "UPM package for GameObjectCollider.",
+  "dependencies": {
+    "com.vladislavtsurikov.bvh": "1.0.0",
+    "com.vladislavtsurikov.collidersystem": "1.0.0",
+    "com.vladislavtsurikov.color": "1.0.0",
+    "com.vladislavtsurikov.math": "1.0.0",
+    "com.vladislavtsurikov.nody": "1.0.0",
+    "com.vladislavtsurikov.scenedatasystem": "1.0.0",
+    "com.vladislavtsurikov.unityutility": "1.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: fb3c15d91f11f2a4a8d6eebcb18e630a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/OdinSerializer/Unity Integration/Formatters/ColorFormatter.cs
+  uploadId: 915198

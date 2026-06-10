@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 358d9021636da54429af178d61a3528f
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/MegaWorld.Core/Runtime/Common/Settings/FilterSettings/MaskFilterSystem/ImageMaskUvTransform.cs
+  uploadId: 915198

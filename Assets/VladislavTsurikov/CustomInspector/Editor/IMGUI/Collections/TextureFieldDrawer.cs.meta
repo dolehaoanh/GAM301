@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: f7d662ee118c47cd8cabc5749697ee6c
+timeCreated: 1735401426
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Collections/TextureFieldDrawer.cs
+  uploadId: 915198

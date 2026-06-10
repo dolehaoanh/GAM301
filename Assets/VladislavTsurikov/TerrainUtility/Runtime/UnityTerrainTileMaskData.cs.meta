@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6a3b701f6f4b47f2884b626c63553125
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/TerrainUtility/Runtime/UnityTerrainTileMaskData.cs
+  uploadId: 915198

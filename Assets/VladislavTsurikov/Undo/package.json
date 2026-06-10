@@ -1,0 +1,12 @@
+﻿{
+  "name": "com.vladislavtsurikov.undo",
+  "version": "1.0.0",
+  "displayName": "VladislavTsurikov.Undo",
+  "unity": "2021.3",
+  "description": "UPM package for VladislavTsurikov.Undo.",
+  "dependencies": {
+    "com.vladislavtsurikov.autodefines": "1.0.0",
+    "com.vladislavtsurikov.gameobjectcollider": "1.0.0",
+    "com.vladislavtsurikov.unityutility": "1.0.0"
+  }
+}

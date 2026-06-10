@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 53a95c3efc5344cdb1dbf2accf85f06e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Runtime/DecoratorAttributes/ShowIfAttribute.cs
+  uploadId: 915198

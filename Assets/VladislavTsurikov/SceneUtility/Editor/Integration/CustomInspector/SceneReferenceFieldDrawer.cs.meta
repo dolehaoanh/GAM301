@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: cbcea8900ea748ba9f63b7519383d9c7
+timeCreated: 1731763247
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/SceneUtility/Editor/Integration/CustomInspector/SceneReferenceFieldDrawer.cs
+  uploadId: 915198

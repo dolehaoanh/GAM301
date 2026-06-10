@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 08fdf7131fb849f0b50503ec97eff98a
+timeCreated: 1691768452
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/ColliderSystem/Runtime/Interfaces/IRaycast.cs
+  uploadId: 915198

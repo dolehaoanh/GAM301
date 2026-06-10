@@ -1,0 +1,27 @@
+{
+    "name": "VladislavTsurikov.IMGUIUtility.CustomInspectorIntegration",
+    "rootNamespace": "",
+    "references": [
+        "VladislavTsurikov.IMGUIUtility",
+        "VladislavTsurikov.CustomInspector",
+        "VladislavTsurikov.Nody",
+        "VladislavTsurikov.AttributeUtility",
+        "VladislavTsurikov.ReflectionUtility",
+        "VladislavTsurikov.DeepCopy",
+        "VladislavTsurikov.UnityUtility",
+        "VladislavTsurikov.Core",
+        "VladislavTsurikov.Utility",
+        "VladislavTsurikov.Popup"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

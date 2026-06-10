@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 31acb5a57969443ca0e77a6b046e5ed5
+timeCreated: 1683801421
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/UnityUtility/Runtime/Attributes/DontDestroyOnLoadUnity.cs
+  uploadId: 915198

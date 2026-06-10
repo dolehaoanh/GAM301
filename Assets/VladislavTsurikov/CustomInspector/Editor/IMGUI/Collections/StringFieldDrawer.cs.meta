@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 0e9fd32b43ba4b22b0b755099b78fe02
+timeCreated: 1731765491
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/CustomInspector/Editor/IMGUI/Collections/StringFieldDrawer.cs
+  uploadId: 915198

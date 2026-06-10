@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 48f24423da144b7f8bf4480000ddbd53
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 207301
+  packageName: "Mega World \u2014 Brush Tools"
+  packageVersion: 1.932
+  assetPath: Assets/VladislavTsurikov/Nody/Runtime/AdvancedNodeStack/AdvancedNodeStack.cs
+  uploadId: 915198
