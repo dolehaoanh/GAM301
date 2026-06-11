@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MainMenuBackground
+  m_Shader: {fileID: 4800000, guid: 508fef58c315649b28b6cede5c5a57ad, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _GridSize: 25
+    - _GridThickness: 0.04
+    - _Speed: 0.05
+    m_Colors:
+    - _BaseColor1: {r: 0.04, g: 0.05, b: 0.08, a: 1}
+    - _BaseColor2: {r: 0.14, g: 0.11, b: 0.09, a: 1}
+    - _GridColor: {r: 0.85, g: 0.68, b: 0.45, a: 0.16}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
