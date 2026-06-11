@@ -134,7 +134,7 @@ public class RTSUnitSelection : MonoBehaviour
 
         foreach (RTSUnit unit in allUnits)
         {
-            if (unit == null || unit.transform.position.y < -100f) continue;
+            if (unit == null || unit.transform.position.y < -100f || unit.isEnemy) continue;
 
             Vector3 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
 
@@ -167,7 +167,7 @@ public class RTSUnitSelection : MonoBehaviour
                 unit = hit.collider.GetComponent<RTSUnit>();
             }
 
-            if (unit != null)
+            if (unit != null && !unit.isEnemy)
             {
                 unit.Select();
                 selectedUnits.Add(unit);
@@ -338,10 +338,9 @@ public class RTSUnitSelection : MonoBehaviour
 
             Vector3 finalDestination = centerPoint + rotatedOffset;
 
-            UnityEngine.AI.NavMeshAgent agent = group[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
-            if (agent != null && agent.isOnNavMesh)
+            if (group[i] != null)
             {
-                agent.SetDestination(finalDestination);
+                group[i].MoveToDestination(finalDestination);
             }
         }
     }
@@ -444,12 +443,7 @@ public class RTSUnitSelection : MonoBehaviour
         foreach (RTSUnit unit in selectedUnits)
         {
             if (unit == null) continue;
-
-            UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
-            if (agent != null && agent.isOnNavMesh)
-            {
-                agent.ResetPath(); // Hủy đường đi hiện tại để đứng yên
-            }
+            unit.StopUnit();
         }
 
         SetRTSCursor(RTSCursorState.Default); // Trở về mặc định
@@ -474,12 +468,7 @@ public class RTSUnitSelection : MonoBehaviour
         foreach (RTSUnit unit in selectedUnits)
         {
             if (unit == null) continue;
-
-            UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
-            if (agent != null && agent.isOnNavMesh)
-            {
-                agent.ResetPath(); // Hủy đường để giữ vị trí cố định
-            }
+            unit.StopUnit();
         }
 
         SetRTSCursor(RTSCursorState.Default); // Trở về mặc định

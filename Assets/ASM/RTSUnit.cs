@@ -39,6 +39,7 @@ public class RTSUnit : MonoBehaviour
     public float attackDamage = 15f;
     public float attackCooldown = 1.0f;
     private float attackTimer = 0f;
+    private float rescanTimer = 0f;
 
     public RTSUnit combatTarget;
     public GameObject combatBuildingTarget;
@@ -51,7 +52,8 @@ public class RTSUnit : MonoBehaviour
         MovingToDeliver,
         Chasing,       // Them: Soldier chasing target
         Attacking,     // Tem: Soldier attacking target
-        Dead           // Them: Dead state (to disable operations)
+        Dead,          // Them: Dead state (to disable operations)
+        Moving         // Them: General moving state for soldiers/units
     }
     public RTSUnitState currentState = RTSUnitState.Idle;
 
@@ -268,11 +270,37 @@ public class RTSUnit : MonoBehaviour
                 }
                 break;
 
+            case RTSUnitState.Moving:
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    if (!navAgent.pathPending && navAgent.remainingDistance <= navAgent.stoppingDistance)
+                    {
+                        currentState = RTSUnitState.Idle;
+                    }
+                }
+                else
+                {
+                    currentState = RTSUnitState.Idle;
+                }
+                break;
+
             case RTSUnitState.Chasing:
                 if (currentTarget == null)
                 {
                     currentState = RTSUnitState.Idle;
                     break;
+                }
+
+                // Periodically rescan for closer/better targets to prevent target lock
+                rescanTimer -= Time.deltaTime;
+                if (rescanTimer <= 0f)
+                {
+                    rescanTimer = 1.0f; // Rescan every 1 second
+                    GameObject betterTarget = FindPrioritizedEnemyTarget();
+                    if (betterTarget != null && betterTarget != currentTarget)
+                    {
+                        currentTarget = betterTarget;
+                    }
                 }
 
                 // Check if target has died/destroyed mid-chase
@@ -545,7 +573,7 @@ public class RTSUnit : MonoBehaviour
         if (attacker != null)
         {
             bool shouldSwitch = false;
-            if (currentState == RTSUnitState.Idle || currentTarget == null)
+            if (currentState == RTSUnitState.Idle || currentState == RTSUnitState.Moving || currentTarget == null)
             {
                 shouldSwitch = true;
             }
@@ -565,12 +593,78 @@ public class RTSUnit : MonoBehaviour
                 currentTarget = attacker.gameObject;
                 currentState = RTSUnitState.Chasing;
             }
+
+            // Alert nearby allies
+            AlertNearbyAllies(attacker);
         }
 
         if (currentHP <= 0f)
         {
             Die();
         }
+    }
+
+    private void AlertNearbyAllies(RTSUnit attacker)
+    {
+        if (attacker == null) return;
+
+        float alertRadius = 15f;
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
+        foreach (RTSUnit unit in allUnits)
+        {
+            if (unit == null || unit == this || unit.currentState == RTSUnitState.Dead) continue;
+            if (unit.isEnemy == this.isEnemy && unit.unitType == RTSUnitType.Soldier)
+            {
+                float dist = Vector3.Distance(transform.position, unit.transform.position);
+                if (dist <= alertRadius)
+                {
+                    if (unit.currentState == RTSUnitState.Idle || unit.currentState == RTSUnitState.Moving || unit.currentTarget == null)
+                    {
+                        unit.currentTarget = attacker.gameObject;
+                        unit.currentState = RTSUnitState.Chasing;
+                    }
+                }
+            }
+        }
+    }
+
+    public void MoveToDestination(Vector3 destination)
+    {
+        if (currentState == RTSUnitState.Dead) return;
+
+        currentTarget = null;
+        combatTarget = null;
+        combatBuildingTarget = null;
+        targetResourceNode = null;
+        targetTownCenter = null;
+
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (navAgent != null && navAgent.isOnNavMesh)
+        {
+            navAgent.SetDestination(destination);
+            navAgent.isStopped = false;
+        }
+
+        currentState = RTSUnitState.Moving;
+    }
+
+    public void StopUnit()
+    {
+        if (currentState == RTSUnitState.Dead) return;
+
+        currentTarget = null;
+        combatTarget = null;
+        combatBuildingTarget = null;
+        targetResourceNode = null;
+        targetTownCenter = null;
+
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (navAgent != null && navAgent.isOnNavMesh)
+        {
+            navAgent.ResetPath();
+        }
+
+        currentState = RTSUnitState.Idle;
     }
 
     private System.Collections.IEnumerator HitFlashRoutine()
