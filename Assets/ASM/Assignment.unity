@@ -7080,7 +7080,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 149465298}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 1785443140}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -82525,6 +82525,19 @@ MonoBehaviour:
   resourceType: 2
   remainingResources: 500
   harvestRange: 2.5
+--- !u!134 &1785443140
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1 &1787042933 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4344160450501477778, guid: dde7cd756371a4cb7aadf06a35c36323, type: 3}

@@ -530,7 +530,24 @@ public class RTSUnit : MonoBehaviour
         if (bestTarget != null) return bestTarget;
 
         // 3. Scan for closest enemy Building (lowest priority)
-        minDist = scanRange;
+        // If there are no enemy units alive on the map, expand scan range so soldiers clean up buildings
+        float buildingScanRange = scanRange;
+        bool anyEnemyUnitAlive = false;
+        foreach (RTSUnit unit in allUnits)
+        {
+            if (unit != null && unit.currentState != RTSUnitState.Dead && unit.isEnemy != this.isEnemy)
+            {
+                anyEnemyUnitAlive = true;
+                break;
+            }
+        }
+
+        if (!anyEnemyUnitAlive)
+        {
+            buildingScanRange = 150f;
+        }
+
+        minDist = buildingScanRange;
         // Scan Town Centers
         foreach (TownCenter tc in TownCenter.AllTownCenters)
         {
@@ -626,6 +643,14 @@ public class RTSUnit : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void AttackTarget(GameObject target)
+    {
+        if (currentState == RTSUnitState.Dead) return;
+
+        currentTarget = target;
+        currentState = RTSUnitState.Chasing;
     }
 
     public void MoveToDestination(Vector3 destination)

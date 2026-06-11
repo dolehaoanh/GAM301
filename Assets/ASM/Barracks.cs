@@ -19,6 +19,8 @@ public class Barracks : MonoBehaviour
     [System.NonSerialized]
     public float trainingTimer = 0f;
 
+
+
     private void OnEnable()
     {
         if (!AllBarracks.Contains(this))
@@ -64,6 +66,21 @@ public class Barracks : MonoBehaviour
     private void Start()
     {
         ApplyFactionColors();
+        var obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
+        if (obstacle == null)
+        {
+            obstacle = gameObject.AddComponent<UnityEngine.AI.NavMeshObstacle>();
+        }
+        if (obstacle != null)
+        {
+            obstacle.carving = true;
+            var boxCol = GetComponent<BoxCollider>();
+            if (boxCol != null)
+            {
+                obstacle.center = boxCol.center;
+                obstacle.size = boxCol.size;
+            }
+        }
     }
 
     private void ApplyFactionColors()

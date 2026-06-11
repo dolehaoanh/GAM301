@@ -218,6 +218,52 @@ public class RTSUnitSelection : MonoBehaviour
             int unitCount = selectedUnits.Count;
             if (unitCount == 0) return;
 
+            // Check if player right-clicked an enemy unit or building to attack
+            RTSUnit clickedEnemyUnit = hit.collider.GetComponentInParent<RTSUnit>();
+            if (clickedEnemyUnit == null) clickedEnemyUnit = hit.collider.GetComponent<RTSUnit>();
+            if (clickedEnemyUnit != null && clickedEnemyUnit.isEnemy)
+            {
+                foreach (RTSUnit unit in selectedUnits)
+                {
+                    if (unit != null && unit.unitType == RTSUnitType.Soldier)
+                    {
+                        unit.AttackTarget(clickedEnemyUnit.gameObject);
+                    }
+                }
+                SetRTSCursor(RTSCursorState.Default);
+                return;
+            }
+
+            TownCenter clickedTC = hit.collider.GetComponentInParent<TownCenter>();
+            if (clickedTC == null) clickedTC = hit.collider.GetComponent<TownCenter>();
+            if (clickedTC != null && clickedTC.isEnemy)
+            {
+                foreach (RTSUnit unit in selectedUnits)
+                {
+                    if (unit != null && unit.unitType == RTSUnitType.Soldier)
+                    {
+                        unit.AttackTarget(clickedTC.gameObject);
+                    }
+                }
+                SetRTSCursor(RTSCursorState.Default);
+                return;
+            }
+
+            Barracks clickedB = hit.collider.GetComponentInParent<Barracks>();
+            if (clickedB == null) clickedB = hit.collider.GetComponent<Barracks>();
+            if (clickedB != null && clickedB.isEnemy)
+            {
+                foreach (RTSUnit unit in selectedUnits)
+                {
+                    if (unit != null && unit.unitType == RTSUnitType.Soldier)
+                    {
+                        unit.AttackTarget(clickedB.gameObject);
+                    }
+                }
+                SetRTSCursor(RTSCursorState.Default);
+                return;
+            }
+
             // Kiểm tra xem người chơi nhấp chuột phải trúng Mỏ Vàng hoặc Cây Gỗ không
             ResourceNode clickedNode = hit.collider.GetComponentInParent<ResourceNode>();
             if (clickedNode == null)
