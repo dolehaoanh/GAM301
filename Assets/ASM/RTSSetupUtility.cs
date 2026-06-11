@@ -148,8 +148,9 @@ public class RTSSetupUtility
         }
         else
         {
-            enemyTCGo.transform.position = enemyBasePos;
-            enemyTCGo.transform.rotation = playerTC.transform.rotation;
+            // Bảo toàn vị trí do người dùng tự đặt trong Editor
+            // enemyTCGo.transform.position = enemyBasePos;
+            // enemyTCGo.transform.rotation = playerTC.transform.rotation;
         }
 
         TownCenter enemyTC = enemyTCGo.GetComponent<TownCenter>();
@@ -169,8 +170,9 @@ public class RTSSetupUtility
         }
         else
         {
-            enemyBarracksGo.transform.position = enemyBasePos + new Vector3(15f, 0f, 0f);
-            enemyBarracksGo.transform.rotation = playerTC.transform.rotation;
+            // Bảo toàn vị trí do người dùng tự đặt trong Editor
+            // enemyBarracksGo.transform.position = enemyBasePos + new Vector3(15f, 0f, 0f);
+            // enemyBarracksGo.transform.rotation = playerTC.transform.rotation;
         }
 
         Barracks enemyB = enemyBarracksGo.GetComponent<Barracks>();
