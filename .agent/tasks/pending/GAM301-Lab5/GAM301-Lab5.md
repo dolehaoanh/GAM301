@@ -143,7 +143,7 @@ Bước 6 : Sử dụng công cụ Scene Tools điều khiển vị trí, góc x
 
 ![](_page_8_Picture_1.jpeg)
 
-### **Bài 5 : Tạo hiệu ứng mờ (blur) cho toàn màn hình**
+### **[x] Bài 5 : Tạo hiệu ứng mờ (blur) cho toàn màn hình**
 
 ## **Gợi ý : Sử dụng FullScreen Shader Graph**
 

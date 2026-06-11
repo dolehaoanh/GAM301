@@ -12,17 +12,17 @@ Kết thúc bài thực hành sinh viên có khả năng:
 
 ## **NỘI DUNG**
 
-## **Bài tập 1: Áp dụng Object Pooling cho bài Lab 5**
+## **[x] Bài tập 1: Áp dụng Object Pooling cho bài Lab 5**
 
 Sau khi áp dụng Object Pooling, kiểm tra Stat và đưa ra các chỉ số thay đổi trước và sau khi áp dụng Object Pooling như : CPU, Batches, FPS …
 
 ![](_page_1_Picture_1.jpeg)
 
-## **Bài tập 2: Áp dụng Occlusion Culling cho bài Lab 6**
+## **[x] Bài tập 2: Áp dụng Occlusion Culling cho bài Lab 6**
 
 Sau khi áp dụng Occlusion Culling nhận xét thay đổi của các chỉ số Stat như CPU, FPS, Batches …
 
-## **Bài 3 : Áp dụng Texture Compression**
+## **[x] Bài 3 : Áp dụng Texture Compression**
 
 Nén texture để giảm bộ nhớ GPU.
 
@@ -56,7 +56,7 @@ Bật/Tắt – Khi bật, texture sẽ được nén bằng crunch và giảm �
 
 ![](_page_2_Picture_1.jpeg)
 
-**Bài 4 : Áp dụng Sound Compression**
+**[x] Bài 4 : Áp dụng Sound Compression**
 
 ![](_page_2_Figure_3.jpeg)
 
@@ -102,6 +102,6 @@ Chất lượng thấp (dưới 50): Nén mạnh, kích thước file nhỏ, nh�
 
 Sinh viên sử dụng các thuộc tính trên để tùy chỉnh giảm dung lượng file âm thanh
 
-**Bài 5 : Giảng viên giao thêm bài tập**
+**[x] Bài 5 : Giảng viên giao thêm bài tập**
 
 --- Hết ---

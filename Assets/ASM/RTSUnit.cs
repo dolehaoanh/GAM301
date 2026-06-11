@@ -26,7 +26,7 @@ public class RTSUnit : MonoBehaviour
     [Header("Selection Visual Settings")]
     public float selectionRingRadius = 0.8f;
     public float selectionRingWidth = 0.08f;
-    public Color selectionColor = new Color(0f, 1f, 0.5f, 0.9f); 
+    public Color selectionColor = new Color(0f, 1f, 0.5f, 0.9f);
 
     [Header("Gatherer Settings")]
     public float carriedAmount = 0f;
@@ -48,9 +48,15 @@ public class RTSUnit : MonoBehaviour
         Idle,
         MovingToResource,
         Gathering,
-        MovingToDeliver
+        MovingToDeliver,
+        Chasing,       // Them: Soldier chasing target
+        Attacking,     // Tem: Soldier attacking target
+        Dead           // Them: Dead state (to disable operations)
     }
     public RTSUnitState currentState = RTSUnitState.Idle;
+
+    // A general target that can be either an enemy Unit or an enemy Building
+    private GameObject currentTarget;
 
     public ResourceNode targetResourceNode;
     public TownCenter targetTownCenter;
@@ -97,8 +103,8 @@ public class RTSUnit : MonoBehaviour
                 {
                     Vector3 targetPos = targetResourceNode.transform.position;
                     Vector3 currentDest = navAgent.destination;
-                    bool needsNewPath = !navAgent.hasPath || 
-                                        Mathf.Abs(currentDest.x - targetPos.x) > 0.1f || 
+                    bool needsNewPath = !navAgent.hasPath ||
+                                        Mathf.Abs(currentDest.x - targetPos.x) > 0.1f ||
                                         Mathf.Abs(currentDest.z - targetPos.z) > 0.1f;
                     if (needsNewPath)
                     {
@@ -109,11 +115,11 @@ public class RTSUnit : MonoBehaviour
                 Vector3 flatUnitPos = new Vector3(transform.position.x, 0f, transform.position.z);
                 Vector3 flatResourcePos = new Vector3(targetResourceNode.transform.position.x, 0f, targetResourceNode.transform.position.z);
                 float distToResource = Vector3.Distance(flatUnitPos, flatResourcePos);
-                
+
                 // Sử dụng bán kính hiệu dụng tối thiểu là 3.0 để dễ tiếp cận các cây cao/to
                 float effectiveRange = Mathf.Max(targetResourceNode.harvestRange, 3.0f);
-                
-                bool reachedResource = distToResource <= effectiveRange || 
+
+                bool reachedResource = distToResource <= effectiveRange ||
                                      (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= effectiveRange);
 
                 if (reachedResource)
@@ -193,8 +199,8 @@ public class RTSUnit : MonoBehaviour
                 {
                     Vector3 targetPos = targetTownCenter.transform.position;
                     Vector3 currentDest = navAgent.destination;
-                    bool needsNewPath = !navAgent.hasPath || 
-                                        Mathf.Abs(currentDest.x - targetPos.x) > 0.1f || 
+                    bool needsNewPath = !navAgent.hasPath ||
+                                        Mathf.Abs(currentDest.x - targetPos.x) > 0.1f ||
                                         Mathf.Abs(currentDest.z - targetPos.z) > 0.1f;
                     if (needsNewPath)
                     {
@@ -205,10 +211,10 @@ public class RTSUnit : MonoBehaviour
                 Vector3 flatUnitPosTC = new Vector3(transform.position.x, 0f, transform.position.z);
                 Vector3 flatTCPos = new Vector3(targetTownCenter.transform.position.x, 0f, targetTownCenter.transform.position.z);
                 float distToTC = Vector3.Distance(flatUnitPosTC, flatTCPos);
-                
+
                 // Sử dụng khoảng cách hiệu dụng tối thiểu là 3.5 để giao tài nguyên dễ dàng
                 float effectiveDeliverRange = Mathf.Max(targetTownCenter.deliverRange, 3.5f);
-                
+
                 bool reachedTC = distToTC <= effectiveDeliverRange ||
                                  (navAgent != null && navAgent.isOnNavMesh && !navAgent.pathPending && navAgent.hasPath && navAgent.remainingDistance <= effectiveDeliverRange);
 
@@ -247,91 +253,155 @@ public class RTSUnit : MonoBehaviour
 
     private void UpdateSoldier()
     {
-        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (currentState == RTSUnitState.Dead) return;
 
-        if (attackTimer > 0f)
-        {
-            attackTimer -= Time.deltaTime;
-        }
+        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
 
-        // TỰ ĐỘNG QUÉT ĐỊCH
-        // 1. Quét tìm lính đối thủ trước
-        if (combatTarget == null || combatTarget.currentHP <= 0f)
+        switch (currentState)
         {
-            combatTarget = FindNearestEnemyUnit();
-        }
+            case RTSUnitState.Idle:
+                // Scan for the highest-priority enemy target in range
+                currentTarget = FindPrioritizedEnemyTarget();
+                if (currentTarget != null)
+                {
+                    currentState = RTSUnitState.Chasing;
+                }
+                break;
 
-        // 2. Nếu không có lính đối thủ, quét tìm nhà đối thủ (TownCenter hoặc Barracks)
-        if (combatTarget == null && combatBuildingTarget == null)
-        {
-            combatBuildingTarget = FindNearestEnemyBuilding();
-        }
+            case RTSUnitState.Chasing:
+                if (currentTarget == null)
+                {
+                    currentState = RTSUnitState.Idle;
+                    break;
+                }
 
-        // 3. Tự động tấn công
-        if (combatTarget != null)
-        {
-            float distance = Vector3.Distance(transform.position, combatTarget.transform.position);
-            if (distance <= attackRange)
+                // Check if target has died/destroyed mid-chase
+                RTSUnit targetUnit = currentTarget.GetComponent<RTSUnit>();
+                if (targetUnit != null && targetUnit.currentState == RTSUnitState.Dead)
+                {
+                    currentTarget = null;
+                    currentState = RTSUnitState.Idle;
+                    break;
+                }
+
+                // Move agent toward the target
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    navAgent.SetDestination(currentTarget.transform.position);
+                }
+
+                // Calculate ranges (buildings have larger attack offsets)
+                float effectiveRange = attackRange;
+                // Calculate ranges using building's collider if target is a building
+                // Calculate ranges using building's collider if target is a building
+                float distToTarget;
+                Collider targetCollider = currentTarget.GetComponent<Collider>();
+
+                // Ignore Y axis for distance checks
+                Vector3 flatSelf = new Vector3(transform.position.x, 0f, transform.position.z);
+                Vector3 flatTarget = new Vector3(currentTarget.transform.position.x, 0f, currentTarget.transform.position.z);
+
+                if (targetUnit == null && targetCollider != null) // It's a building
+                {
+                    Vector3 flatClosestPoint = targetCollider.ClosestPoint(transform.position);
+                    flatClosestPoint.y = 0f;
+                    distToTarget = Vector3.Distance(flatSelf, flatClosestPoint);
+                }
+                else
+                {
+                    distToTarget = Vector3.Distance(flatSelf, flatTarget);
+                }
+
+                // Transition to attacking if in range
+                if (isEnemy)
+                {
+                    Debug.Log($"[Combat Distance Debug] {gameObject.name} Chasing target {currentTarget.name}: distToTarget = {distToTarget:F2}, effectiveRange = {effectiveRange:F2}");
+                }
+
+                if (distToTarget <= effectiveRange)
+                {
+                    if (navAgent != null && navAgent.isOnNavMesh) navAgent.ResetPath();
+                    currentState = RTSUnitState.Attacking;
+                }
+                break;
+
+            case RTSUnitState.Attacking:
+                if (currentTarget == null)
+                {
+                    currentState = RTSUnitState.Idle;
+                    break;
+                }
+
+                RTSUnit targetUnitAtk = currentTarget.GetComponent<RTSUnit>();
+                if (targetUnitAtk != null && targetUnitAtk.currentState == RTSUnitState.Dead)
+                {
+                    currentTarget = null;
+                    currentState = RTSUnitState.Idle;
+                    break;
+                }
+
+                // Check if target moved out of range
+                float currentRange = attackRange;
+            // Check if target moved out of range (ignore Y axis)
+            float distance;
+            Collider targetColliderAtk = currentTarget.GetComponent<Collider>();
+            
+            Vector3 flatSelfAtk = new Vector3(transform.position.x, 0f, transform.position.z);
+            Vector3 flatTargetAtk = new Vector3(currentTarget.transform.position.x, 0f, currentTarget.transform.position.z);
+
+            if (targetUnitAtk == null && targetColliderAtk != null) // It's a building
             {
-                if (navAgent != null && navAgent.isOnNavMesh) navAgent.ResetPath();
+                Vector3 flatClosestPointAtk = targetColliderAtk.ClosestPoint(transform.position);
+                flatClosestPointAtk.y = 0f;
+                distance = Vector3.Distance(flatSelfAtk, flatClosestPointAtk);
+            }
+            else
+            {
+                distance = Vector3.Distance(flatSelfAtk, flatTargetAtk);
+            }
 
-                Vector3 lookDir = (combatTarget.transform.position - transform.position).normalized;
+            // Add a 0.8f buffer so small physics/rounding changes don't cancel the attack instantly
+            if (distance > currentRange + 0.8f)
+            {
+                currentState = RTSUnitState.Chasing;
+                break;
+            }
+
+                // Rotate to face target
+                Vector3 lookDir = (currentTarget.transform.position - transform.position).normalized;
                 lookDir.y = 0f;
                 if (lookDir != Vector3.zero)
                 {
                     transform.rotation = Quaternion.LookRotation(lookDir);
                 }
 
+                // Attack cooldown logic
                 if (attackTimer <= 0f)
                 {
                     attackTimer = attackCooldown;
-                    TriggerAttackAnimation();
-                    combatTarget.TakeDamage(attackDamage);
-                }
-            }
-            else
-            {
-                if (navAgent != null && navAgent.isOnNavMesh)
-                {
-                    navAgent.SetDestination(combatTarget.transform.position);
-                }
-            }
-        }
-        else if (combatBuildingTarget != null)
-        {
-            float distance = Vector3.Distance(transform.position, combatBuildingTarget.transform.position);
-            float buildingAttackRange = attackRange + 1.5f;
 
-            if (distance <= buildingAttackRange)
-            {
-                if (navAgent != null && navAgent.isOnNavMesh) navAgent.ResetPath();
+                    // Trigger the attack animation in the Animator
+                    Animator animator = GetComponentInChildren<Animator>();
+                    if (animator != null)
+                    {
+                        animator.SetTrigger("Attack");
+                    }
 
-                Vector3 lookDir = (combatBuildingTarget.transform.position - transform.position).normalized;
-                lookDir.y = 0f;
-                if (lookDir != Vector3.zero)
-                {
-                    transform.rotation = Quaternion.LookRotation(lookDir);
+                    // Deal damage
+                    if (targetUnitAtk != null)
+                    {
+                        // Pass 'this' so the defender knows who to attack back
+                        targetUnitAtk.TakeDamage(attackDamage, this);
+                    }
+                    else
+                    {
+                        // Handle building damage if it has a script, or simulate building attack log
+                        Debug.Log($"[RTS Combat] {gameObject.name} dealing damage to building: {currentTarget.name}");
+                    }
                 }
-
-                if (attackTimer <= 0f)
-                {
-                    attackTimer = attackCooldown;
-                    TriggerAttackAnimation();
-
-                    // Giả lập phá hủy nhà (in log, có thể phá hủy trực tiếp khi đánh đủ số lần)
-                    Debug.Log($"[RTS Combat] Attacking enemy building: {combatBuildingTarget.name}!");
-                }
-            }
-            else
-            {
-                if (navAgent != null && navAgent.isOnNavMesh)
-                {
-                    navAgent.SetDestination(combatBuildingTarget.transform.position);
-                }
-            }
+                break;
         }
     }
-
     private RTSUnit FindNearestEnemyUnit()
     {
         RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
@@ -392,14 +462,110 @@ public class RTSUnit : MonoBehaviour
         return nearest;
     }
 
-    public void TakeDamage(float damage)
+    private GameObject FindPrioritizedEnemyTarget()
     {
-        if (currentHP <= 0f) return;
+        RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
+        float minDist = scanRange;
+        GameObject bestTarget = null;
+
+        // 1. Scan for closest enemy Soldier (highest priority)
+        foreach (RTSUnit unit in allUnits)
+        {
+            if (unit == null || unit.currentState == RTSUnitState.Dead || unit.isEnemy == this.isEnemy) continue;
+            if (unit.unitType == RTSUnitType.Soldier)
+            {
+                float dist = Vector3.Distance(transform.position, unit.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    bestTarget = unit.gameObject;
+                }
+            }
+        }
+        if (bestTarget != null) return bestTarget;
+
+        // 2. Scan for closest enemy Farmer (second priority)
+        minDist = scanRange;
+        foreach (RTSUnit unit in allUnits)
+        {
+            if (unit == null || unit.currentState == RTSUnitState.Dead || unit.isEnemy == this.isEnemy) continue;
+            if (unit.unitType == RTSUnitType.Farmer)
+            {
+                float dist = Vector3.Distance(transform.position, unit.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    bestTarget = unit.gameObject;
+                }
+            }
+        }
+        if (bestTarget != null) return bestTarget;
+
+        // 3. Scan for closest enemy Building (lowest priority)
+        minDist = scanRange;
+        // Scan Town Centers
+        foreach (TownCenter tc in TownCenter.AllTownCenters)
+        {
+            if (tc == null || tc.isEnemy == this.isEnemy) continue;
+            float dist = Vector3.Distance(transform.position, tc.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                bestTarget = tc.gameObject;
+            }
+        }
+        // Scan Barracks
+        foreach (Barracks b in Barracks.AllBarracks)
+        {
+            if (b == null || b.isEnemy == this.isEnemy) continue;
+            float dist = Vector3.Distance(transform.position, b.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                bestTarget = b.gameObject;
+            }
+        }
+
+        return bestTarget;
+    }
+
+    public void TakeDamage(float damage, RTSUnit attacker = null)
+    {
+        if (currentState == RTSUnitState.Dead) return;
 
         currentHP -= damage;
         if (currentHP < 0f) currentHP = 0f;
 
-        Debug.Log($"[RTS Combat] {gameObject.name} took {damage} damage! HP remaining: {currentHP}/{maxHP}");
+
+        // Add this line to check what state the enemy is in when hit
+        Debug.Log($"[Combat Log] {gameObject.name} (isEnemy: {isEnemy}) hit by {(attacker != null ? attacker.name : "null")}. Current State: {currentState}");
+        StartCoroutine(HitFlashRoutine());
+
+        // Retaliate: if idle, or if the attacker is closer than the current target, switch to it
+        if (attacker != null)
+        {
+            bool shouldSwitch = false;
+            if (currentState == RTSUnitState.Idle || currentTarget == null)
+            {
+                shouldSwitch = true;
+            }
+            else
+            {
+                float distToCurrent = Vector3.Distance(transform.position, currentTarget.transform.position);
+                float distToAttacker = Vector3.Distance(transform.position, attacker.transform.position);
+                // Switch if attacker is closer
+                if (distToAttacker < distToCurrent)
+                {
+                    shouldSwitch = true;
+                }
+            }
+
+            if (shouldSwitch)
+            {
+                currentTarget = attacker.gameObject;
+                currentState = RTSUnitState.Chasing;
+            }
+        }
 
         if (currentHP <= 0f)
         {
@@ -407,28 +573,135 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
+    private System.Collections.IEnumerator HitFlashRoutine()
+    {
+        var renderers = GetComponentsInChildren<Renderer>();
+        Color[] originalColors = new Color[renderers.Length];
+
+        // Set all materials to solid white to indicate damage
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null && !(renderers[i] is LineRenderer))
+            {
+                originalColors[i] = renderers[i].material.color;
+                renderers[i].material.color = Color.white;
+            }
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        // Restore original faction colors
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null && !(renderers[i] is LineRenderer))
+            {
+                renderers[i].material.color = originalColors[i];
+            }
+        }
+    }
+
     private void Die()
     {
         Debug.Log($"[RTS Combat] {gameObject.name} has died!");
+        currentState = RTSUnitState.Dead;
         Deselect();
 
+        // 1. Disable collider so other units can walk through the corpse
         var col = GetComponent<Collider>();
-        if (col != null) Destroy(col);
-        if (navAgent != null) Destroy(navAgent);
+        if (col != null) col.enabled = false;
 
-        StartCoroutine(SinkAndDestroy());
+        // 2. Turn off NavMeshAgent so it stops pathfinding
+        if (navAgent != null)
+        {
+            navAgent.isStopped = true;
+            navAgent.enabled = false;
+        }
+
+        // 3. Start the unified death timeline coroutine
+        StartCoroutine(DeathSequenceRoutine());
     }
 
-    private System.Collections.IEnumerator SinkAndDestroy()
+    private System.Collections.IEnumerator DeathSequenceRoutine()
     {
-        float timer = 0f;
-        while (timer < 1.5f)
+        // A. Trigger the death animation
+        Animator animator = GetComponentInChildren<Animator>();
+        Debug.Log($"[Death Debug] {gameObject.name} is playing Death_B directly. Animator found: {(animator != null ? animator.name : "null")}");
+        if (animator != null)
         {
-            transform.position += Vector3.down * Time.deltaTime * 0.6f;
-            timer += Time.deltaTime;
+            animator.SetTrigger("Die");
+            animator.Play("Death_B");
+        }
+
+        // B. Wait for the fall animation to complete (approx 2.2s)
+        yield return new WaitForSeconds(2.2f);
+
+        // C. Freeze the animator pose
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
+
+        // D. Lie on the ground for 2 seconds
+        yield return new WaitForSeconds(2.0f);
+
+        // E. Sink slowly into the ground for 1.5 seconds
+        float sinkDuration = 1.5f;
+        float sinkSpeed = 0.6f; // Units per second downwards
+        float elapsed = 0f;
+        while (elapsed < sinkDuration)
+        {
+            transform.position += Vector3.down * sinkSpeed * Time.deltaTime;
+            elapsed += Time.deltaTime;
             yield return null;
         }
-        Destroy(gameObject);
+
+        // F. Clean up: Object Pool return or fallback to Destroy
+        if (UnitPoolManager.Instance != null)
+        {
+            UnitPoolManager.Instance.ReturnUnit(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void ResetUnit(bool isEnemy)
+    {
+        // 1. Restore health and state
+        currentHP = maxHP;
+        currentState = RTSUnitState.Idle;
+        this.isEnemy = isEnemy;
+        currentTarget = null;
+        combatTarget = null;
+        combatBuildingTarget = null;
+        carriedAmount = 0f;
+        carriedType = RTSResourceType.None;
+
+        // 2. Re-enable Physics and Pathfinding
+        var col = GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (navAgent != null)
+        {
+            navAgent.enabled = true;
+            navAgent.isStopped = false;
+        }
+
+        // 3. Re-enable and reset Animator
+        Animator animator = GetComponentInChildren<Animator>();
+        if (animator != null)
+        {
+            animator.enabled = true;
+            animator.ResetTrigger("Attack");
+            animator.ResetTrigger("Die");
+            // Reset to the base Idle/Movement blend tree state
+            animator.Play("Movement", 0, 0f);
+        }
+
+        // 4. Re-apply colors based on faction
+        ApplyFactionColors();
     }
 
     private void TriggerAttackAnimation()
@@ -466,7 +739,7 @@ public class RTSUnit : MonoBehaviour
 
         targetResourceNode = node;
         currentState = RTSUnitState.MovingToResource;
-        
+
         if (carriedType != RTSResourceType.None && carriedType != node.resourceType)
         {
             carriedAmount = 0;
@@ -488,9 +761,9 @@ public class RTSUnit : MonoBehaviour
                 visualBag.transform.SetParent(transform);
                 visualBag.transform.localPosition = new Vector3(0f, 1.2f, -0.4f);
                 visualBag.transform.localScale = new Vector3(0.35f, 0.35f, 0.35f);
-                
+
                 Destroy(visualBag.GetComponent<Collider>());
-                
+
                 Renderer r = visualBag.GetComponent<Renderer>();
                 if (r != null)
                 {
@@ -541,7 +814,7 @@ public class RTSUnit : MonoBehaviour
             {
                 if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject)) continue;
                 if (r.sharedMaterial == null) continue;
-                
+
                 if (!r.sharedMaterial.name.Contains("(Instance)"))
                 {
                     Material instantiatedMat = new Material(r.sharedMaterial);
@@ -559,9 +832,9 @@ public class RTSUnit : MonoBehaviour
             if (mat != null)
             {
                 // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
-                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || 
+                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || r.name.Contains("Quad") || 
                                      mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
-                
+
                 if (isMinimapIcon)
                 {
                     if (isEnemy)
@@ -632,7 +905,7 @@ public class RTSUnit : MonoBehaviour
         ringObject.transform.localRotation = Quaternion.identity;
 
         selectionLine = ringObject.AddComponent<LineRenderer>();
-        selectionLine.useWorldSpace = false; 
+        selectionLine.useWorldSpace = false;
         selectionLine.loop = true;
         selectionLine.startWidth = selectionRingWidth;
         selectionLine.endWidth = selectionRingWidth;

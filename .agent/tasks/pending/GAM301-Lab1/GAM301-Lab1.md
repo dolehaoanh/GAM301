@@ -45,7 +45,7 @@ Tạo một script để di chuyển 3 đối tượng đến các vị trí m�
 
 Tạo 3 đối tượng và lưu chúng trong một mảng hoặc danh sách. Dùng transform.position để di chuyển từng đối tượng đến vị trí mới. Sử dụng WaitForSeconds(1) để chờ trước khi di chuyển đối tượng tiếp theo.
 
-### **Bài 4 : Giảng viên cho thêm**
+### **[x] Bài 4 : Giảng viên cho thêm**
 
 ## \*\*\* YÊU CẦU NỘP BÀI:
 

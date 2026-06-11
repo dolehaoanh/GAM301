@@ -78,7 +78,7 @@ public class Barracks : MonoBehaviour
             {
                 if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject)) continue;
                 if (r.sharedMaterial == null) continue;
-                
+
                 if (!r.sharedMaterial.name.Contains("(Instance)"))
                 {
                     Material instantiatedMat = new Material(r.sharedMaterial);
@@ -96,9 +96,9 @@ public class Barracks : MonoBehaviour
             if (mat != null)
             {
                 // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
-                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || 
+                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") ||
                                      mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
-                
+
                 if (isMinimapIcon)
                 {
                     mat.color = isEnemy ? new Color(1f, 0f, 0f, 1f) : new Color(0f, 1f, 0f, 1f);
@@ -150,29 +150,46 @@ public class Barracks : MonoBehaviour
     {
         if (soldierPrefab == null)
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             soldierPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ASM/Soldier.prefab");
-            #endif
+#endif
         }
 
         if (soldierPrefab != null)
         {
             Vector3 spawnPos = spawnPoint != null ? spawnPoint.position : transform.position + transform.forward * deliverRange;
-            
+
             UnityEngine.AI.NavMeshHit hit;
             if (UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
             {
                 spawnPos = hit.position;
             }
 
-            GameObject soldierGo = Instantiate(soldierPrefab, spawnPos, Quaternion.identity);
-            soldierGo.name = isEnemy ? $"Enemy_Soldier_{Random.Range(100, 999)}" : $"Soldier_Trained_{Random.Range(100, 999)}";
-            
-            // Đồng bộ faction isEnemy cho Chiến binh
-            RTSUnit unit = soldierGo.GetComponent<RTSUnit>();
-            if (unit != null)
+            GameObject soldierGo;
+            if (UnitPoolManager.Instance != null)
             {
-                unit.isEnemy = this.isEnemy;
+                soldierGo = UnitPoolManager.Instance.SpawnSoldier(spawnPos, Quaternion.identity, this.isEnemy);
+            }
+            else
+            {
+                soldierGo = Instantiate(soldierPrefab, spawnPos, Quaternion.identity);
+                RTSUnit unit = soldierGo.GetComponent<RTSUnit>();
+                if (unit != null)
+                {
+                    unit.isEnemy = this.isEnemy;
+                }
+            }
+
+            soldierGo.name = isEnemy ? $"Enemy_Soldier_{Random.Range(100, 999)}" : $"Soldier_Trained_{Random.Range(100, 999)}";
+
+            // WARP AND MOVE COMMAND:
+            UnityEngine.AI.NavMeshAgent agent = soldierGo.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null)
+            {
+                agent.enabled = true;
+                agent.Warp(spawnPos); // Binds the agent to NavMesh instantly
+                Vector3 exitTarget = spawnPos + transform.forward * 4.0f; // Walk 4 units forward
+                agent.SetDestination(exitTarget);
             }
 
             Debug.Log($"[Barracks] Huấn luyện thành công Chiến Binh: {soldierGo.name} tại vị trí {spawnPos}!");
@@ -182,4 +199,5 @@ public class Barracks : MonoBehaviour
             Debug.LogError("[Barracks] Không thể huấn luyện vì không tìm thấy Soldier Prefab!");
         }
     }
+
 }

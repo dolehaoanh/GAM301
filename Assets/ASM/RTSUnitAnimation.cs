@@ -40,7 +40,11 @@ public class RTSUnitAnimation : MonoBehaviour
 
     private void Update()
     {
-        if (animator == null) return;
+        // Safety checks: do nothing if animator is missing, agent is disabled, or unit is dead
+        if (animator == null || agent == null || !agent.enabled) return;
+
+        RTSUnit unit = GetComponent<RTSUnit>();
+        if (unit != null && unit.currentState == RTSUnit.RTSUnitState.Dead) return;
 
         // 1. Lấy tốc độ di chuyển thực tế hiện tại của NavMeshAgent
         float currentSpeed = agent.velocity.magnitude;

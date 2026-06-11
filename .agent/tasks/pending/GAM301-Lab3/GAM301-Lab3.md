@@ -38,7 +38,7 @@ Kết quả:
 
 Camera tự động zoom in, pan, chuyển cảnh mượt khi play timeline
 
-# **Bài tập 3: Kết hợp Signal Track để mở cửa**
+# **[x] Bài tập 3: Kết hợp Signal Track để mở cửa**
 
 ![](_page_1_Picture_0.jpeg)
 
@@ -49,6 +49,6 @@ Camera tự động zoom in, pan, chuyển cảnh mượt khi play timeline
 
 Sau 3 giây timeline chạy → cửa tự mở
 
-**Bài 4 : Giảng viên giao thêm bài tập** 
+**[x] Bài 4 : Giảng viên giao thêm bài tập** 
 
 --- Hết ---

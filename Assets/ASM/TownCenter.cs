@@ -102,7 +102,7 @@ public class TownCenter : MonoBehaviour
             {
                 if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject)) continue;
                 if (r.sharedMaterial == null) continue;
-                
+
                 if (!r.sharedMaterial.name.Contains("(Instance)"))
                 {
                     Material instantiatedMat = new Material(r.sharedMaterial);
@@ -120,9 +120,9 @@ public class TownCenter : MonoBehaviour
             if (mat != null)
             {
                 // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
-                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || 
+                bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") ||
                                      mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
-                
+
                 if (isMinimapIcon)
                 {
                     mat.color = isEnemy ? new Color(1f, 0f, 0f, 1f) : new Color(0f, 1f, 0f, 1f);
@@ -174,32 +174,46 @@ public class TownCenter : MonoBehaviour
     {
         if (farmerPrefab == null)
         {
-            // Tự động tải Farmer prefab từ thư mục Assets/ASM nếu chưa được gán trong Inspector
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             farmerPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ASM/Farmer.prefab");
-            #endif
+#endif
         }
 
         if (farmerPrefab != null)
         {
-            // Vị trí xuất hiện: spawnPoint nếu có, nếu không thì đứng chếch về phía trước nhà chính
             Vector3 spawnPos = spawnPoint != null ? spawnPoint.position : transform.position + transform.forward * deliverRange;
-            
-            // Tìm vị trí hợp lệ trên NavMesh để tránh Farmer bị kẹt
+
             UnityEngine.AI.NavMeshHit hit;
             if (UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
             {
                 spawnPos = hit.position;
             }
 
-            GameObject farmerGo = Instantiate(farmerPrefab, spawnPos, Quaternion.identity);
-            farmerGo.name = isEnemy ? $"Enemy_Farmer_{Random.Range(100, 999)}" : $"Farmer_Trained_{Random.Range(100, 999)}";
-            
-            // Đồng bộ faction isEnemy cho Nông dân
-            RTSUnit unit = farmerGo.GetComponent<RTSUnit>();
-            if (unit != null)
+            GameObject farmerGo;
+            if (UnitPoolManager.Instance != null)
             {
-                unit.isEnemy = this.isEnemy;
+                farmerGo = UnitPoolManager.Instance.SpawnFarmer(spawnPos, Quaternion.identity, this.isEnemy);
+            }
+            else
+            {
+                farmerGo = Instantiate(farmerPrefab, spawnPos, Quaternion.identity);
+                RTSUnit unit = farmerGo.GetComponent<RTSUnit>();
+                if (unit != null)
+                {
+                    unit.isEnemy = this.isEnemy;
+                }
+            }
+
+            farmerGo.name = isEnemy ? $"Enemy_Farmer_{Random.Range(100, 999)}" : $"Farmer_Trained_{Random.Range(100, 999)}";
+
+            // WARP AND MOVE COMMAND:
+            UnityEngine.AI.NavMeshAgent agent = farmerGo.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null)
+            {
+                agent.enabled = true;
+                agent.Warp(spawnPos); // Binds the agent to NavMesh instantly
+                Vector3 exitTarget = spawnPos + transform.forward * 4.0f; // Walk 4 units forward
+                agent.SetDestination(exitTarget);
             }
 
             Debug.Log($"[TownCenter] Huấn luyện thành công Nông dân: {farmerGo.name} tại vị trí {spawnPos}!");

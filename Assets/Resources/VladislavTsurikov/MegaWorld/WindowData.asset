@@ -1,0 +1,169 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68546926876480645a2807ab8ab0b2f3, type: 3}
+  m_Name: WindowData
+  m_EditorClassIdentifier: VladislavTsurikov.MegaWorld.Core::VladislavTsurikov.MegaWorld.Editor.Core.Window.WindowData
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: SelectionData
+      Entry: 7
+      Data: 0|VladislavTsurikov.MegaWorld.Runtime.Core.SelectionDatas.SelectionData,
+        VladislavTsurikov.MegaWorld.Core
+    - Name: GroupList
+      Entry: 7
+      Data: 1|System.Collections.Generic.List`1[[VladislavTsurikov.MegaWorld.Runtime.Core.SelectionDatas.Group.Group,
+        VladislavTsurikov.MegaWorld.Core]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: SelectedData
+      Entry: 7
+      Data: 2|VladislavTsurikov.MegaWorld.Runtime.Core.SelectionDatas.SelectedData,
+        VladislavTsurikov.MegaWorld.Core
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: SelectionDataEditor
+      Entry: 7
+      Data: 3|VladislavTsurikov.MegaWorld.Editor.Core.SelectionDatas.SelectionDataEditor,
+        VladislavTsurikov.MegaWorld.Core
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _windowToolStack
+      Entry: 7
+      Data: 4|VladislavTsurikov.MegaWorld.Editor.Core.Window.WindowToolStack, VladislavTsurikov.MegaWorld.Core
+    - Name: _elementList
+      Entry: 7
+      Data: 5|VladislavTsurikov.Utility.Runtime.ObservableList`1[[VladislavTsurikov.MegaWorld.Editor.Core.Window.ToolWindow,
+        VladislavTsurikov.MegaWorld.Core]], VladislavTsurikov.Utility
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 6|VladislavTsurikov.MegaWorld.Editor.SprayBrushTool.SprayBrushTool, VladislavTsurikov.MegaWorld.SprayBrushTool
+    - Name: SelectSettingsFoldout
+      Entry: 5
+      Data: true
+    - Name: _active
+      Entry: 5
+      Data: true
+    - Name: _graphPosition
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _nodeId
+      Entry: 1
+      Data: 0a2456cf-c778-4033-bb26-7a85b4c17606
+    - Name: _selected
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|VladislavTsurikov.MegaWorld.Editor.BrushEraseTool.BrushEraseTool, VladislavTsurikov.MegaWorld.BrushEraseTool
+    - Name: SelectSettingsFoldout
+      Entry: 5
+      Data: true
+    - Name: _active
+      Entry: 5
+      Data: true
+    - Name: _graphPosition
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _nodeId
+      Entry: 1
+      Data: 3f170dac-ce53-4af1-bf8c-93e7f79aa00f
+    - Name: _selected
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 8|VladislavTsurikov.MegaWorld.Editor.AdvancedBrushTool.AdvancedObjectBrush,
+        VladislavTsurikov.MegaWorld.AdvancedObjectBrush
+    - Name: SelectSettingsFoldout
+      Entry: 5
+      Data: true
+    - Name: _active
+      Entry: 5
+      Data: true
+    - Name: _graphPosition
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _nodeId
+      Entry: 1
+      Data: 906ffd40-1d14-4099-8963-c602de328844
+    - Name: _selected
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  SelectionData:
+    GroupList: []
