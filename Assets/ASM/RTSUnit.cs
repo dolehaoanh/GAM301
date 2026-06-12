@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum RTSUnitType
 {
@@ -403,10 +404,6 @@ public class RTSUnit : MonoBehaviour
                 }
 
                 
-                if (isEnemy)
-                {
-                    Debug.Log($"[Combat Distance Debug] {gameObject.name} Chasing target {currentTarget.name}: distToTarget = {distToTarget:F2}, effectiveRange = {effectiveRange:F2}");
-                }
 
                 if (distToTarget <= effectiveRange)
                 {
@@ -844,6 +841,39 @@ public class RTSUnit : MonoBehaviour
         StartCoroutine(DeathSequenceRoutine());
     }
 
+    private struct RendererMatBackup
+    {
+        public Renderer renderer;
+        public Material[] originalMaterials;
+    }
+    private List<RendererMatBackup> originalMaterialsBackup = new List<RendererMatBackup>();
+
+    private void BackupOriginalMaterials()
+    {
+        if (originalMaterialsBackup.Count > 0) return;
+        var renderers = GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+        {
+            if (r == null || r is LineRenderer) continue;
+            originalMaterialsBackup.Add(new RendererMatBackup
+            {
+                renderer = r,
+                originalMaterials = r.sharedMaterials
+            });
+        }
+    }
+
+    private void RestoreOriginalMaterials()
+    {
+        foreach (var backup in originalMaterialsBackup)
+        {
+            if (backup.renderer != null)
+            {
+                backup.renderer.sharedMaterials = backup.originalMaterials;
+            }
+        }
+    }
+
     private System.Collections.IEnumerator DeathSequenceRoutine()
     {
         
@@ -864,19 +894,62 @@ public class RTSUnit : MonoBehaviour
             animator.enabled = false;
         }
 
-        
-        yield return new WaitForSeconds(2.0f);
-
-        
-        float sinkDuration = 1.5f;
-        float sinkSpeed = 0.6f; 
-        float elapsed = 0f;
-        while (elapsed < sinkDuration)
+        // Initialize dissolve material swap
+        BackupOriginalMaterials();
+        Shader dissolveShader = Shader.Find("Custom/Dissolve");
+        List<Material> activeDissolveMats = new List<Material>();
+        if (dissolveShader != null)
         {
-            transform.position += Vector3.down * sinkSpeed * Time.deltaTime;
+            foreach (var backup in originalMaterialsBackup)
+            {
+                if (backup.renderer == null) continue;
+                int matCount = backup.originalMaterials.Length;
+                Material[] dissolveMats = new Material[matCount];
+                for (int i = 0; i < matCount; i++)
+                {
+                    Material origMat = backup.originalMaterials[i];
+                    Material dMat = new Material(dissolveShader);
+                    if (origMat != null)
+                    {
+                        if (origMat.HasProperty("_BaseMap"))
+                            dMat.SetTexture("_BaseMap", origMat.GetTexture("_BaseMap"));
+                        else if (origMat.HasProperty("_MainTex"))
+                            dMat.SetTexture("_BaseMap", origMat.GetTexture("_MainTex"));
+
+                        if (origMat.HasProperty("_BaseColor"))
+                            dMat.SetColor("_BaseColor", origMat.GetColor("_BaseColor"));
+                        else if (origMat.HasProperty("_Color"))
+                            dMat.SetColor("_BaseColor", origMat.GetColor("_Color"));
+                    }
+                    dMat.SetFloat("_DissolveAmount", 0f);
+                    dissolveMats[i] = dMat;
+                    activeDissolveMats.Add(dMat);
+                }
+                backup.renderer.materials = dissolveMats;
+            }
+        }
+
+        // Wait on the ground briefly
+        yield return new WaitForSeconds(1.0f);
+
+        // Animate dissolve amount from 0 to 1
+        float dissolveDuration = 1.5f;
+        float elapsed = 0f;
+        while (elapsed < dissolveDuration)
+        {
             elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / dissolveDuration);
+            foreach (var dMat in activeDissolveMats)
+            {
+                if (dMat != null)
+                {
+                    dMat.SetFloat("_DissolveAmount", progress);
+                }
+            }
             yield return null;
         }
+
+        yield return new WaitForSeconds(0.2f);
 
         
         if (UnitPoolManager.Instance != null)
@@ -891,6 +964,7 @@ public class RTSUnit : MonoBehaviour
 
     public void ResetUnit(bool isEnemy)
     {
+        RestoreOriginalMaterials();
         
         currentHP = maxHP;
         currentState = RTSUnitState.Idle;
@@ -1040,6 +1114,7 @@ public class RTSUnit : MonoBehaviour
         }
 
         ApplyFactionColors();
+        BackupOriginalMaterials();
         CreateSelectionRing();
         Deselect();
     }

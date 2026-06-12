@@ -131,6 +131,7 @@ public class RTSEffects : MonoBehaviour
         effectObj.transform.position = position;
 
         ParticleSystem ps = effectObj.AddComponent<ParticleSystem>();
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         
         ParticleSystemRenderer psr = effectObj.GetComponent<ParticleSystemRenderer>();
         if (psr != null)
@@ -164,6 +165,7 @@ public class RTSEffects : MonoBehaviour
         shape.radius = 0.3f;
         main.gravityModifier = 1.0f;
 
+        ps.Play();
         Destroy(effectObj, 0.6f);
     }
 
@@ -173,6 +175,7 @@ public class RTSEffects : MonoBehaviour
         effectObj.transform.position = position;
 
         ParticleSystem ps = effectObj.AddComponent<ParticleSystem>();
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         
         ParticleSystemRenderer psr = effectObj.GetComponent<ParticleSystemRenderer>();
         if (psr != null)
@@ -197,12 +200,16 @@ public class RTSEffects : MonoBehaviour
         shape.shapeType = ParticleSystemShapeType.Hemisphere;
         shape.radius = 0.2f;
 
+        ps.Play();
+
         // Add a second small dust cloud system (soft alpha-blended)
         GameObject dustObj = new GameObject("DustCloud");
         dustObj.transform.SetParent(effectObj.transform);
         dustObj.transform.localPosition = Vector3.zero;
 
         ParticleSystem dustPs = dustObj.AddComponent<ParticleSystem>();
+        dustPs.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
         ParticleSystemRenderer dustPsr = dustObj.GetComponent<ParticleSystemRenderer>();
         if (dustPsr != null)
         {
@@ -221,6 +228,8 @@ public class RTSEffects : MonoBehaviour
         dEmission.rateOverTime = 0;
         dEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 4) });
 
+        dustPs.Play();
+
         Destroy(effectObj, 0.6f);
     }
 
@@ -230,6 +239,7 @@ public class RTSEffects : MonoBehaviour
         effectObj.transform.position = position;
 
         ParticleSystem ps = effectObj.AddComponent<ParticleSystem>();
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         
         ParticleSystemRenderer psr = effectObj.GetComponent<ParticleSystemRenderer>();
         if (psr != null)
@@ -256,7 +266,9 @@ public class RTSEffects : MonoBehaviour
 
         var velocityOverLifetime = ps.velocityOverLifetime;
         velocityOverLifetime.enabled = true;
+        velocityOverLifetime.x = new ParticleSystem.MinMaxCurve(0f, 0f);
         velocityOverLifetime.y = new ParticleSystem.MinMaxCurve(1.5f, 3.5f);
+        velocityOverLifetime.z = new ParticleSystem.MinMaxCurve(0f, 0f);
 
         Light l = effectObj.AddComponent<Light>();
         l.color = new Color(0f, 0.8f, 1f);
@@ -265,6 +277,8 @@ public class RTSEffects : MonoBehaviour
 
         LightFader fader = effectObj.AddComponent<LightFader>();
         fader.duration = 1.0f;
+
+        ps.Play();
 
         Destroy(effectObj, 1.2f);
     }
