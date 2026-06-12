@@ -15,6 +15,9 @@ public class MainMenu : MonoBehaviour
     public Slider sfxSlider;
     public TMP_Dropdown resolutionDropdown;
 
+    [Header("Audio Source")]
+    public AudioSource bgmAudioSource;
+
     private Resolution[] resolutions;
 
     private void Start()
@@ -22,6 +25,13 @@ public class MainMenu : MonoBehaviour
         // Set active panels
         if (mainPanel != null) mainPanel.SetActive(true);
         if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        // Setup BGM AudioSource
+        if (bgmAudioSource == null) bgmAudioSource = GetComponent<AudioSource>();
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.volume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
+        }
 
         // Load saved audio levels
         if (musicSlider != null)
@@ -74,6 +84,10 @@ public class MainMenu : MonoBehaviour
     public void SetMusicVolume(float value)
     {
         PlayerPrefs.SetFloat("MusicVolume", value);
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.volume = value;
+        }
         Debug.Log($"[MainMenu] Music Volume set to: {value:F2}");
     }
 

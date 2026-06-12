@@ -8,6 +8,7 @@ Shader "Custom/MainMenuBackground"
         _Speed ("Flow Speed", Float) = 0.05
         _GridSize ("Grid Size", Float) = 22.0
         _GridThickness ("Grid Thickness", Float) = 0.04
+        [HideInInspector] _MainTex ("Sprite Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -85,21 +86,9 @@ Shader "Custom/MainMenuBackground"
                 // Color gradient flow
                 float4 baseCol = lerp(_BaseColor1, _BaseColor2, combinedNoise);
 
-                // Grid UV adjusted for aspect ratio to make perfect squares
-                float2 gridUV = input.uv;
-                gridUV.x *= aspect;
-                gridUV = frac(gridUV * _GridSize);
-
-                // Anti-aliased grid lines using smoothstep
-                float halfThick = _GridThickness * 0.5;
-                float gridX = smoothstep(halfThick, 0.0, gridUV.x) + smoothstep(1.0 - halfThick, 1.0, gridUV.x);
-                float gridY = smoothstep(halfThick, 0.0, gridUV.y) + smoothstep(1.0 - halfThick, 1.0, gridUV.y);
-                float grid = saturate(gridX + gridY);
-
-                // Add scanline pulse
+                // Add scanline pulse (bigger and less dense)
                 float scanline = sin(input.uv.y * 6.0 + _Time.y * 1.2) * 0.5 + 0.5;
-                float4 finalColor = lerp(baseCol, _GridColor, grid * _GridColor.a);
-                finalColor += _GridColor * scanline * 0.25;
+                float4 finalColor = baseCol + _GridColor * scanline * 0.25;
 
                 return finalColor;
             }
