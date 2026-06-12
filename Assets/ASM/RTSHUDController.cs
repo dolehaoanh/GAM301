@@ -1215,7 +1215,7 @@ public class RTSHUDController : MonoBehaviour
         subtitleRect.sizeDelta = new Vector2(400f, 60f);
 
         TextMeshProUGUI subtitleText = subtitleGo.AddComponent<TextMeshProUGUI>();
-        subtitleText.text = "Enemy Town Center Destroyed!\nYou have conquered the region.";
+        subtitleText.text = "Thank you for playing!";
         subtitleText.alignment = TextAlignmentOptions.Center;
         subtitleText.fontSize = 18f;
         subtitleText.color = new Color(0.9f, 0.9f, 0.95f, 0.9f); // Elegant Off-white

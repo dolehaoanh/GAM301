@@ -28,6 +28,42 @@ public class MainMenu : MonoBehaviour
         if (mainPanel != null) mainPanel.SetActive(true);
         if (optionsPanel != null) optionsPanel.SetActive(false);
 
+        // Find and setup buttons programmatically
+        if (mainPanel != null)
+        {
+            Button playBtn = mainPanel.transform.Find("Play Game")?.GetComponent<Button>();
+            if (playBtn != null)
+            {
+                playBtn.onClick.AddListener(PlayGame);
+                playBtn.onClick.AddListener(PlayClickSFX);
+            }
+
+            Button optionsBtn = mainPanel.transform.Find("Options")?.GetComponent<Button>();
+            if (optionsBtn != null)
+            {
+                optionsBtn.onClick.AddListener(OpenOptions);
+                optionsBtn.onClick.AddListener(PlayClickSFX);
+            }
+
+            Button exitBtn = mainPanel.transform.Find("Exit Game")?.GetComponent<Button>();
+            if (exitBtn != null)
+            {
+                exitBtn.onClick.AddListener(ExitGame);
+                exitBtn.onClick.AddListener(PlayClickSFX);
+            }
+        }
+
+        if (optionsPanel != null)
+        {
+            Button backBtn = optionsPanel.transform.Find("Back")?.GetComponent<Button>();
+            if (backBtn != null)
+            {
+                backBtn.onClick.AddListener(CloseOptions);
+                backBtn.onClick.AddListener(PlayClickSFX);
+            }
+        }
+
+
         // Setup VSync Toggle
         if (vsyncToggle != null)
         {

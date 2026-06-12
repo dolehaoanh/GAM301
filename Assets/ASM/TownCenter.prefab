@@ -80,6 +80,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TownCenter
   deliverRange: 6
   isEnemy: 0
+  maxHP: 1000
+  currentHP: 1000
   farmerPrefab: {fileID: 0}
   trainingDuration: 5
   farmerCost: 50

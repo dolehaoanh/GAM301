@@ -90,6 +90,8 @@ MonoBehaviour:
   attackCooldown: 1
   combatTarget: {fileID: 0}
   combatBuildingTarget: {fileID: 0}
+  attackClip: {fileID: 8300000, guid: ed1b5232e1175402fa008531a582e6c3, type: 3}
+  hurtClip: {fileID: 8300000, guid: 5ec1b603f1d0547b3b57983f06b6569c, type: 3}
   currentState: 0
   targetResourceNode: {fileID: 0}
   targetTownCenter: {fileID: 0}
