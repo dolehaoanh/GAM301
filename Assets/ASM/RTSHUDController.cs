@@ -50,6 +50,7 @@ public class RTSHUDController : MonoBehaviour
     private Vector2 originalNameAnchorMin;
     private Vector2 originalNameAnchorMax;
     private Vector2 originalNamePivot;
+    private float originalNameFontSize;
 
     private Vector2 originalHPPos;
     private Vector2 originalHPSize;
@@ -92,6 +93,7 @@ public class RTSHUDController : MonoBehaviour
             originalNameAnchorMax = r.anchorMax;
             originalNamePivot = r.pivot;
             originalNameAlignment = selectedUnitName.alignment;
+            originalNameFontSize = selectedUnitName.fontSize;
         }
 
         if (selectedUnitHPBar != null)
@@ -206,6 +208,21 @@ public class RTSHUDController : MonoBehaviour
         // Đóng băng Rigidbody nếu có
         var rb = go.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
+    }
+
+    private void RestoreOriginalNameLayout()
+    {
+        if (selectedUnitName != null)
+        {
+            var r = selectedUnitName.GetComponent<RectTransform>();
+            r.anchoredPosition = originalNamePos;
+            r.sizeDelta = originalNameSize;
+            r.anchorMin = originalNameAnchorMin;
+            r.anchorMax = originalNameAnchorMax;
+            r.pivot = originalNamePivot;
+            selectedUnitName.alignment = originalNameAlignment;
+            selectedUnitName.fontSize = originalNameFontSize;
+        }
     }
 
     private void SetupDynamicPortraits()
@@ -632,14 +649,7 @@ public class RTSHUDController : MonoBehaviour
             // Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f)
             if (selectedUnitName != null)
             {
-                var r = selectedUnitName.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0f, 1f);
-                r.anchorMax = new Vector2(0f, 1f);
-                r.pivot = new Vector2(0.5f, 1f); // Set to (0.5, 1) for perfect top-center alignment above portrait
-                r.anchoredPosition = new Vector2(60f, -12f); // Căn giữa cách đỉnh 12px
-                r.sizeDelta = new Vector2(200f, 22f); // Rộng 200px tránh bị clip
-                selectedUnitName.alignment = TMPro.TextAlignmentOptions.Center;
-                selectedUnitName.fontSize = 22f; // Đồng bộ font size 22f
+                RestoreOriginalNameLayout();
                 selectedUnitName.text = "NHÀ LÍNH"; 
             }
 
@@ -727,14 +737,7 @@ public class RTSHUDController : MonoBehaviour
             // Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f)
             if (selectedUnitName != null)
             {
-                var r = selectedUnitName.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0f, 1f);
-                r.anchorMax = new Vector2(0f, 1f);
-                r.pivot = new Vector2(0.5f, 1f); // Set to (0.5, 1) for perfect top-center alignment above portrait
-                r.anchoredPosition = new Vector2(60f, -12f); // Căn giữa cách đỉnh 12px
-                r.sizeDelta = new Vector2(120f, 22f); 
-                selectedUnitName.alignment = TMPro.TextAlignmentOptions.Center;
-                selectedUnitName.fontSize = 22f; // Đồng bộ font size 22f
+                RestoreOriginalNameLayout();
                 selectedUnitName.text = "NHÀ CHÍNH"; 
             }
 
