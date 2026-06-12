@@ -225,6 +225,19 @@ public class RTSHUDController : MonoBehaviour
         }
     }
 
+    private void RestoreOriginalHPLayout()
+    {
+        if (selectedUnitHPBar != null)
+        {
+            var r = selectedUnitHPBar.GetComponent<RectTransform>();
+            r.anchoredPosition = originalHPPos;
+            r.sizeDelta = originalHPSize;
+            r.anchorMin = originalHPAnchorMin;
+            r.anchorMax = originalHPAnchorMax;
+            r.pivot = originalHPPivot;
+        }
+    }
+
     private void SetupDynamicPortraits()
     {
         if (portraitFarmerInstance == null || portraitSoldierInstance == null) return;
@@ -656,18 +669,14 @@ public class RTSHUDController : MonoBehaviour
             // Đặt HP Bar Nhà Lính nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
             if (selectedUnitHPBar != null)
             {
-                var r = selectedUnitHPBar.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0f, 0f);
-                r.anchorMax = new Vector2(0f, 0f);
-                r.pivot = originalHPPivot;
-                r.anchoredPosition = new Vector2(60f, 12f); // HP Bar đối xứng ở X=60, cách đáy 12px
-                r.sizeDelta = new Vector2(112f, originalHPSize.y); // Rộng 112px
+                RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
                 selectedUnitHPBar.maxValue = selectedB.maxHP; // Máu Nhà Lính
                 selectedUnitHPBar.value = selectedB.currentHP;
 
                 // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
                 selectedUnitHPBar.transform.SetAsLastSibling();
+                var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
                 pos.z = -10f;
                 r.localPosition = pos;
@@ -744,18 +753,14 @@ public class RTSHUDController : MonoBehaviour
             // Đặt HP Bar Nhà Chính nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
             if (selectedUnitHPBar != null)
             {
-                var r = selectedUnitHPBar.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0f, 0f);
-                r.anchorMax = new Vector2(0f, 0f);
-                r.pivot = originalHPPivot;
-                r.anchoredPosition = new Vector2(60f, 12f); // HP Bar đối xứng ở X=60, cách đáy 12px
-                r.sizeDelta = new Vector2(112f, originalHPSize.y); // Rộng 112px
+                RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
                 selectedUnitHPBar.maxValue = selectedTC.maxHP; // Máu Nhà Chính
                 selectedUnitHPBar.value = selectedTC.currentHP;
 
                 // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
                 selectedUnitHPBar.transform.SetAsLastSibling();
+                var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
                 pos.z = -10f;
                 r.localPosition = pos;
@@ -836,30 +841,19 @@ public class RTSHUDController : MonoBehaviour
             // UPGRADE: Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f) loại bỏ chồng lấn!
             if (selectedUnitName != null)
             {
-                var r = selectedUnitName.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0f, 1f);
-                r.anchorMax = new Vector2(0f, 1f);
-                r.pivot = new Vector2(0.5f, 1f); // Set to (0.5, 1) for perfect top-center alignment above portrait
-                r.anchoredPosition = new Vector2(60f, -12f); // Căn giữa cách đỉnh 12px
-                r.sizeDelta = new Vector2(120f, 22f); 
-                selectedUnitName.alignment = TMPro.TextAlignmentOptions.Center;
-                selectedUnitName.fontSize = 22f; // Đồng bộ font size 22f
+                RestoreOriginalNameLayout();
                 selectedUnitName.text = leader.unitName;
             }
 
             // UPGRADE: Đặt HP Bar đơn lẻ nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
             if (selectedUnitHPBar != null)
             {
-                var r = selectedUnitHPBar.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0f, 0f);
-                r.anchorMax = new Vector2(0f, 0f);
-                r.pivot = originalHPPivot;
-                r.anchoredPosition = new Vector2(60f, 12f); // HP Bar đối xứng ở X=60, cách đáy 12px
-                r.sizeDelta = new Vector2(112f, originalHPSize.y); // Rộng 112px
+                RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
 
                 // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
                 selectedUnitHPBar.transform.SetAsLastSibling();
+                var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
                 pos.z = -10f;
                 r.localPosition = pos;
@@ -934,16 +928,7 @@ public class RTSHUDController : MonoBehaviour
             // Căn chỉnh NameText lên chính giữa phía trên (Top-Center)
             if (selectedUnitName != null)
             {
-                var r = selectedUnitName.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0.5f, 1f);
-                r.anchorMax = new Vector2(0.5f, 1f);
-                r.pivot = new Vector2(0.5f, 1f); // Set to (0.5, 1) for perfect top-center alignment
-                r.anchoredPosition = new Vector2(0f, -12f); // Đưa lên cao cách đỉnh 12px cực thoáng đãng và đồng bộ!
-                r.sizeDelta = new Vector2(350f, 22f); // Thu hẹp chiều cao thành 22px để khớp với font đếm vàng kim
-                selectedUnitName.alignment = TMPro.TextAlignmentOptions.Center; // Căn giữa chữ
-                selectedUnitName.fontSize = 22f; // Font size bằng đúng size số đếm 22f tránh đè lệch
-
-                // Yêu cầu: Hiển thị "ARMY (XX UNITS)" trong đó XX là tổng số quân lính đang chọn
+                RestoreOriginalNameLayout();
                 selectedUnitName.text = $"ARMY ({selectedList.Count} UNITS)";
             }
 
@@ -951,16 +936,12 @@ public class RTSHUDController : MonoBehaviour
             // Đặt Y = 12f để HP bar cao 20px nằm vừa khít trong khoảng trống bên dưới các card Y=-10!
             if (selectedUnitHPBar != null)
             {
-                var r = selectedUnitHPBar.GetComponent<RectTransform>();
-                r.anchorMin = new Vector2(0.5f, 0f);
-                r.anchorMax = new Vector2(0.5f, 0f);
-                r.pivot = originalHPPivot; // Giữ nguyên pivot gốc để tránh biến dạng và lệch tâm UI
-                r.anchoredPosition = new Vector2(0f, 12f); // Căn chính giữa đáy Y = 12px ( HP bar cao 20px sẽ nằm từ Y=2 đến Y=22)
-                r.sizeDelta = new Vector2(250f, originalHPSize.y); // Giữ nguyên chiều cao gốc tránh méo bo tròn slider, kéo dài 250px cực sang trọng
+                RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
 
                 // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
                 selectedUnitHPBar.transform.SetAsLastSibling();
+                var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
                 pos.z = -10f;
                 r.localPosition = pos;
