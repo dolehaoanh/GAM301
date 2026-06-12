@@ -54,6 +54,8 @@ public class RTSUnit : MonoBehaviour
     public AudioClip hurtClip;
     private AudioSource sfxAudioSource;
 
+
+// SỬ DỤNG FSM - FINITE STATE MACHINE #1 - UNIT STATES CỦA QUÂN
     public enum RTSUnitState
     {
         Idle,

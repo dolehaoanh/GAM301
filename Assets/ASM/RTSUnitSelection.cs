@@ -525,7 +525,7 @@ public class RTSUnitSelection : MonoBehaviour
         Guard
     }
 
-    
+    // FSM #2 -- CÁC STATE CỦA CON TRỎ CHUỘT
     public void SetRTSCursor(RTSCursorState state)
     {
         Texture2D activeTexture = null;
