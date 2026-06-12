@@ -12,11 +12,11 @@ public class ResourceNode : MonoBehaviour
     [Header("Resource Settings")]
     public RTSResourceType resourceType = RTSResourceType.Wood;
     public int remainingResources = 300;
-    public float harvestRange = 2.0f; // Khoảng cách nông dân cần đứng gần để bắt đầu thu hoạch
+    public float harvestRange = 2.0f; 
 
     private bool isDepleted = false;
 
-    // Trả về lượng tài nguyên thu hoạch được thực tế
+    
     public int Gather(int amount)
     {
         if (isDepleted) return 0;
@@ -36,7 +36,7 @@ public class ResourceNode : MonoBehaviour
     private void DepleteNode()
     {
         Debug.Log($"[ResourceNode] Bãi tài nguyên {gameObject.name} đã bị khai thác cạn kiệt!");
-        // Tự động biến mất sau khi khai thác hết
+        
         Destroy(gameObject);
     }
 }

@@ -24,11 +24,11 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-        // Set active panels
+        
         if (mainPanel != null) mainPanel.SetActive(true);
         if (optionsPanel != null) optionsPanel.SetActive(false);
 
-        // Find and setup buttons programmatically
+        
         if (mainPanel != null)
         {
             Button playBtn = mainPanel.transform.Find("Play Game")?.GetComponent<Button>();
@@ -52,7 +52,7 @@ public class MainMenu : MonoBehaviour
                 exitBtn.onClick.AddListener(PlayClickSFX);
             }
 
-            // Disable Raycast Target on the Logo Image to prevent it from blocking button clicks
+            
             Image logoImg = mainPanel.transform.Find("Logo")?.GetComponent<Image>();
             if (logoImg != null)
             {
@@ -71,21 +71,21 @@ public class MainMenu : MonoBehaviour
         }
 
 
-        // Setup VSync Toggle
+        
         if (vsyncToggle != null)
         {
             vsyncToggle.isOn = QualitySettings.vSyncCount > 0;
             vsyncToggle.onValueChanged.AddListener(SetVSync);
         }
 
-        // Setup BGM AudioSource
+        
         if (bgmAudioSource == null) bgmAudioSource = GetComponent<AudioSource>();
         if (bgmAudioSource != null)
         {
             bgmAudioSource.volume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
         }
 
-        // Load saved audio levels
+        
         if (musicSlider != null)
         {
             musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
@@ -97,7 +97,7 @@ public class MainMenu : MonoBehaviour
             sfxSlider.onValueChanged.AddListener(SetSFXVolume);
         }
 
-        // Set up resolutions dropdown
+        
         if (resolutionDropdown != null)
         {
             SetupResolutions();

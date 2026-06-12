@@ -36,7 +36,7 @@ public class TerrainTreeThinner : MonoBehaviour
             return;
         }
 
-        // Tạo backup trong Undo để bạn có thể nhấn Ctrl+Z quay lại nếu muốn!
+        
         #if UNITY_EDITOR
         UnityEditor.Undo.RegisterCompleteObjectUndo(terrainData, "Thin Terrain Trees");
         #endif
@@ -52,7 +52,7 @@ public class TerrainTreeThinner : MonoBehaviour
             }
         }
 
-        // Áp dụng danh sách cây mới đã được lọc thưa đi
+        
         terrainData.treeInstances = keptTrees.ToArray();
         terrain.Flush();
 

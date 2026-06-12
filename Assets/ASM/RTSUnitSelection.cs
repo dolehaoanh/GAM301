@@ -15,15 +15,15 @@ public class RTSUnitSelection : MonoBehaviour
     private Vector3 startMousePosition;
     private bool isDrawing = false;
 
-    // Danh sách toàn bộ lính đang được chọn hiện tại
+    
     public List<RTSUnit> selectedUnits = new List<RTSUnit>();
     public TownCenter selectedTownCenter;
     public Barracks selectedBarracks;
 
-    // Tham chiếu tự động tới HUD Controller
+    
     private RTSHUDController hudController;
 
-    // Lưu 10 nhóm (đạo quân, đánh chỉ số từ 0 đến 9)
+    
     private List<RTSUnit>[] controlGroups = new List<RTSUnit>[10];
     private void Start()
     {
@@ -31,10 +31,10 @@ public class RTSUnitSelection : MonoBehaviour
         whiteTexture.SetPixel(0, 0, Color.white);
         whiteTexture.Apply();
 
-        // Tự động tìm HUD Controller trong Scene
+        
         hudController = FindAnyObjectByType<RTSHUDController>();
 
-        // Initialize các control group lists (để không bị lỗi null reference)
+        
         for (int i = 0; i < 10; i++)
         {
             controlGroups[i] = new List<RTSUnit>();
@@ -43,10 +43,10 @@ public class RTSUnitSelection : MonoBehaviour
 
     private void Update()
     {
-        // Kiểm tra đầu vào chức năng gọi/tạo nhóm đạo quân
+        
         HandleControlGroups();
 
-        // 1. Nhấp chuột trái xuống (chỉ bắt đầu vẽ hộp chọn nếu không nhấp trên UI)
+        
         if (Input.GetMouseButtonDown(0))
         {
             if (UnityEngine.EventSystems.EventSystem.current != null &&
@@ -59,7 +59,7 @@ public class RTSUnitSelection : MonoBehaviour
             isDrawing = true;
         }
 
-        // 2. Thả chuột trái (chỉ xử lý chọn quân nếu trước đó đang vẽ hộp chọn)
+        
         if (Input.GetMouseButtonUp(0))
         {
             if (isDrawing)
@@ -69,7 +69,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        // 3. Nhấp chuột phải di chuyển (bỏ qua nếu nhấp trên UI, vd: nhấp nút bấm)
+        
         if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
         {
             if (UnityEngine.EventSystems.EventSystem.current != null &&
@@ -145,7 +145,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        UpdateHUD(); // <-- Cập nhật hiển thị lên HUD Canvas
+        UpdateHUD(); 
     }
 
     private void SingleClickSelect()
@@ -159,7 +159,7 @@ public class RTSUnitSelection : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            // Sử dụng GetComponentInParent để hỗ trợ chọn các mô hình con có Collider bên trong nhóm cha
+            
             RTSUnit unit = hit.collider.GetComponentInParent<RTSUnit>();
             if (unit == null)
             {
@@ -173,7 +173,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
             else
             {
-                // Thử tìm chọn Nhà Chính (Town Center)
+                
                 TownCenter tc = hit.collider.GetComponentInParent<TownCenter>();
                 if (tc == null)
                 {
@@ -186,7 +186,7 @@ public class RTSUnitSelection : MonoBehaviour
                 }
                 else
                 {
-                    // Thử tìm chọn Nhà Lính (Barracks)
+                    
                     Barracks b = hit.collider.GetComponentInParent<Barracks>();
                     if (b == null)
                     {
@@ -201,7 +201,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        UpdateHUD(); // <-- Cập nhật hiển thị lên HUD Canvas
+        UpdateHUD(); 
     }
 
     private void MoveSelectedUnits()
@@ -214,7 +214,7 @@ public class RTSUnitSelection : MonoBehaviour
             int unitCount = selectedUnits.Count;
             if (unitCount == 0) return;
 
-            // Check if player right-clicked an enemy unit or building to attack
+            
             RTSUnit clickedEnemyUnit = hit.collider.GetComponentInParent<RTSUnit>();
             if (clickedEnemyUnit == null) clickedEnemyUnit = hit.collider.GetComponent<RTSUnit>();
             if (clickedEnemyUnit != null && clickedEnemyUnit.isEnemy)
@@ -260,7 +260,7 @@ public class RTSUnitSelection : MonoBehaviour
                 return;
             }
 
-            // Kiểm tra xem người chơi nhấp chuột phải trúng Mỏ Vàng hoặc Cây Gỗ không
+            
             ResourceNode clickedNode = hit.collider.GetComponentInParent<ResourceNode>();
             if (clickedNode == null)
             {
@@ -336,7 +336,7 @@ public class RTSUnitSelection : MonoBehaviour
                 MoveGroupInGrid(selectedUnits, hit.point, formationRotation);
             }
 
-            // Đặt lại con trỏ chuột về mặc định sau khi đã ra lệnh di chuyển thành công
+            
             SetRTSCursor(RTSCursorState.Default);
         }
     }
@@ -346,7 +346,7 @@ public class RTSUnitSelection : MonoBehaviour
         int count = group.Count;
         if (count == 0) return;
 
-        // Tự động phân loại: Nếu là Chiến Binh (Soldier), xếp thành 1 hàng ngang dàn trận cạnh nhau (Single Row)
+        
         bool isSoldierGroup = (group[0] != null && group[0].unitType == RTSUnitType.Soldier);
 
         int rows = 1;
@@ -354,13 +354,13 @@ public class RTSUnitSelection : MonoBehaviour
 
         if (isSoldierGroup)
         {
-            // Hàng ngang xếp dàn trận cạnh nhau vuông góc hướng đi
+            
             rows = 1;
             cols = count;
         }
         else
         {
-            // Nông dân giữ nguyên đội hình khối hộp (Grid) mặc định ban đầu
+            
             rows = (count <= 2) ? 1 : 2;
             cols = Mathf.CeilToInt((float)count / rows);
         }
@@ -387,7 +387,7 @@ public class RTSUnitSelection : MonoBehaviour
         }
     }
 
-    // Gửi thông số lính đang chọn lên HUD
+    
     private void UpdateHUD()
     {
         if (hudController == null)
@@ -397,7 +397,7 @@ public class RTSUnitSelection : MonoBehaviour
 
         if (hudController != null)
         {
-            // Gửi toàn bộ danh sách đang chọn kèm theo Nhà Chính và Nhà Lính để HUD xử lý
+            
             hudController.ShowSelection(selectedUnits, selectedTownCenter, selectedBarracks);
         }
     }
@@ -411,12 +411,12 @@ public class RTSUnitSelection : MonoBehaviour
         selectedUnits.Clear();
         selectedTownCenter = null;
         selectedBarracks = null;
-        UpdateHUD(); // <-- Ẩn HUD đi
+        UpdateHUD(); 
     }
 
-    // ==========================================
-    // ⚔️ RTS PANEL COMMAND BUTTON FUNCTIONS ⚔️
-    // ==========================================
+    
+    
+    
 
     [Header("Custom Cursor Textures")]
     [Tooltip("Ảnh con trỏ mặc định (Bàn tay/Mũi tên)")]
@@ -439,7 +439,7 @@ public class RTSUnitSelection : MonoBehaviour
         Gather
     }
 
-    // Hàm thay đổi hình dáng con trỏ chuột
+    
     public void SetRTSCursor(RTSCursorState state)
     {
         Texture2D activeTexture = null;
@@ -459,7 +459,7 @@ public class RTSUnitSelection : MonoBehaviour
                 break;
         }
 
-        // Thay đổi con trỏ chuột trong Unity ở dạng ForceSoftware để ngăn HĐH phóng to khi Maximize
+        
         Cursor.SetCursor(activeTexture, cursorHotspot, CursorMode.ForceSoftware);
     }
 
@@ -467,17 +467,17 @@ public class RTSUnitSelection : MonoBehaviour
     public AudioClip stopCommandSFX;
     public AudioClip attackCommandSFX;
 
-    // 1. Lệnh Di Chuyển (Move)
+    
     public void OnCommandMove()
     {
         if (selectedUnits.Count == 0) return;
 
-        // Kích hoạt con trỏ lệnh di chuyển
+        
         SetRTSCursor(RTSCursorState.Move);
         Debug.Log($"[RTS Command] DI CHUYỂN BỘ BINH ({selectedUnits.Count} quân)!");
     }
 
-    // 2. Lệnh Dừng Lại (Stop) - Dừng mọi chuyển động ngay lập tức
+    
     public void OnCommandStop()
     {
         if (selectedUnits.Count == 0) return;
@@ -488,21 +488,21 @@ public class RTSUnitSelection : MonoBehaviour
             unit.StopUnit();
         }
 
-        SetRTSCursor(RTSCursorState.Default); // Trở về mặc định
+        SetRTSCursor(RTSCursorState.Default); 
         Debug.Log($"[RTS Command] DỪNG QUÂN NGAY LẬP TỨC ({selectedUnits.Count} quân)!");
     }
 
-    // 3. Lệnh Tấn Công (Attack)
+    
     public void OnCommandAttack()
     {
         if (selectedUnits.Count == 0) return;
 
-        // Kích hoạt con trỏ lệnh tấn công
+        
         SetRTSCursor(RTSCursorState.Attack);
         Debug.Log($"[RTS Command] XUẤT BINH TẤN CÔNG ĐỊCH ({selectedUnits.Count} quân)!");
     }
 
-    // 4. Lệnh Giữ Vị Trí (Hold Position)
+    
     public void OnCommandHold()
     {
         if (selectedUnits.Count == 0) return;
@@ -513,23 +513,23 @@ public class RTSUnitSelection : MonoBehaviour
             unit.StopUnit();
         }
 
-        SetRTSCursor(RTSCursorState.Default); // Trở về mặc định
+        SetRTSCursor(RTSCursorState.Default); 
         Debug.Log($"[RTS Command] THỦ THẾ / GIỮ VỮNG ĐỘI HÌNH ({selectedUnits.Count} quân)!");
     }
 
-    // 5. Lệnh Tuần Tra (Patrol)
+    
     public void OnCommandPatrol()
     {
         if (selectedUnits.Count == 0) return;
         Debug.Log($"[RTS Command] TUẦN TRA QUANH ĐỊA BÀN ({selectedUnits.Count} quân)!");
     }
 
-    // 6. Lệnh Khai Thác / Xây Dựng (Gather / Build) - Cho phép Nông dân bắt đầu cuốc đất
+    
     public void OnCommandGather()
     {
         if (selectedUnits.Count == 0) return;
 
-        // Kích hoạt con trỏ khai thác
+        
         SetRTSCursor(RTSCursorState.Gather);
 
         int farmerCount = 0;
@@ -537,7 +537,7 @@ public class RTSUnitSelection : MonoBehaviour
         {
             if (unit == null) continue;
 
-            // Nếu là nông dân, kích hoạt trigger "Work" (cuốc đất / chặt cây)
+            
             if (unit.unitType == RTSUnitType.Farmer)
             {
                 Animator animator = unit.GetComponentInChildren<Animator>();
@@ -554,7 +554,7 @@ public class RTSUnitSelection : MonoBehaviour
                     }
                     if (hasWorkParam)
                     {
-                        animator.SetTrigger("Work"); // Kích hoạt trigger Work trong Animator!
+                        animator.SetTrigger("Work"); 
                     }
                 }
                 farmerCount++;
@@ -564,39 +564,39 @@ public class RTSUnitSelection : MonoBehaviour
         Debug.Log($"KHAI THÁC TÀI NGUYÊN (Kích hoạt cuốc đất cho {farmerCount} nông dân)!");
     }
 
-    // Hàm handle các đạo quân
+    
     private void HandleControlGroups()
     {
-        // Kiểm tra xem nút Cmd (Mac) hay nút Ctrl (PC) đang đc nhấn & giữ
+        
         bool isModifierHeld = Input.GetKey(KeyCode.LeftControl) ||
                                 Input.GetKey(KeyCode.RightControl) ||
                                 Input.GetKey(KeyCode.LeftCommand) ||
                                 Input.GetKey(KeyCode.RightCommand);
 
-        // Loop qua các phím alpha keys từ 0 đến 9
+        
         for (int i = 0; i < 10; i++)
         {
-            // Chuyển loop index thành KeyCodeedoCyeK (ví dụ phím 0 có KeyCode.Alpha0 là 48, Alpha1 là 49,...)
+            
             KeyCode key = KeyCode.Alpha0 + i;
 
             if (Input.GetKeyDown(key))
             {
                 if (isModifierHeld)
                 {
-                    // Nếu player đang ấn Cmd/Ctrl + Số: gán nhóm quân đang chọn vào nhóm i
+                    
                     SaveControlGroup(i);
                 }
                 else
                 {
-                    // Nếu player đang ấn chỉ số: chọn nhóm i
+                    
                     RecallControlGroup(i);
                 }
-                break; // Ngừng kiểm tra các phím khác khi 1 phím đã đc ấn
+                break; 
             }
         }
     }
 
-    // Hàm lưu nhóm quân đang chọn
+    
     private void SaveControlGroup(int groupIndex)
     {
         controlGroups[groupIndex].Clear();
@@ -611,10 +611,10 @@ public class RTSUnitSelection : MonoBehaviour
         Debug.Log($"Lưu đạo quân: đã gán {controlGroups[groupIndex].Count} quân vào Nhóm {groupIndex}");
     }
 
-    // Hàm chọn nhóm quân đã lưu
+    
     private void RecallControlGroup(int groupIndex)
     {
-        // 1. Dọn dẹp các unit đã bị destroy (chết) trong đạo quân đc gọi bằng phím tắt đã lưu
+        
         controlGroups[groupIndex].RemoveAll(unit => unit == null);
 
         if (controlGroups[groupIndex].Count == 0)
@@ -622,10 +622,10 @@ public class RTSUnitSelection : MonoBehaviour
             Debug.Log($"Chọn đạo quân: Đạo quân số {groupIndex} không có unit nào.");
         }
 
-        // 2. Bỏ chọn các unit đang chọn (trước khi đảo sang đạo quân đã gán phím tắt)
+        
         DeselectAll();
 
-        // 3. Chọn tất cả các unit trong nhóm này
+        
         foreach (RTSUnit unit in controlGroups[groupIndex])
         {
             if (unit != null)
@@ -635,7 +635,7 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        // 4. Cập nhật HUD UI
+        
         UpdateHUD();
 
         Debug.Log($"Đã chọn lại đạo quân {groupIndex} (có {selectedUnits.Count} quân)");

@@ -19,7 +19,7 @@ public class RTSUnitAnimation : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         
-        // Tìm kiếm thông minh Animator thực tế (chọn cái có gắn Controller trong các con)
+        
         Animator[] animators = GetComponentsInChildren<Animator>();
         foreach (var anim in animators)
         {
@@ -30,7 +30,7 @@ public class RTSUnitAnimation : MonoBehaviour
             }
         }
 
-        // Fallback nếu không tìm thấy cái nào có controller thì lấy cái đầu tiên trong con
+        
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
@@ -41,23 +41,23 @@ public class RTSUnitAnimation : MonoBehaviour
             Debug.LogWarning($"[RTS Unit Animation] Không tìm thấy Animator nào trên {gameObject.name} hoặc các con của nó!");
         }
 
-        // Setup AudioSource for footsteps
+        
         if (footstepClip != null)
         {
             footstepAudio = gameObject.AddComponent<AudioSource>();
             footstepAudio.clip = footstepClip;
             footstepAudio.loop = true;
             footstepAudio.playOnAwake = false;
-            footstepAudio.spatialBlend = 0.2f; // Mostly 2D so it's clearly audible from high RTS camera angles
+            footstepAudio.spatialBlend = 0.2f; 
             footstepAudio.minDistance = 10f;
             footstepAudio.maxDistance = 100f;
-            footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.8f; // Clearer footstep volume
+            footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.8f; 
         }
     }
 
     private void Update()
     {
-        // Safety checks: do nothing if animator is missing, agent is disabled, or unit is dead
+        
         if (animator == null || agent == null || !agent.enabled)
         {
             if (footstepAudio != null && footstepAudio.isPlaying) footstepAudio.Stop();
@@ -71,20 +71,20 @@ public class RTSUnitAnimation : MonoBehaviour
             return;
         }
 
-        // 1. Lấy tốc độ di chuyển thực tế hiện tại của NavMeshAgent
+        
         float currentSpeed = agent.velocity.magnitude;
 
-        // 2. Truyền tốc độ này vào biến float "Speed" trong Animator Controller.
+        
         animator.SetFloat("Speed", currentSpeed, speedDampTime, Time.deltaTime);
 
-        // 3. Handle footstep SFX looping when moving
+        
         if (footstepAudio != null)
         {
             if (currentSpeed > 0.2f)
             {
                 if (!footstepAudio.isPlaying)
                 {
-                    // Update volume in case it changed in player prefs
+                    
                     footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.8f;
                     footstepAudio.Play();
                 }

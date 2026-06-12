@@ -11,7 +11,7 @@ public class AssignmentAudioController : MonoBehaviour
 
     private void Start()
     {
-        // Setup BGM AudioSource
+        
         bgmAudioSource = gameObject.AddComponent<AudioSource>();
         bgmAudioSource.clip = bgmClip;
         bgmAudioSource.loop = true;
@@ -20,14 +20,13 @@ public class AssignmentAudioController : MonoBehaviour
         if (bgmClip != null)
         {
             bgmAudioSource.Play();
-            Debug.Log($"[AssignmentAudio] Playing BGM: {bgmClip.name} with volume {bgmAudioSource.volume}");
         }
         else
         {
             Debug.LogWarning("[AssignmentAudio] BGM clip is not assigned!");
         }
 
-        // Setup SFX AudioSource
+        
         sfxAudioSource = gameObject.AddComponent<AudioSource>();
     }
 
@@ -37,12 +36,12 @@ public class AssignmentAudioController : MonoBehaviour
 
     private void Update()
     {
-        // Record mouse down positions
+        
         if (Input.GetMouseButtonDown(0)) startMousePos0 = Input.mousePosition;
         if (Input.GetMouseButtonDown(1)) startMousePos1 = Input.mousePosition;
         if (Input.GetMouseButtonDown(2)) startMousePos2 = Input.mousePosition;
 
-        // Play SFX on mouse button release only if it was a click (not a drag)
+        
         if (Input.GetMouseButtonUp(0))
         {
             if (Vector3.Distance(startMousePos0, Input.mousePosition) < 5f)

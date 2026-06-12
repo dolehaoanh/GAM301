@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 public class TownCenter : MonoBehaviour
 {
-    // Danh sách toàn bộ Nhà Chính/Điểm nhận tài nguyên trong Scene
+    
     public static List<TownCenter> AllTownCenters = new List<TownCenter>();
 
-    public float deliverRange = 3.5f; // Khoảng cách nông dân cần tiếp cận để giao hàng
-    public bool isEnemy = false; // Phân biệt Nhà Chính người chơi và địch
+    public float deliverRange = 3.5f; 
+    public bool isEnemy = false; 
 
     [Header("Building Stats")]
     public float maxHP = 1000f;
     public float currentHP = 1000f;
 
     [Header("Training Settings")]
-    public GameObject farmerPrefab; // Prefab của Nông Dân
-    public float trainingDuration = 5f; // Thời gian huấn luyện Nông Dân (5 giây)
-    public int farmerCost = 50; // Giá mua nông dân (50 Vàng)
-    public Transform spawnPoint; // Điểm xuất hiện của nông dân
+    public GameObject farmerPrefab; 
+    public float trainingDuration = 5f; 
+    public int farmerCost = 50; 
+    public Transform spawnPoint; 
 
     [System.NonSerialized]
     public bool isTraining = false;
@@ -39,7 +39,7 @@ public class TownCenter : MonoBehaviour
         AllTownCenters.Remove(this);
     }
 
-    // Tìm nhà chính gần nhất với nông dân
+    
     public static TownCenter FindNearest(Vector3 position)
     {
         if (AllTownCenters.Count == 0) return null;
@@ -61,14 +61,14 @@ public class TownCenter : MonoBehaviour
         return nearest;
     }
 
-    // Bắt đầu huấn luyện Nông Dân
+    
     public bool StartTraining()
     {
         if (isTraining) return false;
 
         if (PlayerResourceManager.Instance == null) return false;
 
-        // Kiểm tra giới hạn Lương thực (Food) trước khi huấn luyện (Nông dân tốn 1 Lương thực)
+        
         int currentFood = PlayerResourceManager.Instance.GetCurrentFoodUsed();
         if (currentFood + 1 > PlayerResourceManager.Instance.maxFood)
         {
@@ -76,7 +76,7 @@ public class TownCenter : MonoBehaviour
             return false;
         }
 
-        // Tiêu hao 50 Vàng của người chơi
+        
         if (PlayerResourceManager.Instance.SpendResources(farmerCost, 0))
         {
             isTraining = true;
@@ -150,7 +150,7 @@ public class TownCenter : MonoBehaviour
 
             if (mat != null)
             {
-                // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
+                
                 bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") ||
                                      mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
 
@@ -237,13 +237,13 @@ public class TownCenter : MonoBehaviour
 
             farmerGo.name = isEnemy ? $"Enemy_Farmer_{Random.Range(100, 999)}" : $"Farmer_Trained_{Random.Range(100, 999)}";
 
-            // WARP AND MOVE COMMAND:
+            
             UnityEngine.AI.NavMeshAgent agent = farmerGo.GetComponent<UnityEngine.AI.NavMeshAgent>();
             if (agent != null)
             {
                 agent.enabled = true;
-                agent.Warp(spawnPos); // Binds the agent to NavMesh instantly
-                Vector3 exitTarget = spawnPos + transform.forward * 4.0f; // Walk 4 units forward
+                agent.Warp(spawnPos); 
+                Vector3 exitTarget = spawnPos + transform.forward * 4.0f; 
                 agent.SetDestination(exitTarget);
             }
 

@@ -44,7 +44,7 @@ public class RTSHUDController : MonoBehaviour
 
     private System.Collections.Generic.List<GameObject> activeGroupPortraits = new System.Collections.Generic.List<GameObject>();
 
-    // Bộ đệm lưu trữ vị trí/kích thước gốc của Name và HP Bar để khôi phục linh hoạt
+    
     private Vector2 originalNamePos;
     private Vector2 originalNameSize;
     private Vector2 originalNameAnchorMin;
@@ -59,16 +59,16 @@ public class RTSHUDController : MonoBehaviour
     private Vector2 originalHPPivot;
     private TMPro.TextAlignmentOptions originalNameAlignment;
 
-    // Dual 3D rendering cho chân dung lính nhóm động
+    
     private RenderTexture farmerRT;
     private RenderTexture soldierRT;
     private Camera farmerCam;
     private Camera soldierCam;
 
-    // Lưu trữ Render Texture 3D mặc định được gán từ Inspector
+    
     private Texture originalPortraitTexture;
 
-    // Các thành phần UI và tham chiếu bổ sung cho huấn luyện quân
+    
     private UnityEngine.UI.Image singlePortraitBackground;
     private Sprite portraitFrameSprite;
     private Button trainFarmerButton;
@@ -83,7 +83,7 @@ public class RTSHUDController : MonoBehaviour
 
     private void Start()
     {
-        // 1. Sao lưu vị trí/kích thước gốc của NameText và HPSlider để phục vụ chuyển đổi UI
+        
         if (selectedUnitName != null)
         {
             var r = selectedUnitName.GetComponent<RectTransform>();
@@ -106,14 +106,14 @@ public class RTSHUDController : MonoBehaviour
             originalHPPivot = r.pivot;
         }
 
-        // 2. Dọn dẹp các component không cần thiết ở phòng chân dung 3D để tránh lỗi NavMesh dưới lòng đất Y = -500
+        
         CleanPortraitInstance(portraitFarmerInstance);
         CleanPortraitInstance(portraitSoldierInstance);
 
-        // 3. Khởi tạo hệ thống camera chân dung động song song (Dual 3D Camera Setup)
+        
         SetupDynamicPortraits();
 
-        // 4. Tự động nạp Font game từ thư mục để hiển thị số lượng nhóm đồng bộ
+        
         if (customGameFont == null)
         {
             #if UNITY_EDITOR
@@ -121,7 +121,7 @@ public class RTSHUDController : MonoBehaviour
             #endif
         }
 
-        // Tự động khôi phục và gán Render Texture từ Portrait Camera nếu bị trống trong Inspector
+        
         if (selectedUnitPortrait != null && selectedUnitPortrait.texture == null)
         {
             var portCam = GameObject.Find("PortraitCamera")?.GetComponent<Camera>();
@@ -137,22 +137,22 @@ public class RTSHUDController : MonoBehaviour
             originalPortraitTexture = selectedUnitPortrait.texture;
         }
 
-        // Dọn dẹp các component không cần thiết ở phòng chân dung 3D để tránh lỗi NavMesh dưới lòng đất Y = -500
+        
         CleanPortraitInstance(portraitFarmerInstance);
         CleanPortraitInstance(portraitSoldierInstance);
 
-        // Tự động cập nhật dân số động và tài nguyên lặp đi lặp lại mỗi 0.5 giây (Tối ưu hóa hiệu năng, tránh giật lag)
+        
         InvokeRepeating(nameof(UpdateDynamicPopulation), 0f, 0.5f);
 
-        // Đăng ký lắng nghe sự kiện thay đổi tài nguyên
+        
         PlayerResourceManager.OnResourcesChanged += UpdateHUDResources;
 
-        // Tạo nền vàng kim quý tộc cho chân dung đơn lẻ (Single Portrait Background)
+        
         if (selectedUnitPortrait != null)
         {
             GameObject bgGo = new GameObject("SinglePortraitBackground");
             bgGo.transform.SetParent(selectedUnitPortrait.transform.parent, false);
-            bgGo.transform.SetSiblingIndex(selectedUnitPortrait.transform.GetSiblingIndex()); // Đặt trực tiếp phía sau RawImage chân dung
+            bgGo.transform.SetSiblingIndex(selectedUnitPortrait.transform.GetSiblingIndex()); 
 
             var bgRect = bgGo.AddComponent<RectTransform>();
             bgRect.anchorMin = selectedUnitPortrait.rectTransform.anchorMin;
@@ -162,15 +162,15 @@ public class RTSHUDController : MonoBehaviour
             bgRect.sizeDelta = selectedUnitPortrait.rectTransform.sizeDelta;
 
             singlePortraitBackground = bgGo.AddComponent<UnityEngine.UI.Image>();
-            singlePortraitBackground.color = new Color(0.85f, 0.7f, 0.3f, 0.8f); // Màu vàng kim
+            singlePortraitBackground.color = new Color(0.85f, 0.7f, 0.3f, 0.8f); 
             singlePortraitBackground.gameObject.SetActive(false);
         }
 
-        // Khởi tạo nút mua Nông dân của Nhà Chính
+        
         CreateTrainFarmerButton();
         CreateTrainSoldierButton();
 
-        // Lưu trữ sprite khung viền vàng để nhân bản cho thẻ nhóm
+        
         var frameGo = selectionPanel.transform.Find("PortraitFrame");
         if (frameGo != null)
         {
@@ -193,19 +193,19 @@ public class RTSHUDController : MonoBehaviour
     {
         if (go == null) return;
 
-        // Xóa RTSUnitAnimation trước vì nó phụ thuộc vào NavMeshAgent [RequireComponent]
+        
         var anim = go.GetComponent<RTSUnitAnimation>();
         if (anim != null) Destroy(anim);
 
-        // Xóa RTSUnit để tránh nhiễu logic
+        
         var unit = go.GetComponent<RTSUnit>();
         if (unit != null) Destroy(unit);
 
-        // Giờ mới xóa được NavMeshAgent vì không còn component phụ thuộc nào nữa
+        
         var agent = go.GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent != null) Destroy(agent);
 
-        // Đóng băng Rigidbody nếu có
+        
         var rb = go.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
     }
@@ -242,45 +242,45 @@ public class RTSHUDController : MonoBehaviour
     {
         if (portraitFarmerInstance == null || portraitSoldierInstance == null) return;
 
-        // Định vị Binh Sĩ đứng lệch sang bên phải 5 mét để không bị trùng lặp với Nông Dân
+        
         portraitSoldierInstance.transform.localPosition = new Vector3(5f, 0f, 0f);
 
-        // Giữ cả 2 đơn vị luôn ở trạng thái Active để duy trì vòng lặp hoạt ảnh Idle
+        
         portraitFarmerInstance.SetActive(true);
         portraitSoldierInstance.SetActive(true);
 
-        // Tìm camera chân dung gốc trong Scene
+        
         var originalCamGo = GameObject.Find("PortraitCamera");
         if (originalCamGo == null) return;
         var originalCam = originalCamGo.GetComponent<Camera>();
         if (originalCam == null) return;
 
-        // Tạo 2 Render Texture động cho Dân và Lính
+        
         farmerRT = new RenderTexture(256, 256, 16);
         farmerRT.name = "DynamicFarmerRT";
         soldierRT = new RenderTexture(256, 256, 16);
         soldierRT.name = "DynamicSoldierRT";
 
-        // Tắt camera gốc vì chúng ta sẽ nhân bản nó thành 2 camera độc lập
+        
         originalCam.enabled = false;
 
-        // Tạo Camera cho Nông dân (Farmer Camera)
+        
         GameObject farmerCamGo = Instantiate(originalCamGo, originalCamGo.transform.parent);
         farmerCamGo.name = "FarmerPortraitCamera";
         farmerCam = farmerCamGo.GetComponent<Camera>();
         farmerCam.enabled = true;
         farmerCam.targetTexture = farmerRT;
-        farmerCam.transform.localPosition = new Vector3(0f, 0.66f, 1.80f); // Nhìn vào Farmer ở (0,0,0)
+        farmerCam.transform.localPosition = new Vector3(0f, 0.66f, 1.80f); 
 
-        // Tạo Camera cho Binh sĩ (Soldier Camera)
+        
         GameObject soldierCamGo = Instantiate(originalCamGo, originalCamGo.transform.parent);
         soldierCamGo.name = "SoldierPortraitCamera";
         soldierCam = soldierCamGo.GetComponent<Camera>();
         soldierCam.enabled = true;
         soldierCam.targetTexture = soldierRT;
-        soldierCam.transform.localPosition = new Vector3(5f, 0.66f, 1.80f); // Nhìn vào Soldier ở (5,0,0)
+        soldierCam.transform.localPosition = new Vector3(5f, 0.66f, 1.80f); 
 
-        // Nhân bản thêm nguồn sáng để đảm bảo Lính cũng được chiếu sáng đầy đủ
+        
         var originalLightGo = GameObject.Find("PortraitLight");
         if (originalLightGo != null)
         {
@@ -289,7 +289,7 @@ public class RTSHUDController : MonoBehaviour
             soldierLightGo.transform.localPosition = new Vector3(5f, originalLightGo.transform.localPosition.y, originalLightGo.transform.localPosition.z);
         }
 
-        // Tự động gán Render Texture mặc định của Farmer lên selectedUnitPortrait khi bắt đầu
+        
         if (selectedUnitPortrait != null)
         {
             selectedUnitPortrait.texture = farmerRT;
@@ -322,7 +322,7 @@ public class RTSHUDController : MonoBehaviour
         UpdateHUDResources();
     }
 
-    // Hàm cập nhật lượng tài nguyên hiển thị lên thanh TopBar
+    
     public void UpdateResourcesDisplay(int gold, int wood, int currentFood, int maxFood)
     {
         if (goldText != null) goldText.text = $"GOLD: {gold}";
@@ -330,15 +330,15 @@ public class RTSHUDController : MonoBehaviour
         if (populationText != null) populationText.text = $"FOOD: {currentFood}/{maxFood}";
     }
 
-    // ==================================================
-    // 🌾 TOWN CENTER UNIT TRAINING QUEUE & HUD SYSTEM 🌾
-    // ==================================================
+    
+    
+    
 
     private void CreateTrainFarmerButton()
     {
         if (commandPanel == null) return;
 
-        // Tạo Nút huấn luyện Nông Dân bên trong Action Command Panel (Bottom-Right)
+        
         GameObject btnGo = new GameObject("TrainFarmerButton");
         btnGo.transform.SetParent(commandPanel.transform, false);
         
@@ -347,19 +347,19 @@ public class RTSHUDController : MonoBehaviour
         rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
         rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
         rectTrans.pivot = new Vector2(0.5f, 0.5f);
-        rectTrans.anchoredPosition = new Vector2(-75f, 35f); // Đặt ở vị trí ô lệnh đầu tiên
+        rectTrans.anchoredPosition = new Vector2(-75f, 35f); 
 
-        // Thêm LayoutElement để Grid Layout Group của CommandPanel quản lý
+        
         btnGo.AddComponent<LayoutElement>();
 
         var img = btnGo.AddComponent<UnityEngine.UI.Image>();
         
-        // Tải ảnh Gather đại diện cho Nông Dân làm Portrait tĩnh cho nút bấm
+        
         #if UNITY_EDITOR
         var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonGather.jpg");
         if (sprite != null) img.sprite = sprite;
         #endif
-        // Fail-safe: Lấy sprite từ Button_Gather có sẵn
+        
         Sprite gatherSprite = commandPanel.transform.Find("Button_Gather")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
         if (gatherSprite != null) img.sprite = gatherSprite;
         img.color = Color.white;
@@ -367,7 +367,7 @@ public class RTSHUDController : MonoBehaviour
         trainFarmerButton = btnGo.AddComponent<Button>();
         trainFarmerButton.onClick.AddListener(OnTrainFarmerClicked);
 
-        // Tạo hình ảnh phủ làm hiệu ứng Cooldown đè lên nút
+        
         GameObject overlayGo = new GameObject("CooldownOverlay");
         overlayGo.transform.SetParent(btnGo.transform, false);
         var overlayRect = overlayGo.AddComponent<RectTransform>();
@@ -376,16 +376,16 @@ public class RTSHUDController : MonoBehaviour
         overlayRect.sizeDelta = Vector2.zero;
 
         trainFarmerCooldownOverlay = overlayGo.AddComponent<UnityEngine.UI.Image>();
-        trainFarmerCooldownOverlay.sprite = img.sprite; // Gán sprite để hỗ trợ Type.Filled
-        trainFarmerCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); // Màu tối mờ 72%
+        trainFarmerCooldownOverlay.sprite = img.sprite; 
+        trainFarmerCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); 
         trainFarmerCooldownOverlay.type = UnityEngine.UI.Image.Type.Filled;
         trainFarmerCooldownOverlay.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
         trainFarmerCooldownOverlay.fillOrigin = (int)UnityEngine.UI.Image.Origin360.Top;
         trainFarmerCooldownOverlay.fillClockwise = false;
         trainFarmerCooldownOverlay.fillAmount = 0f;
-        overlayGo.SetActive(false); // Ẩn mặc định khi chưa huấn luyện
+        overlayGo.SetActive(false); 
 
-        // Tạo text đếm ngược giây hiển thị ở giữa nút huấn luyện
+        
         GameObject txtGo = new GameObject("CooldownText");
         txtGo.transform.SetParent(btnGo.transform, false);
         var txtRect = txtGo.AddComponent<RectTransform>();
@@ -399,10 +399,10 @@ public class RTSHUDController : MonoBehaviour
         trainFarmerCooldownText.color = Color.white;
         trainFarmerCooldownText.text = "";
 
-        // Gán font chữ medieval nếu có
+        
         if (customGameFont != null) trainFarmerCooldownText.font = customGameFont;
 
-        btnGo.SetActive(false); // Ẩn mặc định khi chưa chọn nhà chính
+        btnGo.SetActive(false); 
     }
 
     private void OnTrainFarmerClicked()
@@ -417,7 +417,7 @@ public class RTSHUDController : MonoBehaviour
     {
         if (commandPanel == null) return;
 
-        // Tạo Nút huấn luyện Binh Sĩ bên trong Action Command Panel (Bottom-Right)
+        
         GameObject btnGo = new GameObject("TrainSoldierButton");
         btnGo.transform.SetParent(commandPanel.transform, false);
         
@@ -427,17 +427,17 @@ public class RTSHUDController : MonoBehaviour
         rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
         rectTrans.pivot = new Vector2(0.5f, 0.5f);
 
-        // Thêm LayoutElement để Grid Layout Group của CommandPanel quản lý
+        
         btnGo.AddComponent<LayoutElement>();
 
         var img = btnGo.AddComponent<UnityEngine.UI.Image>();
         
-        // Tải ảnh đại diện cho Lính bấm từ ButtonAttack hoặc lấy sprite có sẵn
+        
         #if UNITY_EDITOR
         var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonAttack.jpg");
         if (sprite != null) img.sprite = sprite;
         #endif
-        // Fail-safe: Lấy sprite từ Button_Attack có sẵn
+        
         Sprite attackSprite = commandPanel.transform.Find("Button_Attack")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
         if (attackSprite != null) img.sprite = attackSprite;
         img.color = Color.white;
@@ -445,7 +445,7 @@ public class RTSHUDController : MonoBehaviour
         trainSoldierButton = btnGo.AddComponent<Button>();
         trainSoldierButton.onClick.AddListener(OnTrainSoldierClicked);
 
-        // Tạo hình ảnh phủ làm hiệu ứng Cooldown đè lên nút
+        
         GameObject overlayGo = new GameObject("CooldownOverlay");
         overlayGo.transform.SetParent(btnGo.transform, false);
         var overlayRect = overlayGo.AddComponent<RectTransform>();
@@ -454,16 +454,16 @@ public class RTSHUDController : MonoBehaviour
         overlayRect.sizeDelta = Vector2.zero;
 
         trainSoldierCooldownOverlay = overlayGo.AddComponent<UnityEngine.UI.Image>();
-        trainSoldierCooldownOverlay.sprite = img.sprite; // Gán sprite để hỗ trợ Type.Filled
-        trainSoldierCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); // Màu tối mờ 72%
+        trainSoldierCooldownOverlay.sprite = img.sprite; 
+        trainSoldierCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); 
         trainSoldierCooldownOverlay.type = UnityEngine.UI.Image.Type.Filled;
         trainSoldierCooldownOverlay.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
         trainSoldierCooldownOverlay.fillOrigin = (int)UnityEngine.UI.Image.Origin360.Top;
         trainSoldierCooldownOverlay.fillClockwise = false;
         trainSoldierCooldownOverlay.fillAmount = 0f;
-        overlayGo.SetActive(false); // Ẩn mặc định khi chưa huấn luyện
+        overlayGo.SetActive(false); 
 
-        // Tạo text đếm ngược giây hiển thị ở giữa nút huấn luyện
+        
         GameObject txtGo = new GameObject("CooldownText");
         txtGo.transform.SetParent(btnGo.transform, false);
         var txtRect = txtGo.AddComponent<RectTransform>();
@@ -477,10 +477,10 @@ public class RTSHUDController : MonoBehaviour
         trainSoldierCooldownText.color = Color.white;
         trainSoldierCooldownText.text = "";
 
-        // Gán font chữ medieval nếu có
+        
         if (customGameFont != null) trainSoldierCooldownText.font = customGameFont;
 
-        btnGo.SetActive(false); // Ẩn mặc định khi chưa chọn nhà lính
+        btnGo.SetActive(false); 
     }
 
     private void OnTrainSoldierClicked()
@@ -493,14 +493,14 @@ public class RTSHUDController : MonoBehaviour
 
     private void Update()
     {
-        // Đồng bộ đếm ngược huấn luyện Nông Dân thời gian thực của Nhà Chính lên HUD
+        
         if (activeSelectedTownCenter != null && trainFarmerButton != null && trainFarmerButton.gameObject.activeSelf)
         {
             if (activeSelectedTownCenter.isTraining)
             {
-                trainFarmerButton.interactable = false; // Đang train thì khóa nút
+                trainFarmerButton.interactable = false; 
                 
-                // fillAmount giảm dần theo tiến trình huấn luyện
+                
                 float progress = activeSelectedTownCenter.trainingTimer / activeSelectedTownCenter.trainingDuration;
                 if (trainFarmerCooldownOverlay != null)
                 {
@@ -514,7 +514,7 @@ public class RTSHUDController : MonoBehaviour
             }
             else
             {
-                trainFarmerButton.interactable = true; // Sẵn sàng để train tiếp
+                trainFarmerButton.interactable = true; 
                 if (trainFarmerCooldownOverlay != null)
                 {
                     trainFarmerCooldownOverlay.fillAmount = 0f;
@@ -527,14 +527,14 @@ public class RTSHUDController : MonoBehaviour
             }
         }
 
-        // Đồng bộ đếm ngược huấn luyện Binh Sĩ của Nhà Lính lên HUD
+        
         if (activeSelectedBarracks != null && trainSoldierButton != null && trainSoldierButton.gameObject.activeSelf)
         {
             if (activeSelectedBarracks.isTraining)
             {
-                trainSoldierButton.interactable = false; // Đang train thì khóa nút
+                trainSoldierButton.interactable = false; 
                 
-                // fillAmount giảm dần theo tiến trình huấn luyện
+                
                 float progress = activeSelectedBarracks.trainingTimer / activeSelectedBarracks.trainingDuration;
                 if (trainSoldierCooldownOverlay != null)
                 {
@@ -548,7 +548,7 @@ public class RTSHUDController : MonoBehaviour
             }
             else
             {
-                trainSoldierButton.interactable = true; // Sẵn sàng để train tiếp
+                trainSoldierButton.interactable = true; 
                 if (trainSoldierCooldownOverlay != null)
                 {
                     trainSoldierCooldownOverlay.fillAmount = 0f;
@@ -561,7 +561,7 @@ public class RTSHUDController : MonoBehaviour
             }
         }
 
-        // Đảm bảo HP Bar luôn nằm trên cùng (không bị card đè mất) khi ở chế độ nhiều quân
+        
         if (selectionPanel != null && selectionPanel.activeSelf && selectedUnitHPBar != null && selectedUnitHPBar.gameObject.activeSelf)
         {
             selectedUnitHPBar.transform.SetAsLastSibling();
@@ -574,7 +574,7 @@ public class RTSHUDController : MonoBehaviour
             }
         }
 
-        // Dynamically update building HP slider
+        
         if (activeSelectedTownCenter != null)
         {
             if (selectedUnitHPBar != null)
@@ -599,17 +599,17 @@ public class RTSHUDController : MonoBehaviour
         }
     }
 
-    // Hàm hiển thị thông tin chi tiết khi chọn quân lính hoặc Nhà Chính (Town Center) hoặc Nhà Lính (Barracks)
+    
     public void ShowSelection(System.Collections.Generic.List<RTSUnit> selectedList, TownCenter selectedTC, Barracks selectedB = null)
     {
-        // Active BottomPanel grey background when selection is shown
+        
         if (selectionPanel != null && selectionPanel.transform.parent != null)
         {
             var bottomPanelImg = selectionPanel.transform.parent.GetComponent<UnityEngine.UI.Image>();
             if (bottomPanelImg != null) bottomPanelImg.enabled = true;
         }
 
-        // Fail-safe để nạp lại portraitFrameSprite nếu nó bị null
+        
         if (portraitFrameSprite == null && selectionPanel != null)
         {
             var frameGo = selectionPanel.transform.Find("PortraitFrame");
@@ -623,7 +623,7 @@ public class RTSHUDController : MonoBehaviour
             }
         }
 
-        // 1. Dọn dẹp toàn bộ chân dung nhóm cũ trước khi xử lý
+        
         foreach (var go in activeGroupPortraits)
         {
             if (go != null) Destroy(go);
@@ -633,7 +633,7 @@ public class RTSHUDController : MonoBehaviour
         activeSelectedTownCenter = selectedTC;
         activeSelectedBarracks = selectedB;
 
-        // Reset các nút lệnh trong command panel
+        
         if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(false);
         if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(false);
         if (commandButtons != null)
@@ -646,10 +646,10 @@ public class RTSHUDController : MonoBehaviour
 
         if (selectionPanel != null) selectionPanel.SetActive(true);
 
-        // --- TRƯỜNG HỢP C: CHỌN NHÀ LÍNH (BARRACKS) ---
+        
         if (selectedB != null)
         {
-            // Ẩn tất cả các nút lệnh của quân lính, chỉ hiện nút Train Soldier
+            
             if (commandButtons != null)
             {
                 foreach (var btn in commandButtons)
@@ -659,22 +659,22 @@ public class RTSHUDController : MonoBehaviour
             }
             if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(true);
 
-            // Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f)
+            
             if (selectedUnitName != null)
             {
                 RestoreOriginalNameLayout();
                 selectedUnitName.text = "NHÀ LÍNH"; 
             }
 
-            // Đặt HP Bar Nhà Lính nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
+            
             if (selectedUnitHPBar != null)
             {
                 RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
-                selectedUnitHPBar.maxValue = selectedB.maxHP; // Máu Nhà Lính
+                selectedUnitHPBar.maxValue = selectedB.maxHP; 
                 selectedUnitHPBar.value = selectedB.currentHP;
 
-                // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
+                
                 selectedUnitHPBar.transform.SetAsLastSibling();
                 var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
@@ -682,7 +682,7 @@ public class RTSHUDController : MonoBehaviour
                 r.localPosition = pos;
             }
 
-            // Gán ảnh chân dung tĩnh cho Nhà Lính và căn chỉnh size 112x112 dịch xuống Y=-10
+            
             if (selectedUnitPortrait != null)
             {
                 selectedUnitPortrait.gameObject.SetActive(true);
@@ -690,10 +690,10 @@ public class RTSHUDController : MonoBehaviour
                 r.anchorMin = new Vector2(0f, 0.5f);
                 r.anchorMax = new Vector2(0f, 0.5f);
                 r.pivot = new Vector2(0.5f, 0.5f);
-                r.anchoredPosition = new Vector2(60f, -10f); // X=60, Y=-10 (dịch xuống 10px để tránh đè chữ)
+                r.anchoredPosition = new Vector2(60f, -10f); 
                 r.sizeDelta = new Vector2(112f, 112f);
 
-                // Lấy sprite của Button_Attack để làm ảnh đại diện cho Nhà Lính!
+                
                 Sprite attackSprite = commandPanel.transform.Find("Button_Attack")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
                 if (attackSprite != null)
                 {
@@ -702,7 +702,7 @@ public class RTSHUDController : MonoBehaviour
                 selectedUnitPortrait.color = Color.white;
             }
 
-            // Bật nền vàng đối xứng X=60, Y=-10
+            
             if (singlePortraitBackground != null)
             {
                 singlePortraitBackground.gameObject.SetActive(true);
@@ -714,7 +714,7 @@ public class RTSHUDController : MonoBehaviour
                 r.sizeDelta = new Vector2(112f, 112f);
             }
 
-            // Khung viền đối xứng X=60, Y=-10
+            
             var frame = selectionPanel.transform.Find("PortraitFrame");
             if (frame != null)
             {
@@ -730,10 +730,10 @@ public class RTSHUDController : MonoBehaviour
             return;
         }
 
-        // --- TRƯỜNG HỢP A: CHỌN NHÀ CHÍNH (TOWN CENTER) ---
+        
         if (selectedTC != null)
         {
-            // Ẩn tất cả các nút lệnh của quân lính, chỉ hiện nút Train Farmer
+            
             if (commandButtons != null)
             {
                 foreach (var btn in commandButtons)
@@ -743,22 +743,22 @@ public class RTSHUDController : MonoBehaviour
             }
             if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(true);
 
-            // Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f)
+            
             if (selectedUnitName != null)
             {
                 RestoreOriginalNameLayout();
                 selectedUnitName.text = "NHÀ CHÍNH"; 
             }
 
-            // Đặt HP Bar Nhà Chính nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
+            
             if (selectedUnitHPBar != null)
             {
                 RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
-                selectedUnitHPBar.maxValue = selectedTC.maxHP; // Máu Nhà Chính
+                selectedUnitHPBar.maxValue = selectedTC.maxHP; 
                 selectedUnitHPBar.value = selectedTC.currentHP;
 
-                // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
+                
                 selectedUnitHPBar.transform.SetAsLastSibling();
                 var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
@@ -766,7 +766,7 @@ public class RTSHUDController : MonoBehaviour
                 r.localPosition = pos;
             }
 
-            // Gán ảnh chân dung tĩnh cho Nhà Chính và căn chỉnh size 112x112 dịch xuống Y=-10
+            
             if (selectedUnitPortrait != null)
             {
                 selectedUnitPortrait.gameObject.SetActive(true);
@@ -774,7 +774,7 @@ public class RTSHUDController : MonoBehaviour
                 r.anchorMin = new Vector2(0f, 0.5f);
                 r.anchorMax = new Vector2(0f, 0.5f);
                 r.pivot = new Vector2(0.5f, 0.5f);
-                r.anchoredPosition = new Vector2(60f, -10f); // X=60, Y=-10 (dịch xuống 10px để tránh đè chữ)
+                r.anchoredPosition = new Vector2(60f, -10f); 
                 r.sizeDelta = new Vector2(112f, 112f);
 
                 #if UNITY_EDITOR
@@ -784,7 +784,7 @@ public class RTSHUDController : MonoBehaviour
                 selectedUnitPortrait.color = Color.white;
             }
 
-            // Bật nền vàng đối xứng X=60, Y=-10
+            
             if (singlePortraitBackground != null)
             {
                 singlePortraitBackground.gameObject.SetActive(true);
@@ -796,7 +796,7 @@ public class RTSHUDController : MonoBehaviour
                 r.sizeDelta = new Vector2(112f, 112f);
             }
 
-            // Khung viền đối xứng X=60, Y=-10
+            
             var frame = selectionPanel.transform.Find("PortraitFrame");
             if (frame != null)
             {
@@ -812,14 +812,14 @@ public class RTSHUDController : MonoBehaviour
             return;
         }
 
-        // --- TRƯỜNG HỢP B: CHỌN ĐẠO QUÂN LÍNH ---
+        
         if (selectedList == null || selectedList.Count == 0)
         {
             HideSelectionPanel();
             return;
         }
 
-        // Gom nhóm lính theo loại quân để đếm số lượng
+        
         var typeGroups = new System.Collections.Generic.Dictionary<RTSUnitType, System.Collections.Generic.List<RTSUnit>>();
         foreach (var unit in selectedList)
         {
@@ -835,23 +835,23 @@ public class RTSHUDController : MonoBehaviour
 
         if (!isMultiSelection)
         {
-            // --- CHẾ ĐỘ 1: SINGLE LEADER 3D PORTRAIT ---
+            
             RTSUnit leader = selectedList[0];
 
-            // UPGRADE: Căn giữa NameText đối xứng đẹp mắt bên trên chân dung ở tọa độ (X=60f, Y=-12f) loại bỏ chồng lấn!
+            
             if (selectedUnitName != null)
             {
                 RestoreOriginalNameLayout();
                 selectedUnitName.text = leader.unitName;
             }
 
-            // UPGRADE: Đặt HP Bar đơn lẻ nằm dưới chân dung đối xứng hoàn hảo (X=60, Y=12)
+            
             if (selectedUnitHPBar != null)
             {
                 RestoreOriginalHPLayout();
                 selectedUnitHPBar.gameObject.SetActive(true);
 
-                // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
+                
                 selectedUnitHPBar.transform.SetAsLastSibling();
                 var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
@@ -859,7 +859,7 @@ public class RTSHUDController : MonoBehaviour
                 r.localPosition = pos;
             }
 
-            // UPGRADE: Căn chỉnh RawImage chân dung size 112x112 dịch xuống Y=-10
+            
             if (selectedUnitPortrait != null)
             {
                 selectedUnitPortrait.gameObject.SetActive(true);
@@ -867,7 +867,7 @@ public class RTSHUDController : MonoBehaviour
                 r.anchorMin = new Vector2(0f, 0.5f);
                 r.anchorMax = new Vector2(0f, 0.5f);
                 r.pivot = new Vector2(0.5f, 0.5f);
-                r.anchoredPosition = new Vector2(60f, -10f); // X=60, Y=-10 (dịch xuống 10px)
+                r.anchoredPosition = new Vector2(60f, -10f); 
                 r.sizeDelta = new Vector2(112f, 112f);
 
                 if (leader.portrait != null)
@@ -877,14 +877,14 @@ public class RTSHUDController : MonoBehaviour
                 }
                 else
                 {
-                    // Lấy camera tương ứng của Farmer hoặc Soldier
+                    
                     RenderTexture targetRT = leader.unitType == RTSUnitType.Farmer ? farmerRT : soldierRT;
                     selectedUnitPortrait.texture = targetRT;
                     selectedUnitPortrait.color = targetRT != null ? Color.white : new Color(0.12f, 0.12f, 0.18f, 0.65f);
                 }
             }
 
-            // ĐỈNH CAO: Bật nền vàng quý tộc cho chân dung đơn lẻ đối xứng X=60, Y=-10
+            
             if (singlePortraitBackground != null)
             {
                 singlePortraitBackground.gameObject.SetActive(true);
@@ -896,7 +896,7 @@ public class RTSHUDController : MonoBehaviour
                 r.sizeDelta = new Vector2(112f, 112f);
             }
 
-            // Khung viền đối xứng X=60, Y=-10
+            
             var frame = selectionPanel.transform.Find("PortraitFrame");
             if (frame != null)
             {
@@ -917,29 +917,29 @@ public class RTSHUDController : MonoBehaviour
         }
         else
         {
-            // --- CHẾ ĐỘ 2: MULTI-GROUP PORTRAITS (Đồng thời hiển thị chân dung 3D động của các nhóm lính) ---
-            // Tắt các khung mặc định đơn lẻ đi
+            
+            
             if (selectedUnitPortrait != null) selectedUnitPortrait.gameObject.SetActive(false);
             if (singlePortraitBackground != null) singlePortraitBackground.gameObject.SetActive(false);
             
             var frame = selectionPanel.transform.Find("PortraitFrame");
             if (frame != null) frame.gameObject.SetActive(false);
 
-            // Căn chỉnh NameText lên chính giữa phía trên (Top-Center)
+            
             if (selectedUnitName != null)
             {
                 RestoreOriginalNameLayout();
                 selectedUnitName.text = $"ARMY ({selectedList.Count} UNITS)";
             }
 
-            // Căn chỉnh HP Slider xuống chính giữa phía dưới (Bottom-Center) để không bị đè và giữ nguyên tỉ lệ tròn gốc
-            // Đặt Y = 12f để HP bar cao 20px nằm vừa khít trong khoảng trống bên dưới các card Y=-10!
+            
+            
             if (selectedUnitHPBar != null)
             {
                 RestoreOriginalHPLayout();
-                selectedUnitHPBar.gameObject.SetActive(true);
+                selectedUnitHPBar.gameObject.SetActive(typeGroups.Count <= 1);
 
-                // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
+                
                 selectedUnitHPBar.transform.SetAsLastSibling();
                 var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
@@ -947,10 +947,10 @@ public class RTSHUDController : MonoBehaviour
                 r.localPosition = pos;
             }
 
-            // Tính toán khoảng cách để xếp thẻ song song ở giữa SelectionPanel
+            
             int groupCount = typeGroups.Count;
             
-            // UPGRADE: Thẻ nhóm to bằng portrait đơn (112 x 112), nên dùng groupPortraitSpacing rộng hơn (140f)
+            
             float groupPortraitSpacingUpgrade = 140f; 
             float startX = -((groupCount - 1) * groupPortraitSpacingUpgrade) / 2f;
             int index = 0;
@@ -961,53 +961,53 @@ public class RTSHUDController : MonoBehaviour
                 System.Collections.Generic.List<RTSUnit> list = kvp.Value;
                 RTSUnit firstOfGroup = list[0];
 
-                // 1. Tạo thẻ nhóm (Group Card) - UPGRADE size to 112 x 112, dịch xuống Y=-10 để đồng bộ 100% với single selection!
+                
                 GameObject cardGo = new GameObject($"GroupCard_{type}");
                 cardGo.transform.SetParent(selectionPanel.transform, false);
                 activeGroupPortraits.Add(cardGo);
 
                 var rectTrans = cardGo.AddComponent<RectTransform>();
                 rectTrans.sizeDelta = new Vector2(112f, 112f);
-                // Căn chỉnh nằm giữa và dịch chuyển sang hai bên
+                
                 rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
                 rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
                 rectTrans.pivot = new Vector2(0.5f, 0.5f);
-                rectTrans.anchoredPosition = new Vector2(startX + index * groupPortraitSpacingUpgrade, -10f); // Xếp ở trung tâm Y = -10f (nằm từ Y=14px đến Y=126px)
+                rectTrans.anchoredPosition = new Vector2(startX + index * groupPortraitSpacingUpgrade, -10f); 
 
-                // 2. Tạo hình ảnh nền vàng kim (Gold Background) nằm dưới chân dung
+                
                 GameObject bgGo = new GameObject("Background");
                 bgGo.transform.SetParent(cardGo.transform, false);
                 var bgRect = bgGo.AddComponent<RectTransform>();
                 bgRect.anchorMin = Vector2.zero;
                 bgRect.anchorMax = Vector2.one;
-                bgRect.sizeDelta = Vector2.zero; // Stretch-Stretch
+                bgRect.sizeDelta = Vector2.zero; 
 
                 var bgImg = bgGo.AddComponent<UnityEngine.UI.Image>();
-                bgImg.color = new Color(0.85f, 0.7f, 0.3f, 0.8f); // Màu vàng kim quý tộc
+                bgImg.color = new Color(0.85f, 0.7f, 0.3f, 0.8f); 
 
-                // 3. Tạo hình ảnh chân dung đại diện cho nhóm (3D head portraits, thụt nhẹ vào 3px để lộ viền)
+                
                 GameObject imgGo = new GameObject("PortraitImage");
                 imgGo.transform.SetParent(cardGo.transform, false);
                 var imgRect = imgGo.AddComponent<RectTransform>();
                 imgRect.anchorMin = Vector2.zero;
                 imgRect.anchorMax = Vector2.one;
-                imgRect.sizeDelta = new Vector2(-6f, -6f); // Co vào 3px mỗi mép để nằm khít trong khung viền
+                imgRect.sizeDelta = new Vector2(-6f, -6f); 
 
                 var rawImg = imgGo.AddComponent<UnityEngine.UI.RawImage>();
                 RenderTexture targetRT = type == RTSUnitType.Farmer ? farmerRT : soldierRT;
                 rawImg.texture = targetRT;
                 rawImg.color = targetRT != null ? Color.white : new Color(0.12f, 0.12f, 0.18f, 0.65f);
 
-                // 4. Tạo Khung Viền PNG Quý Tộc Cho Thẻ Nhóm (ĐỈNH CAO: Đè LÊN chân dung, đồng bộ 100% với single selection!)
+                
                 GameObject borderGo = new GameObject("Border");
                 borderGo.transform.SetParent(cardGo.transform, false);
                 var borderRect = borderGo.AddComponent<RectTransform>();
                 borderRect.anchorMin = Vector2.zero;
                 borderRect.anchorMax = Vector2.one;
-                borderRect.sizeDelta = new Vector2(8f, 8f); // Kích thước khung to hơn 4px mỗi mép để ôm trọn card
+                borderRect.sizeDelta = new Vector2(8f, 8f); 
 
                 var borderImg = borderGo.AddComponent<UnityEngine.UI.Image>();
-                borderImg.color = Color.white; // Màu trắng để sprite hiển thị nguyên gốc
+                borderImg.color = Color.white; 
                 if (portraitFrameSprite != null)
                 {
                     borderImg.sprite = portraitFrameSprite;
@@ -1017,24 +1017,24 @@ public class RTSHUDController : MonoBehaviour
                     borderImg.color = new Color(0.85f, 0.7f, 0.3f, 0.8f);
                 }
 
-                // 5. Tạo văn bản đếm số lượng nổi lên phía trên thẻ (Unit Counter Text)
-                // UPGRADE: Đặt bên trong card ở góc trên (Y=-4f, pivot=1) để hoàn toàn không chạm vào ARMY text!
+                
+                
                 GameObject countGo = new GameObject("CounterText");
                 countGo.transform.SetParent(cardGo.transform, false);
                 var countRect = countGo.AddComponent<RectTransform>();
                 countRect.sizeDelta = new Vector2(80f, 30f);
-                countRect.anchorMin = new Vector2(0.5f, 1f); // Căn ở giữa cạnh trên của card (trong card)
-                countRect.anchorMax = new Vector2(0.5f, 1f);
-                countRect.pivot = new Vector2(0.5f, 1f); // Xoay quanh đỉnh chữ
-                countRect.anchoredPosition = new Vector2(0f, -4f); // 4px dưới cạnh trên card (nằm hoàn toàn trong card!)
+                countRect.anchorMin = new Vector2(0.5f, 0f);
+                countRect.anchorMax = new Vector2(0.5f, 0f);
+                countRect.pivot = new Vector2(0.5f, 0f);
+                countRect.anchoredPosition = new Vector2(0f, -36f);
 
                 var countText = countGo.AddComponent<TMPro.TextMeshProUGUI>();
-                countText.text = $"{list.Count}"; // Ví dụ: 8 hoặc 4
+                countText.text = $"{list.Count}"; 
                 countText.alignment = TMPro.TextAlignmentOptions.Center;
-                countText.fontSize = 22f;
-                countText.color = new Color(1f, 0.85f, 0f); // Màu vàng gold
+                countText.fontSize = 16f;
+                countText.color = Color.white; 
                 
-                // Gán font chữ
+                
                 if (customGameFont != null)
                 {
                     countText.font = customGameFont;
@@ -1044,10 +1044,56 @@ public class RTSHUDController : MonoBehaviour
                     countText.font = selectedUnitName.font;
                 }
 
+                // Add UnitNameText above portrait frame for each group card
+                GameObject nameGo = new GameObject("UnitNameText");
+                nameGo.transform.SetParent(borderGo.transform, false);
+
+                var nameRect = nameGo.AddComponent<RectTransform>();
+                if (selectedUnitName != null)
+                {
+                    var origRect = selectedUnitName.GetComponent<RectTransform>();
+                    nameRect.anchorMin = origRect.anchorMin;
+                    nameRect.anchorMax = origRect.anchorMax;
+                    nameRect.pivot = origRect.pivot;
+                    nameRect.anchoredPosition = origRect.anchoredPosition;
+                    nameRect.sizeDelta = origRect.sizeDelta;
+                    nameRect.localScale = origRect.localScale;
+                }
+
+                var groupNameText = nameGo.AddComponent<TMPro.TextMeshProUGUI>();
+                groupNameText.text = firstOfGroup.unitName.ToUpper();
+                if (selectedUnitName != null)
+                {
+                    groupNameText.font = selectedUnitName.font;
+                    groupNameText.fontSize = selectedUnitName.fontSize;
+                    groupNameText.color = selectedUnitName.color;
+                    groupNameText.fontStyle = selectedUnitName.fontStyle;
+                    groupNameText.alignment = selectedUnitName.alignment;
+                    groupNameText.fontSharedMaterial = selectedUnitName.fontSharedMaterial;
+
+                    // Copy Outline/Shadow components if they exist
+                    var origOutline = selectedUnitName.GetComponent<UnityEngine.UI.Outline>();
+                    if (origOutline != null)
+                    {
+                        var newOutline = nameGo.AddComponent<UnityEngine.UI.Outline>();
+                        newOutline.effectColor = origOutline.effectColor;
+                        newOutline.effectDistance = origOutline.effectDistance;
+                        newOutline.useGraphicAlpha = origOutline.useGraphicAlpha;
+                    }
+                    var origShadow = selectedUnitName.GetComponent<UnityEngine.UI.Shadow>();
+                    if (origShadow != null && origOutline == null)
+                    {
+                        var newShadow = nameGo.AddComponent<UnityEngine.UI.Shadow>();
+                        newShadow.effectColor = origShadow.effectColor;
+                        newShadow.effectDistance = origShadow.effectDistance;
+                        newShadow.useGraphicAlpha = origShadow.useGraphicAlpha;
+                    }
+                }
+
                 index++;
             }
 
-            // Thanh HP Slider của cả nhóm
+            
             if (selectedUnitHPBar != null)
             {
                 float currentTotalHP = 0f;
@@ -1063,7 +1109,7 @@ public class RTSHUDController : MonoBehaviour
                 selectedUnitHPBar.maxValue = maxTotalHP;
                 selectedUnitHPBar.value = currentTotalHP;
                 
-                // CỰC KỲ QUAN TRỌNG: Đẩy thanh HP lên render ở lớp TRÊN CÙNG của panel để không bị các thẻ lính đè mất!
+                
                 selectedUnitHPBar.transform.SetAsLastSibling();
                 var r = selectedUnitHPBar.GetComponent<RectTransform>();
                 var pos = r.localPosition;
@@ -1073,17 +1119,17 @@ public class RTSHUDController : MonoBehaviour
         }
     }
 
-    // Hàm tự động ẩn bảng thông tin đi khi người chơi nhấp ra ngoài đất trống (bỏ chọn)
+    
     public void HideSelectionPanel()
     {
-        // Deactivate BottomPanel grey background when selection is hidden
+        
         if (selectionPanel != null && selectionPanel.transform.parent != null)
         {
             var bottomPanelImg = selectionPanel.transform.parent.GetComponent<UnityEngine.UI.Image>();
             if (bottomPanelImg != null) bottomPanelImg.enabled = false;
         }
 
-        // Dọn dẹp toàn bộ chân dung nhóm cũ khi ẩn bảng
+        
         foreach (var go in activeGroupPortraits)
         {
             if (go != null) Destroy(go);
@@ -1122,34 +1168,34 @@ public class RTSHUDController : MonoBehaviour
             return;
         }
 
-        // Prevent multiple instances
+        
         if (GameObject.Find("VictoryPanel") != null) return;
 
-        // 1. Create a Victory Panel GameObject under RTS_Canvas (which transform is)
+        
         Transform canvasTransform = transform;
 
         GameObject dynVictoryPanel = new GameObject("VictoryPanel");
         dynVictoryPanel.transform.SetParent(canvasTransform, false);
 
-        // RectTransform for full-screen overlay
+        
         RectTransform panelRect = dynVictoryPanel.AddComponent<RectTransform>();
         panelRect.anchorMin = Vector2.zero;
         panelRect.anchorMax = Vector2.one;
         panelRect.sizeDelta = Vector2.zero;
         panelRect.anchoredPosition = Vector2.zero;
 
-        // Visual background (Premium Dark Gradient/Glassmorphism feel)
+        
         Image bgImage = dynVictoryPanel.AddComponent<Image>();
-        bgImage.color = new Color(0.04f, 0.04f, 0.06f, 0.88f); // Deep dark, high opacity overlay
+        bgImage.color = new Color(0.04f, 0.04f, 0.06f, 0.88f); 
 
-        // Add a CanvasGroup for smooth fade-in animation
+        
         CanvasGroup cg = dynVictoryPanel.AddComponent<CanvasGroup>();
         cg.alpha = 0f;
         
-        // Start a simple animation to fade in the panel
+        
         StartCoroutine(FadeInCanvasGroup(cg, 1.2f));
 
-        // 2. Create the Center Content Container
+        
         GameObject container = new GameObject("ContentContainer");
         container.transform.SetParent(dynVictoryPanel.transform, false);
         RectTransform containerRect = container.AddComponent<RectTransform>();
@@ -1158,16 +1204,16 @@ public class RTSHUDController : MonoBehaviour
         containerRect.anchorMax = new Vector2(0.5f, 0.5f);
         containerRect.pivot = new Vector2(0.5f, 0.5f);
 
-        // Semi-transparent inner container with golden border
+        
         Image containerBg = container.AddComponent<Image>();
         containerBg.color = new Color(0.12f, 0.12f, 0.16f, 0.95f);
         
-        // Outline the container with majestic gold border
+        
         Outline outline = container.AddComponent<Outline>();
-        outline.effectColor = new Color(0.85f, 0.65f, 0.15f, 0.8f); // Majestic Gold
+        outline.effectColor = new Color(0.85f, 0.65f, 0.15f, 0.8f); 
         outline.effectDistance = new Vector2(3f, 3f);
 
-        // 3. Victory Title text
+        
         GameObject titleGo = new GameObject("VictoryTitle");
         titleGo.transform.SetParent(container.transform, false);
         RectTransform titleRect = titleGo.AddComponent<RectTransform>();
@@ -1182,13 +1228,13 @@ public class RTSHUDController : MonoBehaviour
         titleText.alignment = TextAlignmentOptions.Center;
         titleText.fontSize = 48f;
         titleText.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
-        titleText.color = new Color(1f, 0.84f, 0f); // Bright Gold
+        titleText.color = new Color(1f, 0.84f, 0f); 
         if (customGameFont != null) titleText.font = customGameFont;
 
-        // Add a subtle title pulse animation
+        
         StartCoroutine(PulseTitleText(titleRect));
 
-        // 4. Subtitle description
+        
         GameObject subtitleGo = new GameObject("VictorySubtitle");
         subtitleGo.transform.SetParent(container.transform, false);
         RectTransform subtitleRect = subtitleGo.AddComponent<RectTransform>();
@@ -1202,10 +1248,10 @@ public class RTSHUDController : MonoBehaviour
         subtitleText.text = "Thank you for playing!";
         subtitleText.alignment = TextAlignmentOptions.Center;
         subtitleText.fontSize = 18f;
-        subtitleText.color = new Color(0.9f, 0.9f, 0.95f, 0.9f); // Elegant Off-white
+        subtitleText.color = new Color(0.9f, 0.9f, 0.95f, 0.9f); 
         if (customGameFont != null) subtitleText.font = customGameFont;
 
-        // 5. Buttons Container
+        
         GameObject btnContainer = new GameObject("Buttons");
         btnContainer.transform.SetParent(container.transform, false);
         RectTransform btnContainerRect = btnContainer.AddComponent<RectTransform>();
@@ -1215,7 +1261,7 @@ public class RTSHUDController : MonoBehaviour
         btnContainerRect.anchoredPosition = new Vector2(0f, 40f);
         btnContainerRect.sizeDelta = new Vector2(400f, 50f);
 
-        // Button A: Play Again
+        
         GameObject playAgainGo = new GameObject("PlayAgainButton");
         playAgainGo.transform.SetParent(btnContainer.transform, false);
         RectTransform playAgainRect = playAgainGo.AddComponent<RectTransform>();
@@ -1225,7 +1271,7 @@ public class RTSHUDController : MonoBehaviour
         playAgainRect.pivot = new Vector2(0.5f, 0.5f);
 
         Image playAgainImg = playAgainGo.AddComponent<Image>();
-        playAgainImg.color = new Color(0.15f, 0.45f, 0.2f, 1f); // Forest Green
+        playAgainImg.color = new Color(0.15f, 0.45f, 0.2f, 1f); 
         Button playAgainBtn = playAgainGo.AddComponent<Button>();
         playAgainBtn.onClick.AddListener(() => {
             Time.timeScale = 1f;
@@ -1246,7 +1292,7 @@ public class RTSHUDController : MonoBehaviour
         playAgainText.color = Color.white;
         if (customGameFont != null) playAgainText.font = customGameFont;
 
-        // Button B: Main Menu
+        
         GameObject mainMenuGo = new GameObject("MainMenuButton");
         mainMenuGo.transform.SetParent(btnContainer.transform, false);
         RectTransform mainMenuRect = mainMenuGo.AddComponent<RectTransform>();
@@ -1256,7 +1302,7 @@ public class RTSHUDController : MonoBehaviour
         mainMenuRect.pivot = new Vector2(0.5f, 0.5f);
 
         Image mainMenuImg = mainMenuGo.AddComponent<Image>();
-        mainMenuImg.color = new Color(0.25f, 0.25f, 0.3f, 1f); // Dark Grey-Blue
+        mainMenuImg.color = new Color(0.25f, 0.25f, 0.3f, 1f); 
         Button mainMenuBtn = mainMenuGo.AddComponent<Button>();
         mainMenuBtn.onClick.AddListener(() => {
             Time.timeScale = 1f;
@@ -1277,7 +1323,7 @@ public class RTSHUDController : MonoBehaviour
         mainMenuText.color = Color.white;
         if (customGameFont != null) mainMenuText.font = customGameFont;
 
-        // Pause the game time after a short delay for effects
+        
         StartCoroutine(PauseAfterDelay(1.5f));
     }
 

@@ -41,7 +41,7 @@ public class TerrainGenerator : MonoBehaviour
     public float treeDensityCutoff = 0.4f; 
     public int maxTrees = 2000;
 
-    // Danh sách lưu trữ vị trí các căn cứ phẳng được sinh ra
+    
     private List<Vector2> activeBasinCenters = new List<Vector2>();
 
     private void Start()
@@ -66,21 +66,21 @@ public class TerrainGenerator : MonoBehaviour
         terrainData.heightmapResolution = width + 1;
         terrainData.size = new Vector3(width, depth, height);
 
-        // 1. Sinh ngẫu nhiên các tâm lòng chảo dựa trên Offset (Seed) hiện tại
+        
         Random.InitState((int)(offset.x * 1000f + offset.y)); 
         GenerateBasinCenters();
 
-        // 2. Tính toán và áp dụng chiều cao địa hình
+        
         float[,] heights = CalculateHeights();
         terrainData.SetHeights(0, 0, heights);
 
-        // 3. Tự động tô màu cỏ, đất, đá
+        
         if (autoTexture)
         {
             ApplyProceduralTextures(terrainData, heights);
         }
 
-        // 4. Sinh rừng cây
+        
         if (spawnTrees)
         {
             GenerateForest(terrainData, heights);
@@ -96,7 +96,7 @@ public class TerrainGenerator : MonoBehaviour
     private void GenerateBasinCenters()
     {
         activeBasinCenters.Clear();
-        // Các lòng chảo phẳng để xây căn cứ sẽ nằm cách xa viền núi ngoài rìa bản đồ
+        
         float minPos = width * 0.25f;
         float maxPos = width * 0.75f;
 
@@ -118,10 +118,10 @@ public class TerrainGenerator : MonoBehaviour
             {
                 float baseNoise = GetNoiseHeight(x, y);
 
-                // 1. Tạo đồi núi nhấp nhô nhẹ làm nền cho toàn bộ thung lũng (baseNoise * 0.25f)
+                
                 float currentHeight = baseNoise * 0.25f;
 
-                // 2. Tính toán viền núi bảo vệ ở rìa ngoài cùng bản đồ (Bắt đầu nhô cao từ 75% khoảng cách tới viền)
+                
                 float nx = 2f * x / width - 1f;
                 float ny = 2f * y / height - 1f;
                 float distanceToCenter = Mathf.Max(Mathf.Abs(nx), Mathf.Abs(ny));
@@ -129,14 +129,14 @@ public class TerrainGenerator : MonoBehaviour
                 float borderMask = Mathf.Clamp01((distanceToCenter - 0.75f) / 0.25f);
                 borderMask = Mathf.Pow(borderMask, mountainSteepness);
                 
-                // Trộn độ cao viền núi
+                
                 currentHeight = Mathf.Lerp(currentHeight, baseNoise * 0.6f + 0.12f, borderMask);
 
-                // 3. THUẬT TOÁN SAN PHẲNG LÒNG CHẢO (RTS Basins):
-                // Nếu điểm đang xét nằm gần một tâm lòng chảo, chúng ta sẽ làm phẳng đất về mức 0
-                if (borderMask < 0.1f) // Chỉ san phẳng ở khu vực phía trong, không san phẳng núi viền
+                
+                
+                if (borderMask < 0.1f) 
                 {
-                    float minBasinEffect = 1f; // 1 = không bị ảnh hưởng, 0 = san phẳng hoàn toàn
+                    float minBasinEffect = 1f; 
                     
                     foreach (Vector2 center in activeBasinCenters)
                     {
@@ -144,7 +144,7 @@ public class TerrainGenerator : MonoBehaviour
                         if (dist < basinRadius)
                         {
                             float factor = dist / basinRadius;
-                            // Sử dụng hàm Sin để tạo sườn đồi bao quanh lòng chảo mềm mại (S-Curve)
+                            
                             float smoothFactor = (Mathf.Sin(factor * Mathf.PI - Mathf.PI / 2f) + 1f) * 0.5f;
                             
                             if (smoothFactor < minBasinEffect)
@@ -154,8 +154,8 @@ public class TerrainGenerator : MonoBehaviour
                         }
                     }
                     
-                    // Thực hiện làm phẳng đất dựa theo mức độ ảnh hưởng của lòng chảo
-                    // Đất ở tâm lòng chảo sẽ được đưa về độ cao phẳng lỳ cực thấp (baseNoise * 0.02f)
+                    
+                    
                     currentHeight = Mathf.Lerp(baseNoise * 0.02f, currentHeight, minBasinEffect);
                 }
 
@@ -213,29 +213,29 @@ public class TerrainGenerator : MonoBehaviour
 
                 float[] weights = new float[numLayers];
 
-                if (h < 0.05f) // Đáy lòng chảo phẳng lỳ cực thấp
+                if (h < 0.05f) 
                 {
-                    weights[0] = 1f; // 100% Cỏ (Grass)
+                    weights[0] = 1f; 
                 }
-                else if (h < 0.12f) // Sườn đồi thoải bao quanh lòng chảo
+                else if (h < 0.12f) 
                 {
                     float blend = (h - 0.05f) / (0.12f - 0.05f);
                     weights[0] = 1f - blend;
-                    weights[1] = blend; // Trộn Đất (Dirt)
+                    weights[1] = blend; 
                 }
-                else if (h < 0.22f) // Vùng đồi núi nhấp nhô trung tâm
+                else if (h < 0.22f) 
                 {
                     float blend = (h - 0.12f) / (0.22f - 0.12f);
                     weights[1] = 1f - blend;
-                    weights[2] = blend; // Trộn Đá (Rock)
+                    weights[2] = blend; 
                 }
-                else // Đỉnh núi cao bao quanh map
+                else 
                 {
                     if (numLayers >= 4)
                     {
                         float blend = Mathf.Clamp01((h - 0.22f) / (0.35f - 0.22f));
                         weights[2] = 1f - blend;
-                        weights[3] = blend; // Trộn Tuyết (Snow)
+                        weights[3] = blend; 
                     }
                     else
                     {
@@ -272,8 +272,8 @@ public class TerrainGenerator : MonoBehaviour
 
             float currentHeight = heights[xIdx, yIdx];
 
-            // 🌳 RỪNG CHỈ MỌC Ở SƯỜN ĐỒI NHẤP NHÔ (Độ cao từ 0.06f đến 0.18f)
-            // Tuyệt đối không mọc ở đáy các lòng chảo phẳng (currentHeight < 0.06f) để chừa chỗ trống xây dựng base!
+            
+            
             if (currentHeight > 0.06f && currentHeight < 0.18f)
             {
                 float forestNoise = Mathf.PerlinNoise(xNorm * treeNoiseScale, zNorm * treeNoiseScale);

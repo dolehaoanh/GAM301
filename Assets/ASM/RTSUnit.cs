@@ -11,7 +11,7 @@ public class RTSUnit : MonoBehaviour
     [Header("Unit Settings")]
     [Tooltip("Phân loại quân lính (Dân hay Lính)")]
     public RTSUnitType unitType = RTSUnitType.Soldier;
-    public bool isEnemy = false; // Phân biệt phe ta và phe địch
+    public bool isEnemy = false; 
 
     [Header("Unit Stats Settings")]
     [Tooltip("Tên hiển thị của quân")]
@@ -55,14 +55,14 @@ public class RTSUnit : MonoBehaviour
         MovingToResource,
         Gathering,
         MovingToDeliver,
-        Chasing,       // Them: Soldier chasing target
-        Attacking,     // Tem: Soldier attacking target
-        Dead,          // Them: Dead state (to disable operations)
-        Moving         // Them: General moving state for soldiers/units
+        Chasing,       
+        Attacking,     
+        Dead,          
+        Moving         
     }
     public RTSUnitState currentState = RTSUnitState.Idle;
 
-    // A general target that can be either an enemy Unit or an enemy Building
+    
     private GameObject currentTarget;
 
     public ResourceNode targetResourceNode;
@@ -105,7 +105,7 @@ public class RTSUnit : MonoBehaviour
                     break;
                 }
 
-                // Đi đến bãi tài nguyên
+                
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
                     Vector3 targetPos = targetResourceNode.transform.position;
@@ -123,7 +123,7 @@ public class RTSUnit : MonoBehaviour
                 Vector3 flatResourcePos = new Vector3(targetResourceNode.transform.position.x, 0f, targetResourceNode.transform.position.z);
                 float distToResource = Vector3.Distance(flatUnitPos, flatResourcePos);
 
-                // Sử dụng bán kính hiệu dụng tối thiểu là 3.0 để dễ tiếp cận các cây cao/to
+                
                 float effectiveRange = Mathf.Max(targetResourceNode.harvestRange, 3.0f);
 
                 bool reachedResource = distToResource <= effectiveRange ||
@@ -152,11 +152,11 @@ public class RTSUnit : MonoBehaviour
                 }
 
                 gatherTimer += Time.deltaTime;
-                if (gatherTimer >= 1.2f) // Cứ mỗi 1.2 giây khai thác 1 lần
+                if (gatherTimer >= 1.2f) 
                 {
                     gatherTimer = 0f;
 
-                    // Kích hoạt animation cuốc đất/chặt cây nếu có tham số
+                    
                     Animator animator = GetComponentInChildren<Animator>();
                     if (animator != null)
                     {
@@ -201,7 +201,7 @@ public class RTSUnit : MonoBehaviour
                     }
                 }
 
-                // Đi giao tài nguyên
+                
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
                     Vector3 targetPos = targetTownCenter.transform.position;
@@ -219,7 +219,7 @@ public class RTSUnit : MonoBehaviour
                 Vector3 flatTCPos = new Vector3(targetTownCenter.transform.position.x, 0f, targetTownCenter.transform.position.z);
                 float distToTC = Vector3.Distance(flatUnitPosTC, flatTCPos);
 
-                // Sử dụng khoảng cách hiệu dụng tối thiểu là 3.5 để giao tài nguyên dễ dàng
+                
                 float effectiveDeliverRange = Mathf.Max(targetTownCenter.deliverRange, 3.5f);
 
                 bool reachedTC = distToTC <= effectiveDeliverRange ||
@@ -227,7 +227,7 @@ public class RTSUnit : MonoBehaviour
 
                 if (reachedTC)
                 {
-                    // Giao tài nguyên
+                    
                     if (PlayerResourceManager.Instance != null)
                     {
                         if (carriedType == RTSResourceType.Gold)
@@ -244,7 +244,7 @@ public class RTSUnit : MonoBehaviour
                     carriedType = RTSResourceType.None;
                     UpdateVisualBag();
 
-                    // Quay lại bãi tài nguyên tiếp tục khai thác nếu bãi vẫn còn
+                    
                     if (targetResourceNode != null)
                     {
                         currentState = RTSUnitState.MovingToResource;
@@ -267,7 +267,7 @@ public class RTSUnit : MonoBehaviour
         switch (currentState)
         {
             case RTSUnitState.Idle:
-                // Scan for the highest-priority enemy target in range
+                
                 currentTarget = FindPrioritizedEnemyTarget();
                 if (currentTarget != null)
                 {
@@ -296,11 +296,11 @@ public class RTSUnit : MonoBehaviour
                     break;
                 }
 
-                // Periodically rescan for closer/better targets to prevent target lock
+                
                 rescanTimer -= Time.deltaTime;
                 if (rescanTimer <= 0f)
                 {
-                    rescanTimer = 1.0f; // Rescan every 1 second
+                    rescanTimer = 1.0f; 
                     GameObject betterTarget = FindPrioritizedEnemyTarget();
                     if (betterTarget != null && betterTarget != currentTarget)
                     {
@@ -308,7 +308,7 @@ public class RTSUnit : MonoBehaviour
                     }
                 }
 
-                // Check if target has died/destroyed mid-chase
+                
                 RTSUnit targetUnit = currentTarget.GetComponent<RTSUnit>();
                 if (targetUnit != null && targetUnit.currentState == RTSUnitState.Dead)
                 {
@@ -317,24 +317,24 @@ public class RTSUnit : MonoBehaviour
                     break;
                 }
 
-                // Move agent toward the target
+                
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
                     navAgent.SetDestination(currentTarget.transform.position);
                 }
 
-                // Calculate ranges (buildings have larger attack offsets)
+                
                 float effectiveRange = attackRange;
-                // Calculate ranges using building's collider if target is a building
-                // Calculate ranges using building's collider if target is a building
+                
+                
                 float distToTarget;
                 Collider targetCollider = currentTarget.GetComponent<Collider>();
 
-                // Ignore Y axis for distance checks
+                
                 Vector3 flatSelf = new Vector3(transform.position.x, 0f, transform.position.z);
                 Vector3 flatTarget = new Vector3(currentTarget.transform.position.x, 0f, currentTarget.transform.position.z);
 
-                if (targetUnit == null && targetCollider != null) // It's a building
+                if (targetUnit == null && targetCollider != null) 
                 {
                     Vector3 flatClosestPoint = targetCollider.ClosestPoint(transform.position);
                     flatClosestPoint.y = 0f;
@@ -345,7 +345,7 @@ public class RTSUnit : MonoBehaviour
                     distToTarget = Vector3.Distance(flatSelf, flatTarget);
                 }
 
-                // Transition to attacking if in range
+                
                 if (isEnemy)
                 {
                     Debug.Log($"[Combat Distance Debug] {gameObject.name} Chasing target {currentTarget.name}: distToTarget = {distToTarget:F2}, effectiveRange = {effectiveRange:F2}");
@@ -373,16 +373,16 @@ public class RTSUnit : MonoBehaviour
                     break;
                 }
 
-                // Check if target moved out of range
+                
                 float currentRange = attackRange;
-            // Check if target moved out of range (ignore Y axis)
+            
             float distance;
             Collider targetColliderAtk = currentTarget.GetComponent<Collider>();
             
             Vector3 flatSelfAtk = new Vector3(transform.position.x, 0f, transform.position.z);
             Vector3 flatTargetAtk = new Vector3(currentTarget.transform.position.x, 0f, currentTarget.transform.position.z);
 
-            if (targetUnitAtk == null && targetColliderAtk != null) // It's a building
+            if (targetUnitAtk == null && targetColliderAtk != null) 
             {
                 Vector3 flatClosestPointAtk = targetColliderAtk.ClosestPoint(transform.position);
                 flatClosestPointAtk.y = 0f;
@@ -393,14 +393,14 @@ public class RTSUnit : MonoBehaviour
                 distance = Vector3.Distance(flatSelfAtk, flatTargetAtk);
             }
 
-            // Add a 0.8f buffer so small physics/rounding changes don't cancel the attack instantly
+            
             if (distance > currentRange + 0.8f)
             {
                 currentState = RTSUnitState.Chasing;
                 break;
             }
 
-                // Rotate to face target
+                
                 Vector3 lookDir = (currentTarget.transform.position - transform.position).normalized;
                 lookDir.y = 0f;
                 if (lookDir != Vector3.zero)
@@ -408,34 +408,34 @@ public class RTSUnit : MonoBehaviour
                     transform.rotation = Quaternion.LookRotation(lookDir);
                 }
 
-                // Attack cooldown logic
+                
                 if (attackTimer <= 0f)
                 {
                     attackTimer = attackCooldown;
 
-                    // Trigger the attack animation in the Animator
+                    
                     Animator animator = GetComponentInChildren<Animator>();
                     if (animator != null)
                     {
                         animator.SetTrigger("Attack");
                     }
 
-                    // Play attack sound
+                    
                     if (sfxAudioSource != null && attackClip != null)
                     {
                         float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
                         sfxAudioSource.PlayOneShot(attackClip, sfxVol);
                     }
 
-                    // Deal damage
+                    
                     if (targetUnitAtk != null)
                     {
-                        // Pass 'this' so the defender knows who to attack back
+                        
                         targetUnitAtk.TakeDamage(attackDamage, this);
                     }
                     else
                     {
-                        // Handle building damage if it has a script, or simulate building attack log
+                        
                         if (currentTarget != null)
                         {
                             TownCenter tc = currentTarget.GetComponent<TownCenter>();
@@ -485,7 +485,7 @@ public class RTSUnit : MonoBehaviour
         float minDist = scanRange;
         GameObject nearest = null;
 
-        // Quét TownCenters
+        
         foreach (TownCenter tc in TownCenter.AllTownCenters)
         {
             if (tc == null) continue;
@@ -500,7 +500,7 @@ public class RTSUnit : MonoBehaviour
             }
         }
 
-        // Quét Barracks
+        
         foreach (Barracks b in Barracks.AllBarracks)
         {
             if (b == null) continue;
@@ -524,7 +524,7 @@ public class RTSUnit : MonoBehaviour
         float minDist = scanRange;
         GameObject bestTarget = null;
 
-        // 1. Scan for closest enemy Soldier (highest priority)
+        
         foreach (RTSUnit unit in allUnits)
         {
             if (unit == null || unit.currentState == RTSUnitState.Dead || unit.isEnemy == this.isEnemy) continue;
@@ -540,7 +540,7 @@ public class RTSUnit : MonoBehaviour
         }
         if (bestTarget != null) return bestTarget;
 
-        // 2. Scan for closest enemy Farmer (second priority)
+        
         minDist = scanRange;
         foreach (RTSUnit unit in allUnits)
         {
@@ -557,11 +557,11 @@ public class RTSUnit : MonoBehaviour
         }
         if (bestTarget != null) return bestTarget;
 
-        // 3. Scan for closest enemy Building (lowest priority)
-        // Keep scan range at standard scanRange (15f) so idle units do not auto-run across the map to attack buildings
+        
+        
         float buildingScanRange = scanRange;
         minDist = buildingScanRange;
-        // Scan Town Centers
+        
         foreach (TownCenter tc in TownCenter.AllTownCenters)
         {
             if (tc == null || tc.isEnemy == this.isEnemy) continue;
@@ -572,7 +572,7 @@ public class RTSUnit : MonoBehaviour
                 bestTarget = tc.gameObject;
             }
         }
-        // Scan Barracks
+        
         foreach (Barracks b in Barracks.AllBarracks)
         {
             if (b == null || b.isEnemy == this.isEnemy) continue;
@@ -594,7 +594,7 @@ public class RTSUnit : MonoBehaviour
         currentHP -= damage;
         if (currentHP < 0f) currentHP = 0f;
 
-        // Play hurt sound
+        
         if (sfxAudioSource != null && hurtClip != null)
         {
             float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
@@ -602,11 +602,11 @@ public class RTSUnit : MonoBehaviour
         }
 
 
-        // Add this line to check what state the enemy is in when hit
+        
         Debug.Log($"[Combat Log] {gameObject.name} (isEnemy: {isEnemy}) hit by {(attacker != null ? attacker.name : "null")}. Current State: {currentState}");
         StartCoroutine(HitFlashRoutine());
 
-        // Retaliate: if idle, or if the attacker is closer than the current target, switch to it
+        
         if (attacker != null)
         {
             bool shouldSwitch = false;
@@ -618,7 +618,7 @@ public class RTSUnit : MonoBehaviour
             {
                 float distToCurrent = Vector3.Distance(transform.position, currentTarget.transform.position);
                 float distToAttacker = Vector3.Distance(transform.position, attacker.transform.position);
-                // Switch if attacker is closer
+                
                 if (distToAttacker < distToCurrent)
                 {
                     shouldSwitch = true;
@@ -631,7 +631,7 @@ public class RTSUnit : MonoBehaviour
                 currentState = RTSUnitState.Chasing;
             }
 
-            // Alert nearby allies
+            
             AlertNearbyAllies(attacker);
         }
 
@@ -718,7 +718,7 @@ public class RTSUnit : MonoBehaviour
         var renderers = GetComponentsInChildren<Renderer>();
         Color[] originalColors = new Color[renderers.Length];
 
-        // Set all materials to solid white to indicate damage
+        
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] != null && !(renderers[i] is LineRenderer))
@@ -730,7 +730,7 @@ public class RTSUnit : MonoBehaviour
 
         yield return new WaitForSeconds(0.1f);
 
-        // Restore original faction colors
+        
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] != null && !(renderers[i] is LineRenderer))
@@ -746,24 +746,24 @@ public class RTSUnit : MonoBehaviour
         currentState = RTSUnitState.Dead;
         Deselect();
 
-        // 1. Disable collider so other units can walk through the corpse
+        
         var col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        // 2. Turn off NavMeshAgent so it stops pathfinding
+        
         if (navAgent != null)
         {
             navAgent.isStopped = true;
             navAgent.enabled = false;
         }
 
-        // 3. Start the unified death timeline coroutine
+        
         StartCoroutine(DeathSequenceRoutine());
     }
 
     private System.Collections.IEnumerator DeathSequenceRoutine()
     {
-        // A. Trigger the death animation
+        
         Animator animator = GetComponentInChildren<Animator>();
         Debug.Log($"[Death Debug] {gameObject.name} is playing Death_B directly. Animator found: {(animator != null ? animator.name : "null")}");
         if (animator != null)
@@ -772,21 +772,21 @@ public class RTSUnit : MonoBehaviour
             animator.Play("Death_B");
         }
 
-        // B. Wait for the fall animation to complete (approx 2.2s)
+        
         yield return new WaitForSeconds(2.2f);
 
-        // C. Freeze the animator pose
+        
         if (animator != null)
         {
             animator.enabled = false;
         }
 
-        // D. Lie on the ground for 2 seconds
+        
         yield return new WaitForSeconds(2.0f);
 
-        // E. Sink slowly into the ground for 1.5 seconds
+        
         float sinkDuration = 1.5f;
-        float sinkSpeed = 0.6f; // Units per second downwards
+        float sinkSpeed = 0.6f; 
         float elapsed = 0f;
         while (elapsed < sinkDuration)
         {
@@ -795,7 +795,7 @@ public class RTSUnit : MonoBehaviour
             yield return null;
         }
 
-        // F. Clean up: Object Pool return or fallback to Destroy
+        
         if (UnitPoolManager.Instance != null)
         {
             UnitPoolManager.Instance.ReturnUnit(this);
@@ -808,7 +808,7 @@ public class RTSUnit : MonoBehaviour
 
     public void ResetUnit(bool isEnemy)
     {
-        // 1. Restore health and state
+        
         currentHP = maxHP;
         currentState = RTSUnitState.Idle;
         this.isEnemy = isEnemy;
@@ -818,7 +818,7 @@ public class RTSUnit : MonoBehaviour
         carriedAmount = 0f;
         carriedType = RTSResourceType.None;
 
-        // 2. Re-enable Physics and Pathfinding
+        
         var col = GetComponent<Collider>();
         if (col != null) col.enabled = true;
 
@@ -829,18 +829,18 @@ public class RTSUnit : MonoBehaviour
             navAgent.isStopped = false;
         }
 
-        // 3. Re-enable and reset Animator
+        
         Animator animator = GetComponentInChildren<Animator>();
         if (animator != null)
         {
             animator.enabled = true;
             animator.ResetTrigger("Attack");
             animator.ResetTrigger("Die");
-            // Reset to the base Idle/Movement blend tree state
+            
             animator.Play("Movement", 0, 0f);
         }
 
-        // 4. Re-apply colors based on faction
+        
         ApplyFactionColors();
     }
 
@@ -924,14 +924,14 @@ public class RTSUnit : MonoBehaviour
 
     private void Start()
     {
-        // Setup SFX AudioSource
+        
         sfxAudioSource = gameObject.AddComponent<AudioSource>();
         sfxAudioSource.playOnAwake = false;
-        sfxAudioSource.spatialBlend = 0.5f; // Spatial sound so we know where the fight is
+        sfxAudioSource.spatialBlend = 0.5f; 
         sfxAudioSource.minDistance = 5f;
         sfxAudioSource.maxDistance = 50f;
 
-        // Snap unit to NavMesh to ensure pre-placed units have isOnNavMesh=true and can navigate
+        
         if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (navAgent != null)
         {
@@ -944,7 +944,7 @@ public class RTSUnit : MonoBehaviour
             }
         }
 
-        // Tự động phân biệt màu sắc và tên mặc định dựa trên loại quân
+        
         if (unitType == RTSUnitType.Farmer)
         {
             selectionColor = new Color(0f, 1f, 0.2f, 0.9f);
@@ -991,7 +991,7 @@ public class RTSUnit : MonoBehaviour
 
             if (mat != null)
             {
-                // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
+                
                 bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") || r.name.Contains("Quad") || 
                                      mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
 
@@ -999,12 +999,12 @@ public class RTSUnit : MonoBehaviour
                 {
                     if (isEnemy)
                     {
-                        // Quads hiển thị icon địch trên map phải là màu đỏ tươi sáng (bright red: 255, 0, 0)
+                        
                         mat.color = new Color(1f, 0f, 0f, 1f);
                     }
                     else
                     {
-                        // Quads hiển thị icon ta trên map là màu xanh lá tươi sáng (bright green: 0, 255, 0)
+                        
                         mat.color = new Color(0f, 1f, 0f, 1f);
                     }
                 }
@@ -1012,20 +1012,20 @@ public class RTSUnit : MonoBehaviour
                 {
                     if (isEnemy)
                     {
-                        // Địch màu đỏ pastel nhẹ nhàng
+                        
                         mat.color = new Color(1.0f, 0.6f, 0.6f, 1f);
                     }
                     else
                     {
-                        // Phe ta
+                        
                         if (unitType == RTSUnitType.Soldier)
                         {
-                            // Nhuộm xanh lam pastel dịu dàng cho Chiến binh
+                            
                             mat.color = new Color(0.55f, 0.75f, 1.0f, 1f);
                         }
                         else if (unitType == RTSUnitType.Farmer)
                         {
-                            // Nhuộm xanh lá pastel thanh thoát cho Nông dân
+                            
                             mat.color = new Color(0.6f, 0.9f, 0.7f, 1f);
                         }
                     }
@@ -1051,7 +1051,7 @@ public class RTSUnit : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
-            // Trong Editor tự động tô màu ngay lập tức
+            
             ApplyFactionColors();
         }
     }

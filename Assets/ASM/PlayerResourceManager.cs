@@ -10,7 +10,7 @@ public class PlayerResourceManager : MonoBehaviour
     public int wood = 200;
     public int maxFood = 50;
 
-    // Sự kiện phát ra khi tài nguyên thay đổi để HUD tự động cập nhật
+    
     public static event Action OnResourcesChanged;
 
     private void Awake()
@@ -45,7 +45,7 @@ public class PlayerResourceManager : MonoBehaviour
         int foodUsed = 0;
         foreach (RTSUnit unit in allUnits)
         {
-            // Kiểm tra y > -100f và unit không phải enemy để tính cho người chơi
+            
             if (unit != null && unit.transform.position.y > -100f && !unit.isEnemy)
             {
                 foodUsed += (unit.unitType == RTSUnitType.Farmer) ? 1 : 2;

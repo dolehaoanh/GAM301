@@ -28,7 +28,7 @@ public class UnitPoolManager : MonoBehaviour
             return;
         }
 
-        // Initialize Farmer Pool
+        
         farmerPool = new ObjectPool<GameObject>(
             createFunc: () => Instantiate(farmerPrefab),
             actionOnGet: OnGetUnit,
@@ -39,7 +39,7 @@ public class UnitPoolManager : MonoBehaviour
             maxSize: maxPoolSize
         );
 
-        // Initialize Soldier Pool
+        
         soldierPool = new ObjectPool<GameObject>(
             createFunc: () => Instantiate(soldierPrefab),
             actionOnGet: OnGetUnit,
@@ -61,14 +61,14 @@ public class UnitPoolManager : MonoBehaviour
         unitObj.SetActive(false);
     }
 
-    // Call this to spawn a pooled Farmer
+    
     public GameObject SpawnFarmer(Vector3 position, Quaternion rotation, bool isEnemy)
     {
         GameObject farmer = farmerPool.Get();
         farmer.transform.position = position;
         farmer.transform.rotation = rotation;
 
-        // Initialize unit states
+        
         RTSUnit unitScript = farmer.GetComponent<RTSUnit>();
         if (unitScript != null)
         {
@@ -78,14 +78,14 @@ public class UnitPoolManager : MonoBehaviour
         return farmer;
     }
 
-    // Call this to spawn a pooled Soldier
+    
     public GameObject SpawnSoldier(Vector3 position, Quaternion rotation, bool isEnemy)
     {
         GameObject soldier = soldierPool.Get();
         soldier.transform.position = position;
         soldier.transform.rotation = rotation;
 
-        // Initialize unit states
+        
         RTSUnit unitScript = soldier.GetComponent<RTSUnit>();
         if (unitScript != null)
         {
@@ -95,7 +95,7 @@ public class UnitPoolManager : MonoBehaviour
         return soldier;
     }
 
-    // Call this to recycle the unit instead of Destroying it
+    
     public void ReturnUnit(RTSUnit unit)
     {
         if (unit.unitType == RTSUnitType.Farmer)

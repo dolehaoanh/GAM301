@@ -5,17 +5,17 @@ public class Barracks : MonoBehaviour
 {
     public static List<Barracks> AllBarracks = new List<Barracks>();
 
-    public bool isEnemy = false; // Phân biệt Nhà Lính của người chơi và địch
+    public bool isEnemy = false; 
 
     [Header("Building Stats")]
     public float maxHP = 800f;
     public float currentHP = 800f;
 
     [Header("Training Settings")]
-    public GameObject soldierPrefab; // Prefab của Binh Sĩ
-    public float trainingDuration = 6f; // Thời gian huấn luyện (6 giây)
-    public int soldierCost = 80; // Giá mua binh sĩ (80 Vàng)
-    public Transform spawnPoint; // Điểm xuất hiện của binh sĩ
+    public GameObject soldierPrefab; 
+    public float trainingDuration = 6f; 
+    public int soldierCost = 80; 
+    public Transform spawnPoint; 
     public float deliverRange = 3.5f;
 
     [System.NonSerialized]
@@ -44,7 +44,7 @@ public class Barracks : MonoBehaviour
 
         if (PlayerResourceManager.Instance == null) return false;
 
-        // Kiểm tra giới hạn Lương thực (Food) trước khi huấn luyện (Chiến binh tốn 2 Lương thực)
+        
         int currentFood = PlayerResourceManager.Instance.GetCurrentFoodUsed();
         if (currentFood + 2 > PlayerResourceManager.Instance.maxFood)
         {
@@ -52,7 +52,7 @@ public class Barracks : MonoBehaviour
             return false;
         }
 
-        // Tiêu hao 80 Vàng của người chơi
+        
         if (PlayerResourceManager.Instance.SpendResources(soldierCost, 0))
         {
             isTraining = true;
@@ -126,7 +126,7 @@ public class Barracks : MonoBehaviour
 
             if (mat != null)
             {
-                // Kiểm tra xem renderer này có phải là Quad hiển thị Icon trên Minimap không
+                
                 bool isMinimapIcon = r.name.Contains("Minimap") || r.name.Contains("Icon") ||
                                      mat.name.Contains("MinimapIcon") || mat.name.Contains("Icon");
 
@@ -213,13 +213,13 @@ public class Barracks : MonoBehaviour
 
             soldierGo.name = isEnemy ? $"Enemy_Soldier_{Random.Range(100, 999)}" : $"Soldier_Trained_{Random.Range(100, 999)}";
 
-            // WARP AND MOVE COMMAND:
+            
             UnityEngine.AI.NavMeshAgent agent = soldierGo.GetComponent<UnityEngine.AI.NavMeshAgent>();
             if (agent != null)
             {
                 agent.enabled = true;
-                agent.Warp(spawnPos); // Binds the agent to NavMesh instantly
-                Vector3 exitTarget = spawnPos + transform.forward * 4.0f; // Walk 4 units forward
+                agent.Warp(spawnPos); 
+                Vector3 exitTarget = spawnPos + transform.forward * 4.0f; 
                 agent.SetDestination(exitTarget);
             }
 
