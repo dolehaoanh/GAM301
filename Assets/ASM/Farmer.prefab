@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RTSUnitAnimation
   speedDampTime: 0.15
+  footstepClip: {fileID: 8300000, guid: 87c925548ca994c37aea66c1103ffc5f, type: 3}
 --- !u!1 &2479570828524804579
 GameObject:
   m_ObjectHideFlags: 0
