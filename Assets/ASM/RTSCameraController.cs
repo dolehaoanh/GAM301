@@ -39,6 +39,11 @@ public class RTSCameraController : MonoBehaviour
     public float boundaryPadding = 15f;
 
     private Vector3 targetPosition;
+    public Vector3 TargetPosition
+    {
+        get => targetPosition;
+        set => targetPosition = value;
+    }
     private float targetZoomHeight;
     private float targetRotationY;
     

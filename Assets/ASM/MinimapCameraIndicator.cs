@@ -1,7 +1,8 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [ExecuteAlways]
-public class MinimapCameraIndicator : MonoBehaviour
+public class MinimapCameraIndicator : MonoBehaviour, IPointerDownHandler, IDragHandler
 {
     public RectTransform indicatorRect;
     public Camera mainCamera;
@@ -67,5 +68,48 @@ public class MinimapCameraIndicator : MonoBehaviour
         }
         
         return mainCamera.transform.position + ray.direction * 50f;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        MoveCameraToMinimapPoint(eventData);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        MoveCameraToMinimapPoint(eventData);
+    }
+
+    private void MoveCameraToMinimapPoint(PointerEventData eventData)
+    {
+        if (mainCamera == null) mainCamera = Camera.main;
+        if (mainCamera == null) return;
+
+        RectTransform rectTransform = transform as RectTransform;
+        if (rectTransform == null) return;
+
+        Vector2 localPoint;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out localPoint))
+        {
+            float normX = (localPoint.x - rectTransform.rect.xMin) / rectTransform.rect.width;
+            float normY = (localPoint.y - rectTransform.rect.yMin) / rectTransform.rect.height;
+
+            normX = Mathf.Clamp01(normX);
+            normY = Mathf.Clamp01(normY);
+
+            float worldX = normX * mapWidth;
+            float worldZ = normY * mapHeight;
+
+            RTSCameraController camController = mainCamera.GetComponent<RTSCameraController>();
+            if (camController != null)
+            {
+                Vector3 targetGroundPoint = new Vector3(worldX, 0f, worldZ);
+                Vector3 currentCenterGround = GetGroundPoint(new Vector3(0.5f, 0.5f, 0f));
+                Vector3 cameraOffset = currentCenterGround - mainCamera.transform.position;
+                
+                Vector3 newCameraPos = targetGroundPoint - cameraOffset;
+                camController.TargetPosition = newCameraPos;
+            }
+        }
     }
 }
