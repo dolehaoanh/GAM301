@@ -254,7 +254,7 @@ public class RTSSetupUtility
         EditorUtility.SetDirty(go);
     }
 
-    [MenuItem("RTS Game/Chuyển đổi cây địa hình thành cây thu hoạch được")]
+    [MenuItem("Công cụ thêm/Chuyển đổi cây địa hình thành cây thu hoạch được")]
     public static void ChuyenDoiCayDiaHinh()
     {
         Terrain banDo = null;
@@ -350,7 +350,7 @@ public class RTSSetupUtility
         banDo.Flush();
     }
 
-    [MenuItem("RTS Game/Phóng to tất cả cây trên Terrain")]
+    [MenuItem("Công cụ thêm/Phóng to tất cả cây trên Terrain")]
     public static void PhongToCayTerrain()
     {
         Terrain banDo = null;
