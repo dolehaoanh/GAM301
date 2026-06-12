@@ -77,27 +77,42 @@ public class BuildingPlacer : MonoBehaviour
         {
             if (r == null || r is LineRenderer) continue;
 
+            int matCount = r.sharedMaterials.Length;
+            Material[] newMaterials = new Material[matCount];
+
+            Material baseMat = null;
             if (hologramMaterial != null)
             {
-                r.material = hologramMaterial;
+                baseMat = hologramMaterial;
             }
             else
             {
-                // Fallback translucent color if no material is assigned
-                Material fallbackMat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-                fallbackMat.color = new Color(0.2f, 1.0f, 0.2f, 0.4f);
-                
-                // Set to transparent blend mode in URP
-                fallbackMat.SetFloat("_Surface", 1); // Transparent
-                fallbackMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                fallbackMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                fallbackMat.SetInt("_ZWrite", 0);
-                fallbackMat.DisableKeyword("_ALPHATEST_ON");
-                fallbackMat.EnableKeyword("_ALPHABLEND_ON");
-                fallbackMat.renderQueue = 3000;
-
-                r.material = fallbackMat;
+                Shader holoShader = Shader.Find("Custom/HologramPlacement");
+                if (holoShader != null)
+                {
+                    baseMat = new Material(holoShader);
+                }
+                else
+                {
+                    // Fallback translucent color if no shader is found
+                    Material fallbackMat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                    fallbackMat.color = new Color(0.2f, 1.0f, 0.2f, 0.4f);
+                    fallbackMat.SetFloat("_Surface", 1);
+                    fallbackMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    fallbackMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    fallbackMat.SetInt("_ZWrite", 0);
+                    fallbackMat.DisableKeyword("_ALPHATEST_ON");
+                    fallbackMat.EnableKeyword("_ALPHABLEND_ON");
+                    fallbackMat.renderQueue = 3000;
+                    baseMat = fallbackMat;
+                }
             }
+
+            for (int i = 0; i < matCount; i++)
+            {
+                newMaterials[i] = baseMat;
+            }
+            r.materials = newMaterials;
         }
     }
 

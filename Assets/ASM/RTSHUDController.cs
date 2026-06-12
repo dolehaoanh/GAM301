@@ -408,6 +408,8 @@ public class RTSHUDController : MonoBehaviour
         btnGo.SetActive(false); 
     }
 
+    public Sprite buildBarracksIcon;
+
     private void CreateBuildBarracksButton()
     {
         if (commandPanel == null) return;
@@ -426,10 +428,17 @@ public class RTSHUDController : MonoBehaviour
 
         var img = btnGo.AddComponent<UnityEngine.UI.Image>();
         
-        #if UNITY_EDITOR
-        var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonWood.png");
-        if (sprite != null) img.sprite = sprite;
-        #endif
+        if (buildBarracksIcon != null)
+        {
+            img.sprite = buildBarracksIcon;
+        }
+        else
+        {
+            #if UNITY_EDITOR
+            var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonWood.png");
+            if (sprite != null) img.sprite = sprite;
+            #endif
+        }
         
         Sprite moveSprite = commandPanel.transform.Find("Button_Move")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
         if (moveSprite != null && img.sprite == null) img.sprite = moveSprite;
@@ -1217,6 +1226,29 @@ public class RTSHUDController : MonoBehaviour
         if (victoryPanel != null)
         {
             victoryPanel.SetActive(true);
+
+            // Find and hook up button listeners dynamically
+            Button[] buttons = victoryPanel.GetComponentsInChildren<Button>(true);
+            foreach (Button btn in buttons)
+            {
+                if (btn.gameObject.name == "PlayAgainButton")
+                {
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(() => {
+                        Time.timeScale = 1f;
+                        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+                    });
+                }
+                else if (btn.gameObject.name == "MainMenuButton")
+                {
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(() => {
+                        Time.timeScale = 1f;
+                        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+                    });
+                }
+            }
+
             CanvasGroup panelCg = victoryPanel.GetComponent<CanvasGroup>();
             if (panelCg != null)
             {

@@ -211,6 +211,8 @@ public class Barracks : MonoBehaviour
                 }
             }
 
+            RTSEffects.SpawnUnitTrainedEffect(spawnPos);
+
             soldierGo.name = isEnemy ? $"Enemy_Soldier_{Random.Range(100, 999)}" : $"Soldier_Trained_{Random.Range(100, 999)}";
 
             

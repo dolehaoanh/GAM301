@@ -235,6 +235,8 @@ public class TownCenter : MonoBehaviour
                 }
             }
 
+            RTSEffects.SpawnUnitTrainedEffect(spawnPos);
+
             farmerGo.name = isEnemy ? $"Enemy_Farmer_{Random.Range(100, 999)}" : $"Farmer_Trained_{Random.Range(100, 999)}";
 
             

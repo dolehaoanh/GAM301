@@ -215,6 +215,8 @@ public class RTSUnit : MonoBehaviour
                         carriedAmount += gathered;
                         carriedType = targetResourceNode.resourceType;
                         UpdateVisualBag();
+                        Vector3 sparkPos = (transform.position + targetResourceNode.transform.position) * 0.5f + Vector3.up * 1f;
+                        RTSEffects.SpawnHarvestEffect(sparkPos, targetResourceNode.resourceType);
                     }
 
                     if (carriedAmount >= maxCapacity)
@@ -487,6 +489,7 @@ public class RTSUnit : MonoBehaviour
                     {
                         
                         targetUnitAtk.TakeDamage(attackDamage, this);
+                        RTSEffects.SpawnImpactEffect(targetUnitAtk.transform.position + Vector3.up * 1f);
                     }
                     else
                     {
@@ -506,6 +509,7 @@ public class RTSUnit : MonoBehaviour
                                     b.TakeDamage(attackDamage);
                                 }
                             }
+                            RTSEffects.SpawnImpactEffect(currentTarget.transform.position + Vector3.up * 1.5f);
                         }
                         Debug.Log($"[RTS Combat] {gameObject.name} dealing damage to building: {currentTarget.name}");
                     }
