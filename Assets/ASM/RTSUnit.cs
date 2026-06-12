@@ -44,6 +44,11 @@ public class RTSUnit : MonoBehaviour
     public RTSUnit combatTarget;
     public GameObject combatBuildingTarget;
 
+    [Header("Audio Settings")]
+    public AudioClip attackClip;
+    public AudioClip hurtClip;
+    private AudioSource sfxAudioSource;
+
     public enum RTSUnitState
     {
         Idle,
@@ -415,6 +420,13 @@ public class RTSUnit : MonoBehaviour
                         animator.SetTrigger("Attack");
                     }
 
+                    // Play attack sound
+                    if (sfxAudioSource != null && attackClip != null)
+                    {
+                        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
+                        sfxAudioSource.PlayOneShot(attackClip, sfxVol);
+                    }
+
                     // Deal damage
                     if (targetUnitAtk != null)
                     {
@@ -424,6 +436,22 @@ public class RTSUnit : MonoBehaviour
                     else
                     {
                         // Handle building damage if it has a script, or simulate building attack log
+                        if (currentTarget != null)
+                        {
+                            TownCenter tc = currentTarget.GetComponent<TownCenter>();
+                            if (tc != null)
+                            {
+                                tc.TakeDamage(attackDamage);
+                            }
+                            else
+                            {
+                                Barracks b = currentTarget.GetComponent<Barracks>();
+                                if (b != null)
+                                {
+                                    b.TakeDamage(attackDamage);
+                                }
+                            }
+                        }
                         Debug.Log($"[RTS Combat] {gameObject.name} dealing damage to building: {currentTarget.name}");
                     }
                 }
@@ -530,23 +558,8 @@ public class RTSUnit : MonoBehaviour
         if (bestTarget != null) return bestTarget;
 
         // 3. Scan for closest enemy Building (lowest priority)
-        // If there are no enemy units alive on the map, expand scan range so soldiers clean up buildings
+        // Keep scan range at standard scanRange (15f) so idle units do not auto-run across the map to attack buildings
         float buildingScanRange = scanRange;
-        bool anyEnemyUnitAlive = false;
-        foreach (RTSUnit unit in allUnits)
-        {
-            if (unit != null && unit.currentState != RTSUnitState.Dead && unit.isEnemy != this.isEnemy)
-            {
-                anyEnemyUnitAlive = true;
-                break;
-            }
-        }
-
-        if (!anyEnemyUnitAlive)
-        {
-            buildingScanRange = 150f;
-        }
-
         minDist = buildingScanRange;
         // Scan Town Centers
         foreach (TownCenter tc in TownCenter.AllTownCenters)
@@ -580,6 +593,13 @@ public class RTSUnit : MonoBehaviour
 
         currentHP -= damage;
         if (currentHP < 0f) currentHP = 0f;
+
+        // Play hurt sound
+        if (sfxAudioSource != null && hurtClip != null)
+        {
+            float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
+            sfxAudioSource.PlayOneShot(hurtClip, sfxVol);
+        }
 
 
         // Add this line to check what state the enemy is in when hit
@@ -904,6 +924,13 @@ public class RTSUnit : MonoBehaviour
 
     private void Start()
     {
+        // Setup SFX AudioSource
+        sfxAudioSource = gameObject.AddComponent<AudioSource>();
+        sfxAudioSource.playOnAwake = false;
+        sfxAudioSource.spatialBlend = 0.5f; // Spatial sound so we know where the fight is
+        sfxAudioSource.minDistance = 5f;
+        sfxAudioSource.maxDistance = 50f;
+
         // Snap unit to NavMesh to ensure pre-placed units have isOnNavMesh=true and can navigate
         if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (navAgent != null)

@@ -15,6 +15,8 @@ public class RTSHUDController : MonoBehaviour
     [Header("Selected Unit Panel References")]
     [Tooltip("Bảng Panel thông tin lính được chọn (Bottom-Center)")]
     public GameObject selectionPanel;
+    [Tooltip("Bảng Panel Chiến Thắng (Victory Panel)")]
+    public GameObject victoryPanel;
     [Tooltip("Ảnh chân dung của lính (Dùng RawImage để hỗ trợ Render Texture 3D)")]
     public UnityEngine.UI.RawImage selectedUnitPortrait;
     [Tooltip("Tên của lính")]
@@ -175,6 +177,11 @@ public class RTSHUDController : MonoBehaviour
             {
                 portraitFrameSprite = frameImg.sprite;
             }
+        }
+        
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(false);
         }
         
         HideSelectionPanel();
@@ -339,12 +346,14 @@ public class RTSHUDController : MonoBehaviour
         overlayRect.sizeDelta = Vector2.zero;
 
         trainFarmerCooldownOverlay = overlayGo.AddComponent<UnityEngine.UI.Image>();
+        trainFarmerCooldownOverlay.sprite = img.sprite; // Gán sprite để hỗ trợ Type.Filled
         trainFarmerCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); // Màu tối mờ 72%
         trainFarmerCooldownOverlay.type = UnityEngine.UI.Image.Type.Filled;
         trainFarmerCooldownOverlay.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
         trainFarmerCooldownOverlay.fillOrigin = (int)UnityEngine.UI.Image.Origin360.Top;
         trainFarmerCooldownOverlay.fillClockwise = false;
         trainFarmerCooldownOverlay.fillAmount = 0f;
+        overlayGo.SetActive(false); // Ẩn mặc định khi chưa huấn luyện
 
         // Tạo text đếm ngược giây hiển thị ở giữa nút huấn luyện
         GameObject txtGo = new GameObject("CooldownText");
@@ -415,12 +424,14 @@ public class RTSHUDController : MonoBehaviour
         overlayRect.sizeDelta = Vector2.zero;
 
         trainSoldierCooldownOverlay = overlayGo.AddComponent<UnityEngine.UI.Image>();
+        trainSoldierCooldownOverlay.sprite = img.sprite; // Gán sprite để hỗ trợ Type.Filled
         trainSoldierCooldownOverlay.color = new Color(0f, 0f, 0f, 0.72f); // Màu tối mờ 72%
         trainSoldierCooldownOverlay.type = UnityEngine.UI.Image.Type.Filled;
         trainSoldierCooldownOverlay.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
         trainSoldierCooldownOverlay.fillOrigin = (int)UnityEngine.UI.Image.Origin360.Top;
         trainSoldierCooldownOverlay.fillClockwise = false;
         trainSoldierCooldownOverlay.fillAmount = 0f;
+        overlayGo.SetActive(false); // Ẩn mặc định khi chưa huấn luyện
 
         // Tạo text đếm ngược giây hiển thị ở giữa nút huấn luyện
         GameObject txtGo = new GameObject("CooldownText");
@@ -463,6 +474,7 @@ public class RTSHUDController : MonoBehaviour
                 float progress = activeSelectedTownCenter.trainingTimer / activeSelectedTownCenter.trainingDuration;
                 if (trainFarmerCooldownOverlay != null)
                 {
+                    trainFarmerCooldownOverlay.gameObject.SetActive(true);
                     trainFarmerCooldownOverlay.fillAmount = progress;
                 }
                 if (trainFarmerCooldownText != null)
@@ -476,6 +488,7 @@ public class RTSHUDController : MonoBehaviour
                 if (trainFarmerCooldownOverlay != null)
                 {
                     trainFarmerCooldownOverlay.fillAmount = 0f;
+                    trainFarmerCooldownOverlay.gameObject.SetActive(false);
                 }
                 if (trainFarmerCooldownText != null)
                 {
@@ -495,6 +508,7 @@ public class RTSHUDController : MonoBehaviour
                 float progress = activeSelectedBarracks.trainingTimer / activeSelectedBarracks.trainingDuration;
                 if (trainSoldierCooldownOverlay != null)
                 {
+                    trainSoldierCooldownOverlay.gameObject.SetActive(true);
                     trainSoldierCooldownOverlay.fillAmount = progress;
                 }
                 if (trainSoldierCooldownText != null)
@@ -508,6 +522,7 @@ public class RTSHUDController : MonoBehaviour
                 if (trainSoldierCooldownOverlay != null)
                 {
                     trainSoldierCooldownOverlay.fillAmount = 0f;
+                    trainSoldierCooldownOverlay.gameObject.SetActive(false);
                 }
                 if (trainSoldierCooldownText != null)
                 {
@@ -526,6 +541,30 @@ public class RTSHUDController : MonoBehaviour
             {
                 pos.z = -10f;
                 r.localPosition = pos;
+            }
+        }
+
+        // Dynamically update building HP slider
+        if (activeSelectedTownCenter != null)
+        {
+            if (selectedUnitHPBar != null)
+            {
+                selectedUnitHPBar.value = activeSelectedTownCenter.currentHP;
+            }
+            if (activeSelectedTownCenter.currentHP <= 0f)
+            {
+                HideSelectionPanel();
+            }
+        }
+        else if (activeSelectedBarracks != null)
+        {
+            if (selectedUnitHPBar != null)
+            {
+                selectedUnitHPBar.value = activeSelectedBarracks.currentHP;
+            }
+            if (activeSelectedBarracks.currentHP <= 0f)
+            {
+                HideSelectionPanel();
             }
         }
     }
@@ -614,8 +653,8 @@ public class RTSHUDController : MonoBehaviour
                 r.anchoredPosition = new Vector2(60f, 12f); // HP Bar đối xứng ở X=60, cách đáy 12px
                 r.sizeDelta = new Vector2(112f, originalHPSize.y); // Rộng 112px
                 selectedUnitHPBar.gameObject.SetActive(true);
-                selectedUnitHPBar.maxValue = 800f; // Máu Nhà Lính
-                selectedUnitHPBar.value = 800f;
+                selectedUnitHPBar.maxValue = selectedB.maxHP; // Máu Nhà Lính
+                selectedUnitHPBar.value = selectedB.currentHP;
 
                 // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
                 selectedUnitHPBar.transform.SetAsLastSibling();
@@ -709,8 +748,8 @@ public class RTSHUDController : MonoBehaviour
                 r.anchoredPosition = new Vector2(60f, 12f); // HP Bar đối xứng ở X=60, cách đáy 12px
                 r.sizeDelta = new Vector2(112f, originalHPSize.y); // Rộng 112px
                 selectedUnitHPBar.gameObject.SetActive(true);
-                selectedUnitHPBar.maxValue = 1000f; // Máu Nhà Chính
-                selectedUnitHPBar.value = 1000f;
+                selectedUnitHPBar.maxValue = selectedTC.maxHP; // Máu Nhà Chính
+                selectedUnitHPBar.value = selectedTC.currentHP;
 
                 // Đảm bảo HP Bar nằm trên cùng và local Z = -10f
                 selectedUnitHPBar.transform.SetAsLastSibling();
@@ -1082,5 +1121,208 @@ public class RTSHUDController : MonoBehaviour
                 if (btn != null) btn.gameObject.SetActive(true);
             }
         }
+    }
+
+    public void ShowVictoryScreen()
+    {
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(true);
+            CanvasGroup panelCg = victoryPanel.GetComponent<CanvasGroup>();
+            if (panelCg != null)
+            {
+                panelCg.alpha = 0f;
+                StartCoroutine(FadeInCanvasGroup(panelCg, 1.2f));
+            }
+            StartCoroutine(PauseAfterDelay(1.5f));
+            return;
+        }
+
+        // Prevent multiple instances
+        if (GameObject.Find("VictoryPanel") != null) return;
+
+        // 1. Create a Victory Panel GameObject under RTS_Canvas (which transform is)
+        Transform canvasTransform = transform;
+
+        GameObject dynVictoryPanel = new GameObject("VictoryPanel");
+        dynVictoryPanel.transform.SetParent(canvasTransform, false);
+
+        // RectTransform for full-screen overlay
+        RectTransform panelRect = dynVictoryPanel.AddComponent<RectTransform>();
+        panelRect.anchorMin = Vector2.zero;
+        panelRect.anchorMax = Vector2.one;
+        panelRect.sizeDelta = Vector2.zero;
+        panelRect.anchoredPosition = Vector2.zero;
+
+        // Visual background (Premium Dark Gradient/Glassmorphism feel)
+        Image bgImage = dynVictoryPanel.AddComponent<Image>();
+        bgImage.color = new Color(0.04f, 0.04f, 0.06f, 0.88f); // Deep dark, high opacity overlay
+
+        // Add a CanvasGroup for smooth fade-in animation
+        CanvasGroup cg = dynVictoryPanel.AddComponent<CanvasGroup>();
+        cg.alpha = 0f;
+        
+        // Start a simple animation to fade in the panel
+        StartCoroutine(FadeInCanvasGroup(cg, 1.2f));
+
+        // 2. Create the Center Content Container
+        GameObject container = new GameObject("ContentContainer");
+        container.transform.SetParent(dynVictoryPanel.transform, false);
+        RectTransform containerRect = container.AddComponent<RectTransform>();
+        containerRect.sizeDelta = new Vector2(500f, 350f);
+        containerRect.anchorMin = new Vector2(0.5f, 0.5f);
+        containerRect.anchorMax = new Vector2(0.5f, 0.5f);
+        containerRect.pivot = new Vector2(0.5f, 0.5f);
+
+        // Semi-transparent inner container with golden border
+        Image containerBg = container.AddComponent<Image>();
+        containerBg.color = new Color(0.12f, 0.12f, 0.16f, 0.95f);
+        
+        // Outline the container with majestic gold border
+        Outline outline = container.AddComponent<Outline>();
+        outline.effectColor = new Color(0.85f, 0.65f, 0.15f, 0.8f); // Majestic Gold
+        outline.effectDistance = new Vector2(3f, 3f);
+
+        // 3. Victory Title text
+        GameObject titleGo = new GameObject("VictoryTitle");
+        titleGo.transform.SetParent(container.transform, false);
+        RectTransform titleRect = titleGo.AddComponent<RectTransform>();
+        titleRect.anchorMin = new Vector2(0.5f, 1f);
+        titleRect.anchorMax = new Vector2(0.5f, 1f);
+        titleRect.pivot = new Vector2(0.5f, 1f);
+        titleRect.anchoredPosition = new Vector2(0f, -40f);
+        titleRect.sizeDelta = new Vector2(450f, 60f);
+
+        TextMeshProUGUI titleText = titleGo.AddComponent<TextMeshProUGUI>();
+        titleText.text = "VICTORY";
+        titleText.alignment = TextAlignmentOptions.Center;
+        titleText.fontSize = 48f;
+        titleText.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+        titleText.color = new Color(1f, 0.84f, 0f); // Bright Gold
+        if (customGameFont != null) titleText.font = customGameFont;
+
+        // Add a subtle title pulse animation
+        StartCoroutine(PulseTitleText(titleRect));
+
+        // 4. Subtitle description
+        GameObject subtitleGo = new GameObject("VictorySubtitle");
+        subtitleGo.transform.SetParent(container.transform, false);
+        RectTransform subtitleRect = subtitleGo.AddComponent<RectTransform>();
+        subtitleRect.anchorMin = new Vector2(0.5f, 0.5f);
+        subtitleRect.anchorMax = new Vector2(0.5f, 0.5f);
+        subtitleRect.pivot = new Vector2(0.5f, 0.5f);
+        subtitleRect.anchoredPosition = new Vector2(0f, 10f);
+        subtitleRect.sizeDelta = new Vector2(400f, 60f);
+
+        TextMeshProUGUI subtitleText = subtitleGo.AddComponent<TextMeshProUGUI>();
+        subtitleText.text = "Enemy Town Center Destroyed!\nYou have conquered the region.";
+        subtitleText.alignment = TextAlignmentOptions.Center;
+        subtitleText.fontSize = 18f;
+        subtitleText.color = new Color(0.9f, 0.9f, 0.95f, 0.9f); // Elegant Off-white
+        if (customGameFont != null) subtitleText.font = customGameFont;
+
+        // 5. Buttons Container
+        GameObject btnContainer = new GameObject("Buttons");
+        btnContainer.transform.SetParent(container.transform, false);
+        RectTransform btnContainerRect = btnContainer.AddComponent<RectTransform>();
+        btnContainerRect.anchorMin = new Vector2(0.5f, 0f);
+        btnContainerRect.anchorMax = new Vector2(0.5f, 0f);
+        btnContainerRect.pivot = new Vector2(0.5f, 0f);
+        btnContainerRect.anchoredPosition = new Vector2(0f, 40f);
+        btnContainerRect.sizeDelta = new Vector2(400f, 50f);
+
+        // Button A: Play Again
+        GameObject playAgainGo = new GameObject("PlayAgainButton");
+        playAgainGo.transform.SetParent(btnContainer.transform, false);
+        RectTransform playAgainRect = playAgainGo.AddComponent<RectTransform>();
+        playAgainRect.sizeDelta = new Vector2(160f, 45f);
+        playAgainRect.anchorMin = new Vector2(0.25f, 0.5f);
+        playAgainRect.anchorMax = new Vector2(0.25f, 0.5f);
+        playAgainRect.pivot = new Vector2(0.5f, 0.5f);
+
+        Image playAgainImg = playAgainGo.AddComponent<Image>();
+        playAgainImg.color = new Color(0.15f, 0.45f, 0.2f, 1f); // Forest Green
+        Button playAgainBtn = playAgainGo.AddComponent<Button>();
+        playAgainBtn.onClick.AddListener(() => {
+            Time.timeScale = 1f;
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        });
+
+        GameObject playAgainTxtGo = new GameObject("Text");
+        playAgainTxtGo.transform.SetParent(playAgainGo.transform, false);
+        RectTransform playAgainTxtRect = playAgainTxtGo.AddComponent<RectTransform>();
+        playAgainTxtRect.anchorMin = Vector2.zero;
+        playAgainTxtRect.anchorMax = Vector2.one;
+        playAgainTxtRect.sizeDelta = Vector2.zero;
+        TextMeshProUGUI playAgainText = playAgainTxtGo.AddComponent<TextMeshProUGUI>();
+        playAgainText.text = "PLAY AGAIN";
+        playAgainText.alignment = TextAlignmentOptions.Center;
+        playAgainText.fontSize = 16f;
+        playAgainText.fontStyle = FontStyles.Bold;
+        playAgainText.color = Color.white;
+        if (customGameFont != null) playAgainText.font = customGameFont;
+
+        // Button B: Main Menu
+        GameObject mainMenuGo = new GameObject("MainMenuButton");
+        mainMenuGo.transform.SetParent(btnContainer.transform, false);
+        RectTransform mainMenuRect = mainMenuGo.AddComponent<RectTransform>();
+        mainMenuRect.sizeDelta = new Vector2(160f, 45f);
+        mainMenuRect.anchorMin = new Vector2(0.75f, 0.5f);
+        mainMenuRect.anchorMax = new Vector2(0.75f, 0.5f);
+        mainMenuRect.pivot = new Vector2(0.5f, 0.5f);
+
+        Image mainMenuImg = mainMenuGo.AddComponent<Image>();
+        mainMenuImg.color = new Color(0.25f, 0.25f, 0.3f, 1f); // Dark Grey-Blue
+        Button mainMenuBtn = mainMenuGo.AddComponent<Button>();
+        mainMenuBtn.onClick.AddListener(() => {
+            Time.timeScale = 1f;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        });
+
+        GameObject mainMenuTxtGo = new GameObject("Text");
+        mainMenuTxtGo.transform.SetParent(mainMenuGo.transform, false);
+        RectTransform mainMenuTxtRect = mainMenuTxtGo.AddComponent<RectTransform>();
+        mainMenuTxtRect.anchorMin = Vector2.zero;
+        mainMenuTxtRect.anchorMax = Vector2.one;
+        mainMenuTxtRect.sizeDelta = Vector2.zero;
+        TextMeshProUGUI mainMenuText = mainMenuTxtGo.AddComponent<TextMeshProUGUI>();
+        mainMenuText.text = "MAIN MENU";
+        mainMenuText.alignment = TextAlignmentOptions.Center;
+        mainMenuText.fontSize = 16f;
+        mainMenuText.fontStyle = FontStyles.Bold;
+        mainMenuText.color = Color.white;
+        if (customGameFont != null) mainMenuText.font = customGameFont;
+
+        // Pause the game time after a short delay for effects
+        StartCoroutine(PauseAfterDelay(1.5f));
+    }
+
+    private System.Collections.IEnumerator FadeInCanvasGroup(CanvasGroup cg, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            cg.alpha = Mathf.Clamp01(elapsed / duration);
+            yield return null;
+        }
+        cg.alpha = 1f;
+    }
+
+    private System.Collections.IEnumerator PulseTitleText(RectTransform rect)
+    {
+        Vector3 origScale = Vector3.one;
+        while (true)
+        {
+            float wave = Mathf.PingPong(Time.unscaledTime * 2f, 0.1f);
+            rect.localScale = origScale + new Vector3(wave, wave, wave);
+            yield return null;
+        }
+    }
+
+    private System.Collections.IEnumerator PauseAfterDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        Time.timeScale = 0f;
     }
 }

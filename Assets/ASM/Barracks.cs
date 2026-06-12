@@ -7,6 +7,10 @@ public class Barracks : MonoBehaviour
 
     public bool isEnemy = false; // Phân biệt Nhà Lính của người chơi và địch
 
+    [Header("Building Stats")]
+    public float maxHP = 800f;
+    public float currentHP = 800f;
+
     [Header("Training Settings")]
     public GameObject soldierPrefab; // Prefab của Binh Sĩ
     public float trainingDuration = 6f; // Thời gian huấn luyện (6 giây)
@@ -65,6 +69,16 @@ public class Barracks : MonoBehaviour
 
     private void Start()
     {
+        if (isEnemy)
+        {
+            maxHP = 165f;
+            currentHP = 165f;
+        }
+        else
+        {
+            maxHP = 800f;
+            currentHP = 800f;
+        }
         ApplyFactionColors();
         var obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
         if (obstacle == null)
@@ -217,4 +231,23 @@ public class Barracks : MonoBehaviour
         }
     }
 
+    public void TakeDamage(float damage)
+    {
+        if (currentHP <= 0f) return;
+        currentHP -= damage;
+        if (currentHP < 0f) currentHP = 0f;
+
+        Debug.Log($"[Barracks] {gameObject.name} (isEnemy: {isEnemy}) took {damage} damage. HP: {currentHP}/{maxHP}");
+
+        if (currentHP <= 0f)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log($"[Barracks] {gameObject.name} destroyed!");
+        Destroy(gameObject);
+    }
 }

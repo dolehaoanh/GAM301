@@ -9,6 +9,10 @@ public class TownCenter : MonoBehaviour
     public float deliverRange = 3.5f; // Khoảng cách nông dân cần tiếp cận để giao hàng
     public bool isEnemy = false; // Phân biệt Nhà Chính người chơi và địch
 
+    [Header("Building Stats")]
+    public float maxHP = 1000f;
+    public float currentHP = 1000f;
+
     [Header("Training Settings")]
     public GameObject farmerPrefab; // Prefab của Nông Dân
     public float trainingDuration = 5f; // Thời gian huấn luyện Nông Dân (5 giây)
@@ -89,6 +93,16 @@ public class TownCenter : MonoBehaviour
 
     private void Start()
     {
+        if (isEnemy)
+        {
+            maxHP = 165f;
+            currentHP = 165f;
+        }
+        else
+        {
+            maxHP = 1000f;
+            currentHP = 1000f;
+        }
         ApplyFactionColors();
         var obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
         if (obstacle == null)
@@ -239,5 +253,33 @@ public class TownCenter : MonoBehaviour
         {
             Debug.LogError("[TownCenter] Không thể huấn luyện vì không tìm thấy Farmer Prefab!");
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (currentHP <= 0f) return;
+        currentHP -= damage;
+        if (currentHP < 0f) currentHP = 0f;
+
+        Debug.Log($"[TownCenter] {gameObject.name} (isEnemy: {isEnemy}) took {damage} damage. HP: {currentHP}/{maxHP}");
+
+        if (currentHP <= 0f)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log($"[TownCenter] {gameObject.name} destroyed!");
+        if (isEnemy)
+        {
+            RTSHUDController hud = FindAnyObjectByType<RTSHUDController>();
+            if (hud != null)
+            {
+                hud.ShowVictoryScreen();
+            }
+        }
+        Destroy(gameObject);
     }
 }
