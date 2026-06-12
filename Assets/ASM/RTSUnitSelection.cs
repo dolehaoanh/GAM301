@@ -340,7 +340,6 @@ public class RTSUnitSelection : MonoBehaviour
 
                 if (farmerGatherers > 0)
                 {
-                    Debug.Log($"[RTS Command] Đã điều {farmerGatherers} nông dân đi khai thác {clickedNode.resourceType}!");
                     SetRTSCursor(RTSCursorState.Default);
                     return;
                 }
@@ -486,6 +485,8 @@ public class RTSUnitSelection : MonoBehaviour
     public Texture2D attackCursor;
     [Tooltip("Ảnh con trỏ khi chọn lệnh Khai Thác (Gather)")]
     public Texture2D gatherCursor;
+    [Tooltip("Ảnh con trỏ khi chọn lệnh Bảo Vệ (Guard)")]
+    public Texture2D guardCursor;
 
     [Tooltip("Tâm của con trỏ chuột (Hotspot)")]
     public Vector2 cursorHotspot = Vector2.zero;
@@ -496,7 +497,8 @@ public class RTSUnitSelection : MonoBehaviour
         Move,
         Attack,
         Gather,
-        Patrol
+        Patrol,
+        Guard
     }
 
     
@@ -519,6 +521,9 @@ public class RTSUnitSelection : MonoBehaviour
                 break;
             case RTSCursorState.Patrol:
                 activeTexture = moveCursor;
+                break;
+            case RTSCursorState.Guard:
+                activeTexture = guardCursor != null ? guardCursor : attackCursor;
                 break;
         }
 
@@ -572,16 +577,10 @@ public class RTSUnitSelection : MonoBehaviour
     {
         if (selectedUnits.Count == 0) return;
 
-        foreach (RTSUnit unit in selectedUnits)
-        {
-            if (unit == null) continue;
-            unit.StopUnit();
-        }
-
-        activeCommand = RTSCursorState.Default;
-        SetRTSCursor(RTSCursorState.Default); 
+        activeCommand = RTSCursorState.Guard;
+        SetRTSCursor(RTSCursorState.Guard); 
         waitingForSecondPatrolPoint = false;
-        Debug.Log($"[RTS Command] THỦ THẾ / GIỮ VỮNG ĐỘI HÌNH ({selectedUnits.Count} quân)!");
+        Debug.Log($"[RTS Command] KÍCH HOẠT PHÒNG THỦ / CANH GÁC (Chờ click vị trí)!");
     }
 
     
@@ -602,7 +601,6 @@ public class RTSUnitSelection : MonoBehaviour
 
         activeCommand = RTSCursorState.Gather;
         SetRTSCursor(RTSCursorState.Gather);
-        Debug.Log($"[RTS Command] KÍCH HOẠT KHAI THÁC TÀI NGUYÊN (Chờ click vào bãi tài nguyên)!");
     }
 
     
@@ -787,6 +785,12 @@ public class RTSUnitSelection : MonoBehaviour
                 {
                     MoveSelectedUnitsToPoint(hit.point);
                 }
+                SetRTSCursor(RTSCursorState.Default);
+                activeCommand = RTSCursorState.Default;
+            }
+            else if (activeCommand == RTSCursorState.Guard)
+            {
+                MoveSelectedUnitsToPoint(hit.point);
                 SetRTSCursor(RTSCursorState.Default);
                 activeCommand = RTSCursorState.Default;
             }

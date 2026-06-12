@@ -35,8 +35,6 @@ public class ResourceNode : MonoBehaviour
 
     private void DepleteNode()
     {
-        Debug.Log($"[ResourceNode] Bãi tài nguyên {gameObject.name} đã bị khai thác cạn kiệt!");
-        
         Destroy(gameObject);
     }
 }

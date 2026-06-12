@@ -121,7 +121,10 @@ public class RTSUnit : MonoBehaviour
             case RTSUnitState.Patrolling:
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
-                    if (!navAgent.pathPending && navAgent.remainingDistance <= navAgent.stoppingDistance + 0.1f)
+                    bool reached = !navAgent.pathPending && 
+                                   (navAgent.remainingDistance <= 2.2f || 
+                                    (navAgent.remainingDistance <= 5.0f && navAgent.velocity.sqrMagnitude < 0.1f));
+                    if (reached)
                     {
                         patrolGoingToB = !patrolGoingToB;
                         navAgent.SetDestination(patrolGoingToB ? patrolPointB : patrolPointA);
@@ -330,7 +333,10 @@ public class RTSUnit : MonoBehaviour
 
                 if (navAgent != null && navAgent.isOnNavMesh)
                 {
-                    if (!navAgent.pathPending && navAgent.remainingDistance <= navAgent.stoppingDistance + 0.1f)
+                    bool reached = !navAgent.pathPending && 
+                                   (navAgent.remainingDistance <= 2.2f || 
+                                    (navAgent.remainingDistance <= 5.0f && navAgent.velocity.sqrMagnitude < 0.1f));
+                    if (reached)
                     {
                         patrolGoingToB = !patrolGoingToB;
                         navAgent.SetDestination(patrolGoingToB ? patrolPointB : patrolPointA);

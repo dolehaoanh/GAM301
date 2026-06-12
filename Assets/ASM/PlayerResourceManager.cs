@@ -29,14 +29,12 @@ public class PlayerResourceManager : MonoBehaviour
     {
         gold += amount;
         OnResourcesChanged?.Invoke();
-        Debug.Log($"[PlayerResources] +{amount} GOLD. Total: {gold}");
     }
 
     public void AddWood(int amount)
     {
         wood += amount;
         OnResourcesChanged?.Invoke();
-        Debug.Log($"[PlayerResources] +{amount} WOOD. Total: {wood}");
     }
 
     public int GetCurrentFoodUsed()
