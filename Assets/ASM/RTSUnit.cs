@@ -618,7 +618,7 @@ public class RTSUnit : MonoBehaviour
 
         
         
-        float buildingScanRange = scanRange;
+        float buildingScanRange = 20f;
         minDist = buildingScanRange;
         
         foreach (TownCenter tc in TownCenter.AllTownCenters)
@@ -1128,12 +1128,12 @@ public class RTSUnit : MonoBehaviour
         if (unitType == RTSUnitType.Farmer)
         {
             selectionColor = new Color(0f, 1f, 0.2f, 0.9f);
-            if (unitName == "Binh Sĩ") unitName = "Nông Dân";
+            if (unitName == "Binh Sĩ") unitName = "Farmer";
         }
         else if (unitType == RTSUnitType.Soldier)
         {
             selectionColor = new Color(1f, 0.2f, 0f, 0.9f);
-            if (unitName == "Binh Sĩ") unitName = "Chiến Binh";
+            if (unitName == "Binh Sĩ") unitName = "Soldier";
         }
 
         ApplyFactionColors();
