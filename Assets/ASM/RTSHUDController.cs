@@ -81,6 +81,8 @@ public class RTSHUDController : MonoBehaviour
     private TMPro.TextMeshProUGUI trainSoldierCooldownText;
     private Barracks activeSelectedBarracks;
 
+    private Button buildBarracksButton;
+
     private void Start()
     {
         
@@ -169,6 +171,7 @@ public class RTSHUDController : MonoBehaviour
         
         CreateTrainFarmerButton();
         CreateTrainSoldierButton();
+        CreateBuildBarracksButton();
 
         
         var frameGo = selectionPanel.transform.Find("PortraitFrame");
@@ -405,6 +408,47 @@ public class RTSHUDController : MonoBehaviour
         btnGo.SetActive(false); 
     }
 
+    private void CreateBuildBarracksButton()
+    {
+        if (commandPanel == null) return;
+
+        GameObject btnGo = new GameObject("BuildBarracksButton");
+        btnGo.transform.SetParent(commandPanel.transform, false);
+        
+        var rectTrans = btnGo.AddComponent<RectTransform>();
+        rectTrans.sizeDelta = new Vector2(70f, 70f);
+        rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTrans.pivot = new Vector2(0.5f, 0.5f);
+        rectTrans.anchoredPosition = new Vector2(5f, 35f); 
+
+        btnGo.AddComponent<LayoutElement>();
+
+        var img = btnGo.AddComponent<UnityEngine.UI.Image>();
+        
+        #if UNITY_EDITOR
+        var sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASM/ButtonWood.png");
+        if (sprite != null) img.sprite = sprite;
+        #endif
+        
+        Sprite moveSprite = commandPanel.transform.Find("Button_Move")?.GetComponent<UnityEngine.UI.Image>()?.sprite;
+        if (moveSprite != null && img.sprite == null) img.sprite = moveSprite;
+        img.color = Color.white;
+
+        buildBarracksButton = btnGo.AddComponent<Button>();
+        buildBarracksButton.onClick.AddListener(OnBuildBarracksClicked);
+
+        btnGo.SetActive(false);
+    }
+
+    private void OnBuildBarracksClicked()
+    {
+        if (BuildingPlacer.Instance != null && activeSelectedTownCenter != null)
+        {
+            BuildingPlacer.Instance.StartPlacement(BuildingPlacer.Instance.barracksPrefab, BuildingPlacer.Instance.barracksCost);
+        }
+    }
+
     private void OnTrainFarmerClicked()
     {
         if (activeSelectedTownCenter != null)
@@ -635,6 +679,7 @@ public class RTSHUDController : MonoBehaviour
 
         
         if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(false);
+        if (buildBarracksButton != null) buildBarracksButton.gameObject.SetActive(false);
         if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(false);
         if (commandButtons != null)
         {
@@ -742,6 +787,7 @@ public class RTSHUDController : MonoBehaviour
                 }
             }
             if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(true);
+            if (buildBarracksButton != null) buildBarracksButton.gameObject.SetActive(true);
 
             
             if (selectedUnitName != null)
@@ -1117,6 +1163,7 @@ public class RTSHUDController : MonoBehaviour
         if (selectionPanel != null) selectionPanel.SetActive(false);
         if (singlePortraitBackground != null) singlePortraitBackground.gameObject.SetActive(false);
         if (trainFarmerButton != null) trainFarmerButton.gameObject.SetActive(false);
+        if (buildBarracksButton != null) buildBarracksButton.gameObject.SetActive(false);
         if (trainSoldierButton != null) trainSoldierButton.gameObject.SetActive(false);
 
         if (commandButtons != null)

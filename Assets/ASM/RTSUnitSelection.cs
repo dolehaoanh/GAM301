@@ -66,10 +66,16 @@ public class RTSUnitSelection : MonoBehaviour
         HandleControlGroups();
 
         
+        // 1. Left Click down
         if (Input.GetMouseButtonDown(0))
         {
             if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+            if (BuildingPlacer.Instance != null && BuildingPlacer.Instance.IsPlacing)
             {
                 return;
             }
@@ -84,7 +90,7 @@ public class RTSUnitSelection : MonoBehaviour
             isDrawing = true;
         }
 
-        
+        // 2. Left Click up
         if (Input.GetMouseButtonUp(0))
         {
             if (isDrawing)
@@ -94,12 +100,18 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        
+        // 3. Right Click down
         if (Input.GetMouseButtonDown(1))
         {
             if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
+                return;
+            }
+
+            if (BuildingPlacer.Instance != null && BuildingPlacer.Instance.IsPlacing)
+            {
+                // Let BuildingPlacer handle cancellation
                 return;
             }
 
@@ -263,6 +275,14 @@ public class RTSUnitSelection : MonoBehaviour
         UpdateHUD(); 
     }
 
+    private void SpawnIndicator(Vector3 position, Color color)
+    {
+        GameObject indicatorObj = new GameObject("CommandIndicator");
+        indicatorObj.transform.position = position + Vector3.up * 0.05f;
+        MoveIndicator indicator = indicatorObj.AddComponent<MoveIndicator>();
+        indicator.SetColor(color);
+    }
+
     private void MoveSelectedUnits()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -285,6 +305,7 @@ public class RTSUnitSelection : MonoBehaviour
                         unit.AttackTarget(clickedEnemyUnit.gameObject);
                     }
                 }
+                SpawnIndicator(hit.point, Color.red);
                 SetRTSCursor(RTSCursorState.Default);
                 return;
             }
@@ -300,6 +321,7 @@ public class RTSUnitSelection : MonoBehaviour
                         unit.AttackTarget(clickedTC.gameObject);
                     }
                 }
+                SpawnIndicator(hit.point, Color.red);
                 SetRTSCursor(RTSCursorState.Default);
                 return;
             }
@@ -315,6 +337,7 @@ public class RTSUnitSelection : MonoBehaviour
                         unit.AttackTarget(clickedB.gameObject);
                     }
                 }
+                SpawnIndicator(hit.point, Color.red);
                 SetRTSCursor(RTSCursorState.Default);
                 return;
             }
@@ -340,6 +363,7 @@ public class RTSUnitSelection : MonoBehaviour
 
                 if (farmerGatherers > 0)
                 {
+                    SpawnIndicator(hit.point, new Color(1f, 0.8f, 0f));
                     SetRTSCursor(RTSCursorState.Default);
                     return;
                 }
@@ -394,7 +418,7 @@ public class RTSUnitSelection : MonoBehaviour
                 MoveGroupInGrid(selectedUnits, hit.point, formationRotation);
             }
 
-            
+            SpawnIndicator(hit.point, Color.green);
             SetRTSCursor(RTSCursorState.Default);
         }
     }
@@ -739,6 +763,8 @@ public class RTSUnitSelection : MonoBehaviour
         {
             MoveGroupInGrid(selectedUnits, point, formationRotation);
         }
+
+        SpawnIndicator(point, Color.green);
     }
 
     private void HandleCommandClick()
