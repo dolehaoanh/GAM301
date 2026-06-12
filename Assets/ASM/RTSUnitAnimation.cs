@@ -48,10 +48,10 @@ public class RTSUnitAnimation : MonoBehaviour
             footstepAudio.clip = footstepClip;
             footstepAudio.loop = true;
             footstepAudio.playOnAwake = false;
-            footstepAudio.spatialBlend = 1.0f; // 3D sound
-            footstepAudio.minDistance = 2f;
-            footstepAudio.maxDistance = 25f;
-            footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.4f; // Muted a bit for footsteps
+            footstepAudio.spatialBlend = 0.2f; // Mostly 2D so it's clearly audible from high RTS camera angles
+            footstepAudio.minDistance = 10f;
+            footstepAudio.maxDistance = 100f;
+            footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.8f; // Clearer footstep volume
         }
     }
 
@@ -85,7 +85,7 @@ public class RTSUnitAnimation : MonoBehaviour
                 if (!footstepAudio.isPlaying)
                 {
                     // Update volume in case it changed in player prefs
-                    footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.4f;
+                    footstepAudio.volume = PlayerPrefs.GetFloat("SFXVolume", 0.75f) * 0.8f;
                     footstepAudio.Play();
                 }
             }

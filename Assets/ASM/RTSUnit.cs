@@ -625,7 +625,7 @@ public class RTSUnit : MonoBehaviour
     {
         if (attacker == null) return;
 
-        float alertRadius = 15f;
+        float alertRadius = 30f;
         RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
         foreach (RTSUnit unit in allUnits)
         {
@@ -639,6 +639,7 @@ public class RTSUnit : MonoBehaviour
                     {
                         unit.currentTarget = attacker.gameObject;
                         unit.currentState = RTSUnitState.Chasing;
+                        Debug.Log($"[Combat Alert] {unit.name} alerted by {this.name} to attack attacker {attacker.name} at distance {dist:F2}!");
                     }
                 }
             }
@@ -903,6 +904,19 @@ public class RTSUnit : MonoBehaviour
 
     private void Start()
     {
+        // Snap unit to NavMesh to ensure pre-placed units have isOnNavMesh=true and can navigate
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (navAgent != null)
+        {
+            UnityEngine.AI.NavMeshHit hit;
+            if (UnityEngine.AI.NavMesh.SamplePosition(transform.position, out hit, 8f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                navAgent.enabled = false;
+                transform.position = hit.position;
+                navAgent.enabled = true;
+            }
+        }
+
         // Tự động phân biệt màu sắc và tên mặc định dựa trên loại quân
         if (unitType == RTSUnitType.Farmer)
         {

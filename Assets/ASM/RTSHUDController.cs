@@ -533,6 +533,13 @@ public class RTSHUDController : MonoBehaviour
     // Hàm hiển thị thông tin chi tiết khi chọn quân lính hoặc Nhà Chính (Town Center) hoặc Nhà Lính (Barracks)
     public void ShowSelection(System.Collections.Generic.List<RTSUnit> selectedList, TownCenter selectedTC, Barracks selectedB = null)
     {
+        // Active BottomPanel grey background when selection is shown
+        if (selectionPanel != null && selectionPanel.transform.parent != null)
+        {
+            var bottomPanelImg = selectionPanel.transform.parent.GetComponent<UnityEngine.UI.Image>();
+            if (bottomPanelImg != null) bottomPanelImg.enabled = true;
+        }
+
         // Fail-safe để nạp lại portraitFrameSprite nếu nó bị null
         if (portraitFrameSprite == null && selectionPanel != null)
         {
@@ -1046,6 +1053,13 @@ public class RTSHUDController : MonoBehaviour
     // Hàm tự động ẩn bảng thông tin đi khi người chơi nhấp ra ngoài đất trống (bỏ chọn)
     public void HideSelectionPanel()
     {
+        // Deactivate BottomPanel grey background when selection is hidden
+        if (selectionPanel != null && selectionPanel.transform.parent != null)
+        {
+            var bottomPanelImg = selectionPanel.transform.parent.GetComponent<UnityEngine.UI.Image>();
+            if (bottomPanelImg != null) bottomPanelImg.enabled = false;
+        }
+
         // Dọn dẹp toàn bộ chân dung nhóm cũ khi ẩn bảng
         foreach (var go in activeGroupPortraits)
         {

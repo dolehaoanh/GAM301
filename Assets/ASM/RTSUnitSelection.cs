@@ -145,7 +145,6 @@ public class RTSUnitSelection : MonoBehaviour
             }
         }
 
-        Debug.Log($"[RTS Selection] Đã chọn thành công {selectedUnits.Count} quân lính!");
         UpdateHUD(); // <-- Cập nhật hiển thị lên HUD Canvas
     }
 
@@ -171,7 +170,6 @@ public class RTSUnitSelection : MonoBehaviour
             {
                 unit.Select();
                 selectedUnits.Add(unit);
-                Debug.Log($"[RTS Selection] Đã chọn 1 quân: {unit.gameObject.name}");
             }
             else
             {
@@ -185,7 +183,6 @@ public class RTSUnitSelection : MonoBehaviour
                 if (tc != null)
                 {
                     selectedTownCenter = tc;
-                    Debug.Log($"[RTS Selection] Đã chọn Nhà Chính: {tc.gameObject.name}");
                 }
                 else
                 {
@@ -199,7 +196,6 @@ public class RTSUnitSelection : MonoBehaviour
                     if (b != null)
                     {
                         selectedBarracks = b;
-                        Debug.Log($"[RTS Selection] Đã chọn Nhà Lính: {b.gameObject.name}");
                     }
                 }
             }
