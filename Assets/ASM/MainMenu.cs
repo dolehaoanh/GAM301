@@ -51,6 +51,13 @@ public class MainMenu : MonoBehaviour
                 exitBtn.onClick.AddListener(ExitGame);
                 exitBtn.onClick.AddListener(PlayClickSFX);
             }
+
+            // Disable Raycast Target on the Logo Image to prevent it from blocking button clicks
+            Image logoImg = mainPanel.transform.Find("Logo")?.GetComponent<Image>();
+            if (logoImg != null)
+            {
+                logoImg.raycastTarget = false;
+            }
         }
 
         if (optionsPanel != null)
