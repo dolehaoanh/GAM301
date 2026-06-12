@@ -566,7 +566,6 @@ public class RTSUnitSelection : MonoBehaviour
 
         activeCommand = RTSCursorState.Move;
         SetRTSCursor(RTSCursorState.Move);
-        Debug.Log($"[RTS Command] DI CHUYỂN BỘ BINH ({selectedUnits.Count} quân)!");
     }
 
     
@@ -583,7 +582,6 @@ public class RTSUnitSelection : MonoBehaviour
         activeCommand = RTSCursorState.Default;
         SetRTSCursor(RTSCursorState.Default); 
         waitingForSecondPatrolPoint = false;
-        Debug.Log($"[RTS Command] DỪNG QUÂN NGAY LẬP TỨC ({selectedUnits.Count} quân)!");
     }
 
     
@@ -593,7 +591,6 @@ public class RTSUnitSelection : MonoBehaviour
 
         activeCommand = RTSCursorState.Attack;
         SetRTSCursor(RTSCursorState.Attack);
-        Debug.Log($"[RTS Command] XUẤT BINH TẤN CÔNG ĐỊCH ({selectedUnits.Count} quân)!");
     }
 
     
@@ -604,7 +601,6 @@ public class RTSUnitSelection : MonoBehaviour
         activeCommand = RTSCursorState.Guard;
         SetRTSCursor(RTSCursorState.Guard); 
         waitingForSecondPatrolPoint = false;
-        Debug.Log($"[RTS Command] KÍCH HOẠT PHÒNG THỦ / CANH GÁC (Chờ click vị trí)!");
     }
 
     
@@ -615,7 +611,6 @@ public class RTSUnitSelection : MonoBehaviour
         activeCommand = RTSCursorState.Patrol;
         waitingForSecondPatrolPoint = false;
         SetRTSCursor(RTSCursorState.Patrol);
-        Debug.Log($"[RTS Command] TUẦN TRA QUANH ĐỊA BÀN ({selectedUnits.Count} quân)!");
     }
 
     
@@ -671,7 +666,6 @@ public class RTSUnitSelection : MonoBehaviour
                 controlGroups[groupIndex].Add(unit);
             }
         }
-        Debug.Log($"Lưu đạo quân: đã gán {controlGroups[groupIndex].Count} quân vào Nhóm {groupIndex}");
     }
 
     
@@ -679,11 +673,6 @@ public class RTSUnitSelection : MonoBehaviour
     {
         
         controlGroups[groupIndex].RemoveAll(unit => unit == null);
-
-        if (controlGroups[groupIndex].Count == 0)
-        {
-            Debug.Log($"Chọn đạo quân: Đạo quân số {groupIndex} không có unit nào.");
-        }
 
         
         DeselectAll();
@@ -700,8 +689,6 @@ public class RTSUnitSelection : MonoBehaviour
 
         
         UpdateHUD();
-
-        Debug.Log($"Đã chọn lại đạo quân {groupIndex} (có {selectedUnits.Count} quân)");
     }
 
     private void PlayClickSFX()
@@ -844,13 +831,11 @@ public class RTSUnitSelection : MonoBehaviour
                 {
                     firstPatrolPoint = hit.point;
                     waitingForSecondPatrolPoint = true;
-                    Debug.Log($"[RTS Command] Patrol Point A registered: {firstPatrolPoint}");
                 }
                 else
                 {
                     Vector3 secondPatrolPoint = hit.point;
                     waitingForSecondPatrolPoint = false;
-                    Debug.Log($"[RTS Command] Patrol Point B registered: {secondPatrolPoint}. Issuing Patrol command to {selectedUnits.Count} units.");
 
                     foreach (RTSUnit unit in selectedUnits)
                     {

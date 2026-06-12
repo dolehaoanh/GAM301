@@ -57,7 +57,6 @@ public class Barracks : MonoBehaviour
         {
             isTraining = true;
             trainingTimer = trainingDuration;
-            Debug.Log($"[Barracks] Bắt đầu huấn luyện Chiến Binh! Chi phí: {soldierCost} Vàng.");
             return true;
         }
         else
@@ -224,8 +223,6 @@ public class Barracks : MonoBehaviour
                 Vector3 exitTarget = spawnPos + transform.forward * 4.0f; 
                 agent.SetDestination(exitTarget);
             }
-
-            Debug.Log($"[Barracks] Huấn luyện thành công Chiến Binh: {soldierGo.name} tại vị trí {spawnPos}!");
         }
         else
         {
@@ -239,8 +236,6 @@ public class Barracks : MonoBehaviour
         currentHP -= damage;
         if (currentHP < 0f) currentHP = 0f;
 
-        Debug.Log($"[Barracks] {gameObject.name} (isEnemy: {isEnemy}) took {damage} damage. HP: {currentHP}/{maxHP}");
-
         if (currentHP <= 0f)
         {
             Die();
@@ -249,7 +244,6 @@ public class Barracks : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log($"[Barracks] {gameObject.name} destroyed!");
         Destroy(gameObject);
     }
 }

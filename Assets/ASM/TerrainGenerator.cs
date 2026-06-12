@@ -296,6 +296,5 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         terrainData.SetTreeInstances(treeList.ToArray(), true);
-        Debug.Log($"[Terrain Generator] Đã sinh thành công {treeList.Count} cây thông lên các sườn đồi!");
     }
 }

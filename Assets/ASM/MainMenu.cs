@@ -106,7 +106,6 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        Debug.Log("[MainMenu] Play game clicked - Loading Assignment scene...");
         SceneManager.LoadScene("Assignment");
     }
 
@@ -125,7 +124,6 @@ public class MainMenu : MonoBehaviour
 
     public void ExitGame()
     {
-        Debug.Log("[MainMenu] Exit game clicked.");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -140,13 +138,11 @@ public class MainMenu : MonoBehaviour
         {
             bgmAudioSource.volume = value;
         }
-        Debug.Log($"[MainMenu] Music Volume set to: {value:F2}");
     }
 
     public void SetSFXVolume(float value)
     {
         PlayerPrefs.SetFloat("SFXVolume", value);
-        Debug.Log($"[MainMenu] SFX Volume set to: {value:F2}");
     }
 
     public void PlayClickSFX()
@@ -163,7 +159,6 @@ public class MainMenu : MonoBehaviour
         QualitySettings.vSyncCount = isOn ? 1 : 0;
         PlayerPrefs.SetInt("VSync", isOn ? 1 : 0);
         PlayerPrefs.Save();
-        Debug.Log($"[MainMenu] VSync set to: {isOn}");
     }
 
     private void SetupResolutions()
@@ -199,7 +194,6 @@ public class MainMenu : MonoBehaviour
         {
             Resolution resolution = resolutions[index];
             Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode);
-            Debug.Log($"[MainMenu] Resolution set to: {resolution.width}x{resolution.height}");
         }
     }
 }

@@ -180,15 +180,12 @@ public class BuildingPlacer : MonoBehaviour
             }
             barracks.isEnemy = false;
 
-            Debug.Log($"[BuildingPlacer] Đã đặt Nhà Binh (Barracks) tại {spawnPos} với giá {currentCost} Vàng.");
-            
             EndPlacement();
         }
     }
 
     public void CancelPlacement()
     {
-        Debug.Log("[BuildingPlacer] Đã hủy chế độ đặt công trình.");
         EndPlacement();
     }
 

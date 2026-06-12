@@ -81,7 +81,6 @@ public class TownCenter : MonoBehaviour
         {
             isTraining = true;
             trainingTimer = trainingDuration;
-            Debug.Log($"[TownCenter] Bắt đầu huấn luyện Nông Dân! Chi phí: {farmerCost} Vàng.");
             return true;
         }
         else
@@ -248,8 +247,6 @@ public class TownCenter : MonoBehaviour
                 Vector3 exitTarget = spawnPos + transform.forward * 4.0f; 
                 agent.SetDestination(exitTarget);
             }
-
-            Debug.Log($"[TownCenter] Huấn luyện thành công Nông dân: {farmerGo.name} tại vị trí {spawnPos}!");
         }
         else
         {
@@ -263,8 +260,6 @@ public class TownCenter : MonoBehaviour
         currentHP -= damage;
         if (currentHP < 0f) currentHP = 0f;
 
-        Debug.Log($"[TownCenter] {gameObject.name} (isEnemy: {isEnemy}) took {damage} damage. HP: {currentHP}/{maxHP}");
-
         if (currentHP <= 0f)
         {
             Die();
@@ -273,7 +268,6 @@ public class TownCenter : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log($"[TownCenter] {gameObject.name} destroyed!");
         if (isEnemy)
         {
             RTSHUDController hud = FindAnyObjectByType<RTSHUDController>();

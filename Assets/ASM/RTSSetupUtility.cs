@@ -348,8 +348,6 @@ public class RTSSetupUtility
         Undo.RegisterCompleteObjectUndo(duLieuBanDo, "Xoa Cay Tren Terrain");
         duLieuBanDo.treeInstances = new TreeInstance[0];
         banDo.Flush();
-
-        Debug.Log($"<color=lime><b>[Chuyển đổi Cây] THÀNH CÔNG!</b></color> Đã chuyển đổi {soLuongThanhCong} cây tĩnh trên địa hình thành các vật thể GameObjects (nằm trong thư mục Nhom_Cay_Thu_Hoach)!");
     }
 
     [MenuItem("RTS Game/Phóng to tất cả cây trên Terrain")]
@@ -396,8 +394,6 @@ public class RTSSetupUtility
 
         duLieuBanDo.treeInstances = danhSachCay;
         banDo.Flush();
-
-        Debug.Log($"<color=lime><b>[Phóng to Cây] THÀNH CÔNG!</b></color> Đã phóng to {danhSachCay.Length} cây trên địa hình lên gấp {heSoNhan} lần!");
     }
 }
 #endif

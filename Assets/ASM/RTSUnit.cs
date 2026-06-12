@@ -36,7 +36,9 @@ public class RTSUnit : MonoBehaviour
 
     [Header("Combat Settings")]
     public float attackRange = 2.5f;
-    public float scanRange = 15f;
+    public float scanRange = 8f;
+    [Tooltip("Bán kính thông báo đồng đội khi bị tấn công")]
+    public float alertRadius = 10f;
     public float attackDamage = 15f;
     public float attackCooldown = 1.0f;
     private float attackTimer = 0f;
@@ -508,7 +510,6 @@ public class RTSUnit : MonoBehaviour
                             }
                             RTSEffects.SpawnImpactEffect(currentTarget.transform.position + Vector3.up * 1.5f);
                         }
-                        Debug.Log($"[RTS Combat] {gameObject.name} dealing damage to building: {currentTarget.name}");
                     }
                 }
                 break;
@@ -659,7 +660,6 @@ public class RTSUnit : MonoBehaviour
 
 
         
-        Debug.Log($"[Combat Log] {gameObject.name} (isEnemy: {isEnemy}) hit by {(attacker != null ? attacker.name : "null")}. Current State: {currentState}");
         StartCoroutine(HitFlashRoutine());
 
         
@@ -701,7 +701,6 @@ public class RTSUnit : MonoBehaviour
     {
         if (attacker == null) return;
 
-        float alertRadius = 30f;
         RTSUnit[] allUnits = FindObjectsByType<RTSUnit>(FindObjectsInactive.Exclude);
         foreach (RTSUnit unit in allUnits)
         {
@@ -715,7 +714,6 @@ public class RTSUnit : MonoBehaviour
                     {
                         unit.currentTarget = attacker.gameObject;
                         unit.currentState = RTSUnitState.Chasing;
-                        Debug.Log($"[Combat Alert] {unit.name} alerted by {this.name} to attack attacker {attacker.name} at distance {dist:F2}!");
                     }
                 }
             }
@@ -822,7 +820,6 @@ public class RTSUnit : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log($"[RTS Combat] {gameObject.name} has died!");
         currentState = RTSUnitState.Dead;
         Deselect();
 
@@ -878,7 +875,6 @@ public class RTSUnit : MonoBehaviour
     {
         
         Animator animator = GetComponentInChildren<Animator>();
-        Debug.Log($"[Death Debug] {gameObject.name} is playing Death_B directly. Animator found: {(animator != null ? animator.name : "null")}");
         if (animator != null)
         {
             animator.SetTrigger("Die");

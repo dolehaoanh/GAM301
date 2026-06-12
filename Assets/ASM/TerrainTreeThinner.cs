@@ -55,7 +55,5 @@ public class TerrainTreeThinner : MonoBehaviour
         
         terrainData.treeInstances = keptTrees.ToArray();
         terrain.Flush();
-
-        Debug.Log($"<color=lime><b>[Tree Thinner] THÀNH CÔNG!</b></color> Đã lọc bớt cây từ {currentTrees.Length} xuống còn {keptTrees.Count} cây. Địa hình núi non và màu sơn cỏ đá của bạn được <b>GIỮ NGUYÊN 100%</b>!");
     }
 }

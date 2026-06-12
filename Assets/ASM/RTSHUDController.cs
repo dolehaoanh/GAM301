@@ -130,7 +130,6 @@ public class RTSHUDController : MonoBehaviour
             if (portCam != null && portCam.targetTexture != null)
             {
                 selectedUnitPortrait.texture = portCam.targetTexture;
-                Debug.Log($"[RTS Portrait] Tự động khôi phục và gán Render Texture từ camera: {portCam.name}!");
             }
         }
 
