@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
 
     [Header("Audio Source")]
     public AudioSource bgmAudioSource;
+    public AudioClip clickSFX;
 
     private Resolution[] resolutions;
 
@@ -95,6 +96,15 @@ public class MainMenu : MonoBehaviour
     {
         PlayerPrefs.SetFloat("SFXVolume", value);
         Debug.Log($"[MainMenu] SFX Volume set to: {value:F2}");
+    }
+
+    public void PlayClickSFX()
+    {
+        if (bgmAudioSource != null && clickSFX != null)
+        {
+            float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
+            bgmAudioSource.PlayOneShot(clickSFX, sfxVol);
+        }
     }
 
     private void SetupResolutions()
