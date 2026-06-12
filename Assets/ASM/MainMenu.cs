@@ -14,6 +14,7 @@ public class MainMenu : MonoBehaviour
     public Slider musicSlider;
     public Slider sfxSlider;
     public TMP_Dropdown resolutionDropdown;
+    public Toggle vsyncToggle;
 
     [Header("Audio Source")]
     public AudioSource bgmAudioSource;
@@ -26,6 +27,13 @@ public class MainMenu : MonoBehaviour
         // Set active panels
         if (mainPanel != null) mainPanel.SetActive(true);
         if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        // Setup VSync Toggle
+        if (vsyncToggle != null)
+        {
+            vsyncToggle.isOn = QualitySettings.vSyncCount > 0;
+            vsyncToggle.onValueChanged.AddListener(SetVSync);
+        }
 
         // Setup BGM AudioSource
         if (bgmAudioSource == null) bgmAudioSource = GetComponent<AudioSource>();
@@ -105,6 +113,14 @@ public class MainMenu : MonoBehaviour
             float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
             bgmAudioSource.PlayOneShot(clickSFX, sfxVol);
         }
+    }
+
+    public void SetVSync(bool isOn)
+    {
+        QualitySettings.vSyncCount = isOn ? 1 : 0;
+        PlayerPrefs.SetInt("VSync", isOn ? 1 : 0);
+        PlayerPrefs.Save();
+        Debug.Log($"[MainMenu] VSync set to: {isOn}");
     }
 
     private void SetupResolutions()
