@@ -15,7 +15,7 @@ public class TerrainSpawner : MonoBehaviour
     [SerializeField] private List<GameObject> spawnedObjects = new List<GameObject>();
 
     // Nút kích hoạt Sinh vật thể ngẫu nhiên trên Editor
-    [ContextMenu("Spawn Random Objects")]
+    [ContextMenu("Sinh cây ngẫu nhiên")]
     public void SpawnRandomObjects()
     {
         ClearSpawnedObjects();
@@ -76,7 +76,7 @@ public class TerrainSpawner : MonoBehaviour
     }
 
     // Nút dọn dẹp nhanh các vật thể đã sinh trên Editor
-    [ContextMenu("Clear Spawned Objects")]
+    [ContextMenu("Xoá cây đã sinh")]
     public void ClearSpawnedObjects()
     {
         // Xóa sạch các đối tượng trong danh sách

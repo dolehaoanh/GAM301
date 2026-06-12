@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Lab6Terrain : MonoBehaviour
 {
-    [Header("Cấu hình Bài 1 (Add Perlin Noise)")]
+    [Header("Cấu hình Bài 1 (Dùng Add Perlin Noise)")]
     public float scaleBai1 = 20f;
     public float strengthBai1 = 0.1f;
 
