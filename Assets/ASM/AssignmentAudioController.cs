@@ -46,26 +46,38 @@ public class AssignmentAudioController : MonoBehaviour
         {
             if (Vector3.Distance(startMousePos0, Input.mousePosition) < 5f)
             {
-                PlayClickSFX();
+                if (UnityEngine.EventSystems.EventSystem.current == null ||
+                    !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                {
+                    PlayClickSFX();
+                }
             }
         }
         if (Input.GetMouseButtonUp(1))
         {
             if (Vector3.Distance(startMousePos1, Input.mousePosition) < 5f)
             {
-                PlayClickSFX();
+                if (UnityEngine.EventSystems.EventSystem.current == null ||
+                    !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                {
+                    PlayClickSFX();
+                }
             }
         }
         if (Input.GetMouseButtonUp(2))
         {
             if (Vector3.Distance(startMousePos2, Input.mousePosition) < 5f)
             {
-                PlayClickSFX();
+                if (UnityEngine.EventSystems.EventSystem.current == null ||
+                    !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                {
+                    PlayClickSFX();
+                }
             }
         }
     }
 
-    private void PlayClickSFX()
+    public void PlayClickSFX()
     {
         if (sfxAudioSource != null && clickSFX != null)
         {

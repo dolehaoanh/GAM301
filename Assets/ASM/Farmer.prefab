@@ -93,6 +93,8 @@ MonoBehaviour:
   attackClip: {fileID: 8300000, guid: ed1b5232e1175402fa008531a582e6c3, type: 3}
   hurtClip: {fileID: 8300000, guid: 5ec1b603f1d0547b3b57983f06b6569c, type: 3}
   currentState: 0
+  patrolPointA: {x: 0, y: 0, z: 0}
+  patrolPointB: {x: 0, y: 0, z: 0}
   targetResourceNode: {fileID: 0}
   targetTownCenter: {fileID: 0}
 --- !u!195 &1509179366366999495

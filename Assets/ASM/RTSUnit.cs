@@ -58,9 +58,15 @@ public class RTSUnit : MonoBehaviour
         Chasing,       
         Attacking,     
         Dead,          
-        Moving         
+        Moving,
+        Patrolling
     }
     public RTSUnitState currentState = RTSUnitState.Idle;
+
+    [Header("Patrol Settings")]
+    public Vector3 patrolPointA;
+    public Vector3 patrolPointB;
+    private bool patrolGoingToB = true;
 
     
     private GameObject currentTarget;
@@ -96,6 +102,31 @@ public class RTSUnit : MonoBehaviour
         switch (currentState)
         {
             case RTSUnitState.Idle:
+                break;
+
+            case RTSUnitState.Moving:
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    if (!navAgent.pathPending && navAgent.remainingDistance <= navAgent.stoppingDistance)
+                    {
+                        currentState = RTSUnitState.Idle;
+                    }
+                }
+                else
+                {
+                    currentState = RTSUnitState.Idle;
+                }
+                break;
+
+            case RTSUnitState.Patrolling:
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    if (!navAgent.pathPending && navAgent.remainingDistance <= navAgent.stoppingDistance + 0.1f)
+                    {
+                        patrolGoingToB = !patrolGoingToB;
+                        navAgent.SetDestination(patrolGoingToB ? patrolPointB : patrolPointA);
+                    }
+                }
                 break;
 
             case RTSUnitState.MovingToResource:
@@ -286,6 +317,24 @@ public class RTSUnit : MonoBehaviour
                 else
                 {
                     currentState = RTSUnitState.Idle;
+                }
+                break;
+
+            case RTSUnitState.Patrolling:
+                currentTarget = FindPrioritizedEnemyTarget();
+                if (currentTarget != null)
+                {
+                    currentState = RTSUnitState.Chasing;
+                    break;
+                }
+
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    if (!navAgent.pathPending && navAgent.remainingDistance <= navAgent.stoppingDistance + 0.1f)
+                    {
+                        patrolGoingToB = !patrolGoingToB;
+                        navAgent.SetDestination(patrolGoingToB ? patrolPointB : patrolPointA);
+                    }
                 }
                 break;
 
@@ -692,6 +741,30 @@ public class RTSUnit : MonoBehaviour
         }
 
         currentState = RTSUnitState.Moving;
+    }
+
+    public void StartPatrolling(Vector3 pointA, Vector3 pointB)
+    {
+        if (currentState == RTSUnitState.Dead) return;
+
+        currentTarget = null;
+        combatTarget = null;
+        combatBuildingTarget = null;
+        targetResourceNode = null;
+        targetTownCenter = null;
+
+        patrolPointA = pointA;
+        patrolPointB = pointB;
+        patrolGoingToB = true;
+
+        currentState = RTSUnitState.Patrolling;
+
+        if (navAgent == null) navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (navAgent != null && navAgent.isOnNavMesh)
+        {
+            navAgent.SetDestination(patrolPointB);
+            navAgent.isStopped = false;
+        }
     }
 
     public void StopUnit()

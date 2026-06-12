@@ -22,6 +22,10 @@ public class RTSUnitSelection : MonoBehaviour
 
     
     private RTSHUDController hudController;
+    private RTSCursorState activeCommand = RTSCursorState.Default;
+    private Vector3 firstPatrolPoint;
+    private bool waitingForSecondPatrolPoint = false;
+    private LineRenderer patrolLineRenderer;
 
     
     private List<RTSUnit>[] controlGroups = new List<RTSUnit>[10];
@@ -39,6 +43,21 @@ public class RTSUnitSelection : MonoBehaviour
         {
             controlGroups[i] = new List<RTSUnit>();
         }
+
+        
+        GameObject lineObj = new GameObject("PatrolPathPreviewLine");
+        lineObj.transform.SetParent(transform);
+        patrolLineRenderer = lineObj.AddComponent<LineRenderer>();
+        patrolLineRenderer.startWidth = 0.05f;
+        patrolLineRenderer.endWidth = 0.05f;
+        patrolLineRenderer.positionCount = 0;
+        patrolLineRenderer.useWorldSpace = true;
+        
+        Material lineMaterial = new Material(Shader.Find("Sprites/Default"));
+        patrolLineRenderer.material = lineMaterial;
+        patrolLineRenderer.startColor = Color.green;
+        patrolLineRenderer.endColor = Color.green;
+        patrolLineRenderer.enabled = false;
     }
 
     private void Update()
@@ -52,6 +71,12 @@ public class RTSUnitSelection : MonoBehaviour
             if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
+                return;
+            }
+
+            if (activeCommand != RTSCursorState.Default)
+            {
+                HandleCommandClick();
                 return;
             }
 
@@ -70,14 +95,48 @@ public class RTSUnitSelection : MonoBehaviour
         }
 
         
-        if (Input.GetMouseButtonDown(1) && selectedUnits.Count > 0)
+        if (Input.GetMouseButtonDown(1))
         {
             if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
                 return;
             }
-            MoveSelectedUnits();
+
+            if (activeCommand != RTSCursorState.Default)
+            {
+                SetRTSCursor(RTSCursorState.Default);
+                activeCommand = RTSCursorState.Default;
+                waitingForSecondPatrolPoint = false;
+                return;
+            }
+
+            if (selectedUnits.Count > 0)
+            {
+                MoveSelectedUnits();
+            }
+        }
+
+        
+        if (activeCommand == RTSCursorState.Patrol && waitingForSecondPatrolPoint && patrolLineRenderer != null)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                patrolLineRenderer.positionCount = 2;
+                patrolLineRenderer.SetPosition(0, firstPatrolPoint + Vector3.up * 0.15f);
+                patrolLineRenderer.SetPosition(1, hit.point + Vector3.up * 0.15f);
+                patrolLineRenderer.enabled = true;
+            }
+            else
+            {
+                patrolLineRenderer.enabled = false;
+            }
+        }
+        else
+        {
+            if (patrolLineRenderer != null) patrolLineRenderer.enabled = false;
         }
     }
 
@@ -436,7 +495,8 @@ public class RTSUnitSelection : MonoBehaviour
         Default,
         Move,
         Attack,
-        Gather
+        Gather,
+        Patrol
     }
 
     
@@ -457,6 +517,9 @@ public class RTSUnitSelection : MonoBehaviour
             case RTSCursorState.Gather:
                 activeTexture = gatherCursor;
                 break;
+            case RTSCursorState.Patrol:
+                activeTexture = moveCursor;
+                break;
         }
 
         
@@ -472,7 +535,7 @@ public class RTSUnitSelection : MonoBehaviour
     {
         if (selectedUnits.Count == 0) return;
 
-        
+        activeCommand = RTSCursorState.Move;
         SetRTSCursor(RTSCursorState.Move);
         Debug.Log($"[RTS Command] DI CHUYỂN BỘ BINH ({selectedUnits.Count} quân)!");
     }
@@ -488,7 +551,9 @@ public class RTSUnitSelection : MonoBehaviour
             unit.StopUnit();
         }
 
+        activeCommand = RTSCursorState.Default;
         SetRTSCursor(RTSCursorState.Default); 
+        waitingForSecondPatrolPoint = false;
         Debug.Log($"[RTS Command] DỪNG QUÂN NGAY LẬP TỨC ({selectedUnits.Count} quân)!");
     }
 
@@ -497,7 +562,7 @@ public class RTSUnitSelection : MonoBehaviour
     {
         if (selectedUnits.Count == 0) return;
 
-        
+        activeCommand = RTSCursorState.Attack;
         SetRTSCursor(RTSCursorState.Attack);
         Debug.Log($"[RTS Command] XUẤT BINH TẤN CÔNG ĐỊCH ({selectedUnits.Count} quân)!");
     }
@@ -513,7 +578,9 @@ public class RTSUnitSelection : MonoBehaviour
             unit.StopUnit();
         }
 
+        activeCommand = RTSCursorState.Default;
         SetRTSCursor(RTSCursorState.Default); 
+        waitingForSecondPatrolPoint = false;
         Debug.Log($"[RTS Command] THỦ THẾ / GIỮ VỮNG ĐỘI HÌNH ({selectedUnits.Count} quân)!");
     }
 
@@ -521,6 +588,10 @@ public class RTSUnitSelection : MonoBehaviour
     public void OnCommandPatrol()
     {
         if (selectedUnits.Count == 0) return;
+
+        activeCommand = RTSCursorState.Patrol;
+        waitingForSecondPatrolPoint = false;
+        SetRTSCursor(RTSCursorState.Patrol);
         Debug.Log($"[RTS Command] TUẦN TRA QUANH ĐỊA BÀN ({selectedUnits.Count} quân)!");
     }
 
@@ -529,39 +600,9 @@ public class RTSUnitSelection : MonoBehaviour
     {
         if (selectedUnits.Count == 0) return;
 
-        
+        activeCommand = RTSCursorState.Gather;
         SetRTSCursor(RTSCursorState.Gather);
-
-        int farmerCount = 0;
-        foreach (RTSUnit unit in selectedUnits)
-        {
-            if (unit == null) continue;
-
-            
-            if (unit.unitType == RTSUnitType.Farmer)
-            {
-                Animator animator = unit.GetComponentInChildren<Animator>();
-                if (animator != null)
-                {
-                    bool hasWorkParam = false;
-                    foreach (AnimatorControllerParameter param in animator.parameters)
-                    {
-                        if (param.name == "Work")
-                        {
-                            hasWorkParam = true;
-                            break;
-                        }
-                    }
-                    if (hasWorkParam)
-                    {
-                        animator.SetTrigger("Work"); 
-                    }
-                }
-                farmerCount++;
-            }
-        }
-
-        Debug.Log($"KHAI THÁC TÀI NGUYÊN (Kích hoạt cuốc đất cho {farmerCount} nông dân)!");
+        Debug.Log($"[RTS Command] KÍCH HOẠT KHAI THÁC TÀI NGUYÊN (Chờ click vào bãi tài nguyên)!");
     }
 
     
@@ -639,5 +680,159 @@ public class RTSUnitSelection : MonoBehaviour
         UpdateHUD();
 
         Debug.Log($"Đã chọn lại đạo quân {groupIndex} (có {selectedUnits.Count} quân)");
+    }
+
+    private void PlayClickSFX()
+    {
+        var audioCtrl = FindAnyObjectByType<AssignmentAudioController>();
+        if (audioCtrl != null)
+        {
+            audioCtrl.PlayClickSFX();
+        }
+    }
+
+    private void MoveSelectedUnitsToPoint(Vector3 point)
+    {
+        List<RTSUnit> soldiers = new List<RTSUnit>();
+        List<RTSUnit> farmers = new List<RTSUnit>();
+        Vector3 groupCenter = Vector3.zero;
+        int activeUnits = 0;
+
+        foreach (RTSUnit unit in selectedUnits)
+        {
+            if (unit == null) continue;
+
+            groupCenter += unit.transform.position;
+            activeUnits++;
+
+            if (unit.unitType == RTSUnitType.Soldier)
+            {
+                soldiers.Add(unit);
+            }
+            else
+            {
+                farmers.Add(unit);
+            }
+        }
+        if (activeUnits > 0) groupCenter /= activeUnits;
+
+        Vector3 travelDirection = point - groupCenter;
+        travelDirection.y = 0f;
+
+        Quaternion formationRotation;
+        if (travelDirection.sqrMagnitude > 0.2f)
+        {
+            formationRotation = Quaternion.LookRotation(travelDirection.normalized);
+        }
+        else
+        {
+            formationRotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
+        }
+
+        if (soldiers.Count > 0 && farmers.Count > 0)
+        {
+            Vector3 soldierCenter = point;
+            Vector3 farmerCenter = point - (formationRotation * Vector3.forward * classGapDistance);
+
+            MoveGroupInGrid(soldiers, soldierCenter, formationRotation);
+            MoveGroupInGrid(farmers, farmerCenter, formationRotation);
+        }
+        else
+        {
+            MoveGroupInGrid(selectedUnits, point, formationRotation);
+        }
+    }
+
+    private void HandleCommandClick()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            PlayClickSFX();
+
+            if (activeCommand == RTSCursorState.Move)
+            {
+                MoveSelectedUnitsToPoint(hit.point);
+                SetRTSCursor(RTSCursorState.Default);
+                activeCommand = RTSCursorState.Default;
+            }
+            else if (activeCommand == RTSCursorState.Attack)
+            {
+                RTSUnit clickedEnemyUnit = hit.collider.GetComponentInParent<RTSUnit>();
+                if (clickedEnemyUnit == null) clickedEnemyUnit = hit.collider.GetComponent<RTSUnit>();
+
+                TownCenter clickedTC = hit.collider.GetComponentInParent<TownCenter>();
+                if (clickedTC == null) clickedTC = hit.collider.GetComponent<TownCenter>();
+
+                Barracks clickedB = hit.collider.GetComponentInParent<Barracks>();
+                if (clickedB == null) clickedB = hit.collider.GetComponent<Barracks>();
+
+                GameObject target = null;
+                if (clickedEnemyUnit != null && clickedEnemyUnit.isEnemy) target = clickedEnemyUnit.gameObject;
+                else if (clickedTC != null && clickedTC.isEnemy) target = clickedTC.gameObject;
+                else if (clickedB != null && clickedB.isEnemy) target = clickedB.gameObject;
+
+                if (target != null)
+                {
+                    foreach (RTSUnit unit in selectedUnits)
+                    {
+                        if (unit != null && unit.unitType == RTSUnitType.Soldier)
+                        {
+                            unit.AttackTarget(target);
+                        }
+                    }
+                }
+                else
+                {
+                    MoveSelectedUnitsToPoint(hit.point);
+                }
+                SetRTSCursor(RTSCursorState.Default);
+                activeCommand = RTSCursorState.Default;
+            }
+            else if (activeCommand == RTSCursorState.Gather)
+            {
+                ResourceNode clickedNode = hit.collider.GetComponentInParent<ResourceNode>();
+                if (clickedNode == null) clickedNode = hit.collider.GetComponent<ResourceNode>();
+
+                if (clickedNode != null)
+                {
+                    foreach (RTSUnit unit in selectedUnits)
+                    {
+                        if (unit != null && unit.unitType == RTSUnitType.Farmer)
+                        {
+                            unit.StartHarvesting(clickedNode);
+                        }
+                    }
+                }
+                SetRTSCursor(RTSCursorState.Default);
+                activeCommand = RTSCursorState.Default;
+            }
+            else if (activeCommand == RTSCursorState.Patrol)
+            {
+                if (!waitingForSecondPatrolPoint)
+                {
+                    firstPatrolPoint = hit.point;
+                    waitingForSecondPatrolPoint = true;
+                    Debug.Log($"[RTS Command] Patrol Point A registered: {firstPatrolPoint}");
+                }
+                else
+                {
+                    Vector3 secondPatrolPoint = hit.point;
+                    waitingForSecondPatrolPoint = false;
+                    Debug.Log($"[RTS Command] Patrol Point B registered: {secondPatrolPoint}. Issuing Patrol command to {selectedUnits.Count} units.");
+
+                    foreach (RTSUnit unit in selectedUnits)
+                    {
+                        if (unit != null)
+                        {
+                            unit.StartPatrolling(firstPatrolPoint, secondPatrolPoint);
+                        }
+                    }
+                    SetRTSCursor(RTSCursorState.Default);
+                    activeCommand = RTSCursorState.Default;
+                }
+            }
+        }
     }
 }

@@ -936,15 +936,7 @@ public class RTSHUDController : MonoBehaviour
             
             if (selectedUnitHPBar != null)
             {
-                RestoreOriginalHPLayout();
-                selectedUnitHPBar.gameObject.SetActive(typeGroups.Count <= 1);
-
-                
-                selectedUnitHPBar.transform.SetAsLastSibling();
-                var r = selectedUnitHPBar.GetComponent<RectTransform>();
-                var pos = r.localPosition;
-                pos.z = -10f;
-                r.localPosition = pos;
+                selectedUnitHPBar.gameObject.SetActive(false);
             }
 
             
@@ -1096,27 +1088,10 @@ public class RTSHUDController : MonoBehaviour
             
             if (selectedUnitHPBar != null)
             {
-                float currentTotalHP = 0f;
-                float maxTotalHP = 0f;
-                foreach (var unit in selectedList)
-                {
-                    if (unit != null)
-                    {
-                        currentTotalHP += unit.currentHP;
-                        maxTotalHP += unit.maxHP;
-                    }
-                }
-                selectedUnitHPBar.maxValue = maxTotalHP;
-                selectedUnitHPBar.value = currentTotalHP;
-                
-                
-                selectedUnitHPBar.transform.SetAsLastSibling();
-                var r = selectedUnitHPBar.GetComponent<RectTransform>();
-                var pos = r.localPosition;
-                pos.z = -10f;
-                r.localPosition = pos;
+                selectedUnitHPBar.gameObject.SetActive(false);
             }
         }
+        UpdateGatherButtonInteractable(selectedList);
     }
 
     
@@ -1149,6 +1124,43 @@ public class RTSHUDController : MonoBehaviour
             foreach (var btn in commandButtons)
             {
                 if (btn != null) btn.gameObject.SetActive(true);
+            }
+        }
+        UpdateGatherButtonInteractable(null);
+    }
+
+    private void UpdateGatherButtonInteractable(System.Collections.Generic.List<RTSUnit> selectedList)
+    {
+        if (commandPanel == null) return;
+        var gatherBtn = commandPanel.transform.Find("Button_Gather")?.GetComponent<UnityEngine.UI.Button>();
+        if (gatherBtn != null)
+        {
+            if (selectedList == null || selectedList.Count == 0)
+            {
+                gatherBtn.interactable = true;
+                var img = gatherBtn.GetComponent<UnityEngine.UI.Image>();
+                if (img != null) img.color = Color.white;
+                return;
+            }
+
+            bool hasNonFarmer = false;
+            bool hasFarmer = false;
+            foreach (var unit in selectedList)
+            {
+                if (unit != null)
+                {
+                    if (unit.unitType == RTSUnitType.Farmer) hasFarmer = true;
+                    else hasNonFarmer = true;
+                }
+            }
+
+            bool isInteractable = hasFarmer && !hasNonFarmer;
+            gatherBtn.interactable = isInteractable;
+            
+            var imgComponent = gatherBtn.GetComponent<UnityEngine.UI.Image>();
+            if (imgComponent != null)
+            {
+                imgComponent.color = isInteractable ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
             }
         }
     }
