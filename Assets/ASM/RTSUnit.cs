@@ -43,6 +43,8 @@ public class RTSUnit : MonoBehaviour
     public float attackCooldown = 1.0f;
     private float attackTimer = 0f;
     private float rescanTimer = 0f;
+    private Coroutine hitFlashCoroutine;
+    private Dictionary<Renderer, Color> preFlashColors = new Dictionary<Renderer, Color>();
 
     public RTSUnit combatTarget;
     public GameObject combatBuildingTarget;
@@ -660,7 +662,16 @@ public class RTSUnit : MonoBehaviour
 
 
         
-        StartCoroutine(HitFlashRoutine());
+        if (hitFlashCoroutine != null)
+        {
+            StopCoroutine(hitFlashCoroutine);
+            foreach (var kvp in preFlashColors)
+            {
+                if (kvp.Key != null) kvp.Key.material.color = kvp.Value;
+            }
+            preFlashColors.Clear();
+        }
+        hitFlashCoroutine = StartCoroutine(HitFlashRoutine());
 
         
         if (attacker != null)
@@ -794,28 +805,33 @@ public class RTSUnit : MonoBehaviour
     private System.Collections.IEnumerator HitFlashRoutine()
     {
         var renderers = GetComponentsInChildren<Renderer>();
-        Color[] originalColors = new Color[renderers.Length];
 
-        
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] != null && !(renderers[i] is LineRenderer))
             {
-                originalColors[i] = renderers[i].material.color;
+                if (!preFlashColors.ContainsKey(renderers[i]))
+                {
+                    preFlashColors[renderers[i]] = renderers[i].material.color;
+                }
                 renderers[i].material.color = Color.white;
             }
         }
 
         yield return new WaitForSeconds(0.1f);
 
-        
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] != null && !(renderers[i] is LineRenderer))
             {
-                renderers[i].material.color = originalColors[i];
+                if (preFlashColors.TryGetValue(renderers[i], out Color origColor))
+                {
+                    renderers[i].material.color = origColor;
+                }
             }
         }
+        preFlashColors.Clear();
+        hitFlashCoroutine = null;
     }
 
     private void Die()
@@ -960,6 +976,17 @@ public class RTSUnit : MonoBehaviour
 
     public void ResetUnit(bool isEnemy)
     {
+        if (hitFlashCoroutine != null)
+        {
+            StopCoroutine(hitFlashCoroutine);
+            hitFlashCoroutine = null;
+        }
+        foreach (var kvp in preFlashColors)
+        {
+            if (kvp.Key != null) kvp.Key.material.color = kvp.Value;
+        }
+        preFlashColors.Clear();
+
         RestoreOriginalMaterials();
         
         currentHP = maxHP;
