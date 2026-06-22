@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class DiChuyenObjectThiThu1Cau1 : MonoBehaviour
+public class DiChuyenObject : MonoBehaviour
 {
     public Transform viTriA;
     public Transform viTriB;
