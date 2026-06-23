@@ -4,18 +4,29 @@ using UnityEngine.Rendering;
 public class HieuUngMauThap : MonoBehaviour
 {
     public Volume boHieuUngMauThap;
+    private HPNhanVat HPNhanVat;
     public float nguongMauThap = 0.3f;
+    public float tocDoChuyenDoi = 2f; // Cần để chuyển từ từ trạng thái màu màn hình (chứ không bị giật cục)
 
-    public float mauHienTai = 100f;
-    public float mauToiDa = 100f;
+    private void Start()
+    {
+        if (HPNhanVat == null)
+        {
+            HPNhanVat = GetComponent<HPNhanVat>();
+        }
+    }
 
     private void Update()
     {
-        float tiLeMau = mauHienTai / mauToiDa;
+        if (boHieuUngMauThap == null || HPNhanVat == null) return;
 
-        if (boHieuUngMauThap != null)
-        {
-            boHieuUngMauThap.weight = (tiLeMau <= nguongMauThap) ? 1f : 0f;
-        }
+        float tiLeMau = HPNhanVat.mauHienTai / HPNhanVat.mauToiDa;
+        float weightMucTieu = (tiLeMau <= nguongMauThap) ? 1f : 0f;
+
+        boHieuUngMauThap.weight = Mathf.MoveTowards(
+            boHieuUngMauThap.weight,
+            weightMucTieu,
+            tocDoChuyenDoi * Time.deltaTime
+        );
     }
 }
