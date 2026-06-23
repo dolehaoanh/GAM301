@@ -20,6 +20,12 @@ public class QuaiFSM : MonoBehaviour
 
     private void Start()
     {
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.updatePosition = false;
+            agent.updateRotation = false;
+        }
         diemTuanTraHienTai = diemTuanTraA;
         ChuyenTrangThai(TrangThaiQuai.TuanTra);
     }
@@ -50,7 +56,7 @@ public class QuaiFSM : MonoBehaviour
 
     private void XuLyTuanTra()
     {
-        if (nhanVat != null && Vector3.Distance(transform.position, nhanVat.position) <= khoangCachDuoi)
+        if (nhanVat != null && TinhKhoangCachHaiChieu(transform.position, nhanVat.position) <= khoangCachDuoi)
         {
             ChuyenTrangThai(TrangThaiQuai.DuoiTheo);
             return;
@@ -58,10 +64,12 @@ public class QuaiFSM : MonoBehaviour
 
         if (diemTuanTraHienTai != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, diemTuanTraHienTai.position, tocDo * Time.deltaTime);
+            Vector3 viTriMoi = Vector3.MoveTowards(transform.position, diemTuanTraHienTai.position, tocDo * Time.deltaTime);
+            viTriMoi = CanBangDoCaoTerrain(viTriMoi);
+            transform.position = viTriMoi;
             HuongVe(diemTuanTraHienTai.position);
 
-            if (Vector3.Distance(transform.position, diemTuanTraHienTai.position) < 0.2f)
+            if (TinhKhoangCachHaiChieu(transform.position, diemTuanTraHienTai.position) < 0.5f)
             {
                 diemTuanTraHienTai = (diemTuanTraHienTai == diemTuanTraA) ? diemTuanTraB : diemTuanTraA;
             }
@@ -72,7 +80,7 @@ public class QuaiFSM : MonoBehaviour
     {
         if (nhanVat == null) return;
 
-        float khoangCach = Vector3.Distance(transform.position, nhanVat.position);
+        float khoangCach = TinhKhoangCachHaiChieu(transform.position, nhanVat.position);
 
         if (khoangCach > khoangCachDuoi)
         {
@@ -80,8 +88,25 @@ public class QuaiFSM : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, nhanVat.position, tocDo * Time.deltaTime);
+        Vector3 viTriMoi = Vector3.MoveTowards(transform.position, nhanVat.position, tocDo * Time.deltaTime);
+        viTriMoi = CanBangDoCaoTerrain(viTriMoi);
+        transform.position = viTriMoi;
         HuongVe(nhanVat.position);
+    }
+
+    private float TinhKhoangCachHaiChieu(Vector3 v1, Vector3 v2)
+    {
+        return Vector2.Distance(new Vector2(v1.x, v1.z), new Vector2(v2.x, v2.z));
+    }
+
+    private Vector3 CanBangDoCaoTerrain(Vector3 viTri)
+    {
+        if (Terrain.activeTerrain != null)
+        {
+            Vector3 viTriCucBo = viTri - Terrain.activeTerrain.transform.position;
+            viTri.y = Terrain.activeTerrain.SampleHeight(viTriCucBo) + Terrain.activeTerrain.transform.position.y;
+        }
+        return viTri;
     }
 
     private void HuongVe(Vector3 viTriDich)
