@@ -3,13 +3,12 @@ using UnityEngine;
 public class VungKichHoatCamera : MonoBehaviour
 {
     public CameraTheoDoi cameraTheoDoi;
-    public Transform keThu;
 
     private void OnTriggerEnter(Collider other)
     {
-        if ((other.CompareTag("Player") || other.transform.root.CompareTag("Player")) && cameraTheoDoi != null && keThu != null)
+        if ((other.CompareTag("Player") || other.transform.root.CompareTag("Player")) && cameraTheoDoi != null)
         {
-            cameraTheoDoi.QuanSatKeThuTamThoi(keThu);
+            cameraTheoDoi.QuanSatKeThuTamThoi();
         }
     }
 }
