@@ -7,6 +7,9 @@ public class DiChuyenVaXoayDan : MonoBehaviour
     public Transform viTriB;
     public float thoiGianDiChuyen = 2f;
     public float gocXoay = 90f;
+    public float thoiGianXoay = 1f;
+    public float thoiGianChoSauDiChuyen = 1f;
+    public float thoiGianChoSauXoay = 1f;
 
     private void Start()
     {
@@ -25,11 +28,20 @@ public class DiChuyenVaXoayDan : MonoBehaviour
         }
         transform.position = viTriB.position;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(thoiGianChoSauDiChuyen);
 
-        transform.Rotate(0f, gocXoay, 0f);
+        Quaternion gocBatDau = transform.rotation;
+        Quaternion gocKetThuc = gocBatDau * Quaternion.Euler(0f, gocXoay, 0f);
+        thoiGianTroiQua = 0f;
+        while (thoiGianTroiQua < thoiGianXoay)
+        {
+            transform.rotation = Quaternion.Slerp(gocBatDau, gocKetThuc, thoiGianTroiQua / thoiGianXoay);
+            thoiGianTroiQua += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = gocKetThuc;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(thoiGianChoSauXoay);
 
         Debug.Log("Fire");
     }
