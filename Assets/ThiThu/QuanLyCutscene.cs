@@ -6,6 +6,7 @@ public class QuanLyCutscene : MonoBehaviour
     public GameObject cameraNhanVat;
     public GameObject cameraCutscene;
     public float thoiGianCutscene = 2f;
+    public float thoiGianChuyenCanh = 1f;
 
     private Coroutine tienTrinhCutscene;
 
@@ -32,6 +33,8 @@ public class QuanLyCutscene : MonoBehaviour
             cameraCutscene.SetActive(true);
         }
         if (cameraNhanVat != null) cameraNhanVat.SetActive(false);
+
+        yield return new WaitForSeconds(thoiGianChuyenCanh);
 
         yield return new WaitForSeconds(thoiGianCutscene);
 

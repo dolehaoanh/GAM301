@@ -48,8 +48,16 @@ public class SinhKhoiCubeNgauNhien : MonoBehaviour
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+            
+            // Thêm vừa lăn vừa xoay
+            rb.angularVelocity = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(-5f, 5f));
         }
+
+        // Góc sinh random:
+        cube.transform.rotation = Quaternion.Euler(Random.Range(0f, 360f), Random.Range(0f, 360f), Random.Range(0f, 360f));
+
+        // Góc sinh mặc định:
+        // cube.transform.rotation = Quaternion.identity;
 
         cube.SetActive(true);
     }
