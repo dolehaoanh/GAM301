@@ -30,7 +30,7 @@ public class VungDacBiet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.transform.root.CompareTag("Player"))
         {
-            Debug.Log("Entered special zone");
+            // Debug.Log("vao vung dac biet");
             weightMucTieu = 1f;
         }
     }
@@ -39,7 +39,7 @@ public class VungDacBiet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.transform.root.CompareTag("Player"))
         {
-            Debug.Log("Exited special zone");
+            // Debug.Log("thoat vung dac biet");
             weightMucTieu = 0f;
         }
     }
