@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CameraQuayCutscene : MonoBehaviour
+public class QuanLyCutscene : MonoBehaviour
 {
     public GameObject cameraNhanVat;
     public GameObject cameraCutscene;

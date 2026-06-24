@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class NhatItem : MonoBehaviour
 {
-    public CameraQuayCutscene cameraQuayCutscene;
+    public QuanLyCutscene quanLyCutscene;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") || other.transform.root.CompareTag("Player"))
         {
-            if (cameraQuayCutscene != null)
+            if (quanLyCutscene != null)
             {
-                cameraQuayCutscene.ChayQuayCutscene(transform);
+                quanLyCutscene.ChayQuayCutscene(transform);
             }
             gameObject.SetActive(false);
         }
