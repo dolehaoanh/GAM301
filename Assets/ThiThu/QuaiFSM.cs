@@ -18,14 +18,11 @@ public class QuaiFSM : MonoBehaviour
     private TrangThaiQuai trangThai = TrangThaiQuai.NgungNghi;
     private Transform diemTuanTraHienTai;
 
+    private Rigidbody rb;
+
     private void Start()
     {
-        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        if (agent != null)
-        {
-            agent.updatePosition = false;
-            agent.updateRotation = false;
-        }
+        rb = GetComponent<Rigidbody>();
         diemTuanTraHienTai = diemTuanTraA;
         ChuyenTrangThai(TrangThaiQuai.TuanTra);
     }
@@ -48,7 +45,7 @@ public class QuaiFSM : MonoBehaviour
 
     private void XuLyNgungNghi()
     {
-        if (nhanVat != null && Vector3.Distance(transform.position, nhanVat.position) <= khoangCachDuoi)
+        if (nhanVat != null && TinhKhoangCachHaiChieu(transform.position, nhanVat.position) <= khoangCachDuoi)
         {
             ChuyenTrangThai(TrangThaiQuai.DuoiTheo);
         }
@@ -64,9 +61,19 @@ public class QuaiFSM : MonoBehaviour
 
         if (diemTuanTraHienTai != null)
         {
-            Vector3 viTriMoi = Vector3.MoveTowards(transform.position, diemTuanTraHienTai.position, tocDo * Time.deltaTime);
-            viTriMoi = CanBangDoCaoTerrain(viTriMoi);
-            transform.position = viTriMoi;
+            Vector3 huongDi = (diemTuanTraHienTai.position - transform.position);
+            huongDi.y = 0f;
+            Vector3 viTriMoi = transform.position + huongDi.normalized * tocDo * Time.deltaTime;
+            
+            if (rb != null)
+            {
+                rb.MovePosition(viTriMoi);
+            }
+            else
+            {
+                transform.position = viTriMoi;
+            }
+
             HuongVe(diemTuanTraHienTai.position);
 
             if (TinhKhoangCachHaiChieu(transform.position, diemTuanTraHienTai.position) < 0.5f)
@@ -88,25 +95,25 @@ public class QuaiFSM : MonoBehaviour
             return;
         }
 
-        Vector3 viTriMoi = Vector3.MoveTowards(transform.position, nhanVat.position, tocDo * Time.deltaTime);
-        viTriMoi = CanBangDoCaoTerrain(viTriMoi);
-        transform.position = viTriMoi;
+        Vector3 huongDi = (nhanVat.position - transform.position);
+        huongDi.y = 0f;
+        Vector3 viTriMoi = transform.position + huongDi.normalized * tocDo * Time.deltaTime;
+
+        if (rb != null)
+        {
+            rb.MovePosition(viTriMoi);
+        }
+        else
+        {
+            transform.position = viTriMoi;
+        }
+
         HuongVe(nhanVat.position);
     }
 
     private float TinhKhoangCachHaiChieu(Vector3 v1, Vector3 v2)
     {
         return Vector2.Distance(new Vector2(v1.x, v1.z), new Vector2(v2.x, v2.z));
-    }
-
-    private Vector3 CanBangDoCaoTerrain(Vector3 viTri)
-    {
-        if (Terrain.activeTerrain != null)
-        {
-            Vector3 viTriCucBo = viTri - Terrain.activeTerrain.transform.position;
-            viTri.y = Terrain.activeTerrain.SampleHeight(viTriCucBo) + Terrain.activeTerrain.transform.position.y;
-        }
-        return viTri;
     }
 
     private void HuongVe(Vector3 viTriDich)

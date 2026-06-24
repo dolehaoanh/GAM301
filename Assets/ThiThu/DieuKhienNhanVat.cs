@@ -2,7 +2,15 @@ using UnityEngine;
 
 public class DieuKhienNhanVat : MonoBehaviour
 {
-    public float tocDo = 5f;
+    public float tocDo = 10f;
+    private Rigidbody rb;
+    private Animator animator;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+    }
 
     private void Update()
     {
@@ -10,11 +18,25 @@ public class DieuKhienNhanVat : MonoBehaviour
         float diChuyenDoc = Input.GetAxis("Vertical");
 
         Vector3 huongDiChuyen = new Vector3(diChuyenNgang, 0f, diChuyenDoc).normalized;
-        transform.Translate(huongDiChuyen * tocDo * Time.deltaTime, Space.World);
+        Vector3 viTriMoi = transform.position + huongDiChuyen * tocDo * Time.deltaTime;
+
+        if (rb != null)
+        {
+            rb.MovePosition(viTriMoi);
+        }
+        else
+        {
+            transform.Translate(huongDiChuyen * tocDo * Time.deltaTime, Space.World);
+        }
 
         if (huongDiChuyen != Vector3.zero)
         {
             transform.forward = huongDiChuyen;
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", huongDiChuyen.magnitude * tocDo);
         }
     }
 }
