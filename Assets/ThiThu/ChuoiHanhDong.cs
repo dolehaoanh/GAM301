@@ -6,7 +6,8 @@ public class ChuoiHanhDong : MonoBehaviour
     public Transform viTriA;
     public Transform viTriB;
     public Transform viTriC;
-    public float thoiGianDiChuyen = 2f;
+    public float thoiGianDiChuyenAB = 1f;
+    public float thoiGianDiChuyenBC = 1f;
     public Color mauDich = Color.red;
 
     private void Start()
@@ -16,9 +17,9 @@ public class ChuoiHanhDong : MonoBehaviour
 
     private IEnumerator ThucHienChuoi()
     {
-        yield return StartCoroutine(DiChuyen(viTriA.position, viTriB.position, thoiGianDiChuyen));
+        yield return StartCoroutine(DiChuyen(viTriA.position, viTriB.position, thoiGianDiChuyenAB));
         yield return new WaitForSeconds(1f);
-        yield return StartCoroutine(DiChuyen(viTriB.position, viTriC.position, thoiGianDiChuyen));
+        yield return StartCoroutine(DiChuyen(viTriB.position, viTriC.position, thoiGianDiChuyenBC));
         yield return new WaitForSeconds(1f);
         DoiMau();
         Debug.Log("Action Done");
