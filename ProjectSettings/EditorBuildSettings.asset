@@ -6,9 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/GAM302ChuyenDeOnline/ChuyenDeOnline.unity
+    guid: 012c416e9422b4795bb01de6d92dfb90
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 9407e481fcaea4c809f1c176bfbbb324
-  - enabled: 1
+  - enabled: 0
     path: Assets/ASM/Assignment.unity
     guid: 40b4e489ab7104707bfabdcc51f19f75
   m_configObjects:
