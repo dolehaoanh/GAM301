@@ -117,6 +117,17 @@ public class DiChuyenNhanVat : NetworkBehaviour
             {
                 transform.position += diChuyen * Runner.DeltaTime;
             }
+
+            if (transform.position.y < -10f)
+            {
+                if (Physics.Raycast(new Vector3(transform.position.x, 100f, transform.position.z), Vector3.down, out RaycastHit hit, 200f))
+                {
+                    if (dieuKhienNhanVat != null) dieuKhienNhanVat.enabled = false;
+                    transform.position = new Vector3(transform.position.x, hit.point.y + 1f, transform.position.z);
+                    if (dieuKhienNhanVat != null) dieuKhienNhanVat.enabled = true;
+                    vanTocY = 0f;
+                }
+            }
         }
     }
 }

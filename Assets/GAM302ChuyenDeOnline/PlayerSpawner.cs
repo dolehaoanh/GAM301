@@ -9,15 +9,24 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
     {
         if (player == Runner.LocalPlayer)
         {
-            Vector3 randomPosition = new Vector3(Random.Range(-4.5f, 4.5f), 1f, Random.Range(-4.5f, 4.5f));
-            NetworkObject spawnedObject = Runner.Spawn(playerPrefab, randomPosition, Quaternion.identity, player);
-            
-            CharacterController cc = spawnedObject.GetComponent<CharacterController>();
-            if (cc != null)
+            float viTriX = Random.Range(-4.5f, 4.5f);
+            float viTriZ = Random.Range(-4.5f, 4.5f);
+            float viTriY = 10f;
+
+            if (Physics.Raycast(new Vector3(viTriX, 100f, viTriZ), Vector3.down, out RaycastHit hit, 200f))
             {
-                cc.enabled = false;
-                spawnedObject.transform.position = randomPosition;
-                cc.enabled = true;
+                viTriY = hit.point.y + 1f;
+            }
+
+            Vector3 viTriNgauNhien = new Vector3(viTriX, viTriY, viTriZ);
+            NetworkObject spawnedObject = Runner.Spawn(playerPrefab, viTriNgauNhien, Quaternion.identity, player);
+            
+            CharacterController dieuKhien = spawnedObject.GetComponent<CharacterController>();
+            if (dieuKhien != null)
+            {
+                dieuKhien.enabled = false;
+                spawnedObject.transform.position = viTriNgauNhien;
+                dieuKhien.enabled = true;
             }
         }
     }
